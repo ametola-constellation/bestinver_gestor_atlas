@@ -1,0 +1,210 @@
+# ASP.NET
+# Build and test ASP.NET projects.
+# Add steps that publish symbols, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/apps/aspnet/build-aspnet-4
+# trigger:
+#  branches:
+#    include:
+#      - master
+#  paths:
+#    include:
+#      - BESTINVER.GestorAltas.Web.Public
+
+# pool:
+#   vmImage: 'windows-latest'
+
+parameters:
+- name: solution
+  default: '**/*.sln'
+- name: buildPlatform
+  default: 'Any CPU'
+- name: buildConfiguration
+  default: 'Release'
+
+steps:
+- task: Bash@3
+  displayName: 'Set RemediacionEnabled to false'
+  inputs:
+    targetType: 'inline'
+    script: |
+      pwd && ls -l
+      cd BESTINVER.GestorAltas.Web.Public/
+      echo "----------"
+      cat appsettings.json
+      echo "----------"
+      sed -i 's/"RemediacionEnabled": true/"RemediacionEnabled": false/g' appsettings.json
+      echo "----------"
+      cat appsettings.json
+      echo "----------"
+- task: Bash@3
+  inputs:
+    targetType: 'inline'
+    script: |
+      # SCRIPT PARA USAR LAST TAG GIT como buildnumber
+      # este script actualiza la variable de azure repos buildnumber por lo tanto solo es util
+      # para lanzarlo desde los pipes de azure devops
+      # se tiene que crear la invocacion al script y seleccionar el script 
+      IFS="-"
+      version=$(git log -n1000 --pretty='format:%d' | sed 's/, /\n/g' | grep 'tag:' | sed -E 's/^[ \t\(]*tag: //g' | sed -E 's/\)[ \t]*$//g' | grep -i '^[0-9\.]\+\(-KO\|-RT\|-RST\)\( \)*$' | head -n 1)
+      set $version
+      newbuildnumber=$1
+      echo $newbuildnumber
+      echo "##vso[build.updatebuildnumber]$newbuildnumber"
+  displayName: 'Bash Script'
+- task: UseDotNet@2
+  displayName: 'Install .NET Core 6 SDK'
+  inputs:
+    version: 6.x
+    performMultiLevelLookup: true
+- task: YarnInstaller@3
+  inputs:
+    versionSpec: '1.x'
+
+- task: CmdLine@2
+  displayName: 'Install Node'
+  inputs:
+    script: 'npm install -g node@10.19.0'
+
+- task: Yarn@3
+  inputs:
+    projectDirectory: '$(System.DefaultWorkingDirectory)/BESTINVER.GestorAltas.Web.Public'
+
+- task: NuGetToolInstaller@1
+  displayName: 'Install NuGet >=6.3.0-0'
+  inputs:
+    versionSpec: '>=6.3.0-0'
+    checkLatest: true
+- task: JFrogDotnetCore@1
+  inputs:
+    command: 'restore'
+    artifactoryConnection: 'JFROG - BESTINVER-bes_GestorAltas'
+    targetResolveRepo: 'bestinver-nuget'
+    rootPath: '**/BESTINVER.GestorAltas.Web.Public/BESTINVER.GestorAltas.Web.Public.csproj'
+    verbosityRestore: 'Detailed'
+
+
+- task: gulp@1
+  inputs:
+    gulpFile: 'BESTINVER.GestorAltas.Web.Public/gulpfile.js'
+    targets: 'sass'
+    enableCodeCoverage: false
+
+- task: gulp@1
+  inputs:
+    gulpFile: 'BESTINVER.GestorAltas.Web.Public/gulpfile.js'
+    targets: 'min'
+    enableCodeCoverage: false
+  continueOnError: false
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'build'
+    projects: '**/BESTINVER.GestorAltas.Web.Public.csproj'
+    arguments: '--no-restore --configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory) /p:DeployOnBuild=true /p:WebPublishMethod=Package /p:platform="$(BuildPlatform)" /p:PublishProfile="$(BuildConfiguration)" /p:DebugType=None /p:DebugSymbols=false'
+
+- task: PublishSymbols@2
+  inputs:
+    SearchPattern: '**/bin/**/*.pdb'
+    PublishSymbols: false
+
+- task: PowerShell@2
+  inputs:
+    targetType: 'inline'
+    script: |
+      Function Get-ModifyXML
+      {
+          [CmdletBinding()]
+          Param
+          (
+          [Parameter(Mandatory)]
+          [ValidateNotNullOrEmpty()]
+              [string]$path,
+          [Parameter(Mandatory)]
+          [ValidateNotNullOrEmpty()]
+              [string]$file
+          )
+      
+          Try
+          {
+              $path_ = $path
+              $file_ = $file        
+              Write-Host "Ruta a leer path $path_" -ForegroundColor Green
+      
+              $value = Get-ChildItem $path_ -recurse | Where-Object {$_.PSIsContainer -eq $true -and ($_.Name -match "PackageTmp" -or $_.Name -match"Out")} | Select-Object FullName
+              $value = $value -replace "@{FullName=", "" -replace "}", ""
+             
+              Write-Host "Ruta donde estan los archivos $value" -ForegroundColor Green
+      
+              return $value
+          }
+          Catch
+          {
+              $ExceptionMessage="Error in Line: " + $_.Exception.Line + ". " + $_.Exception.GetType().FullName + ": " + $_.Exception.Message + " Stacktrace: " + $_.Exception.StackTrace
+              Write-Error -Message $ExceptionMessage
+              Break
+          }
+      }
+      
+      $destPath = "$(Build.ArtifactStagingDirectory)/deploy/bestinver-hazte-inversor"
+      
+      New-Item -Path $destPath -ItemType "directory"
+      
+      Get-ChildItem -Path $(Build.ArtifactStagingDirectory) -Filter "*.zip" | foreach { Expand-Archive -Path $_.FullName -DestinationPath $destPath }
+          
+      $fullArtefactPath = Get-ModifyXML -path $destPath -file archive.xml
+      
+      dir
+      Write-Host "----"
+      dir $(Build.ArtifactStagingDirectory) 
+      Write-Host "----"
+      dir $(Build.ArtifactStagingDirectory)/deploy
+      Write-Host "----"
+      dir $(Build.ArtifactStagingDirectory)/deploy/bestinver-hazte-inversor
+      Write-Host "----"
+
+- task: Bash@3
+  inputs:
+    targetType: 'inline'
+    script: |
+      # Write your commands here
+      
+      ls -l "$(Build.ArtifactStagingDirectory)"/deploy/bestinver-hazte-inversor
+      mkdir "$(Build.ArtifactStagingDirectory)"/deploy/temp
+      cp -r "$(Build.ArtifactStagingDirectory)"/deploy/bestinver-hazte-inversor/Content/D_C/a/1/s/BESTINVER.GestorAltas.Web.Public/obj/Release/*/PubTmp/Out/* "$(Build.ArtifactStagingDirectory)"/deploy/temp
+      rm -rf "$(Build.ArtifactStagingDirectory)"/deploy/bestinver-hazte-inversor
+      mv "$(Build.ArtifactStagingDirectory)"/deploy/temp "$(Build.ArtifactStagingDirectory)"/deploy/bestinver-hazte-inversor
+
+- task: PowerShell@2
+  inputs:
+    targetType: 'inline'
+    script: |      
+      Compress-Archive -DestinationPath $(Build.ArtifactStagingDirectory)/gestorAltas_bestinver-hazte-inversor.zip -Path $(Build.ArtifactStagingDirectory)/deploy/bestinver-hazte-inversor
+
+
+- task: ArchiveFiles@2
+  inputs:
+    rootFolderOrFile: '$(Build.ArtifactStagingDirectory)/gestorAltas_bestinver-hazte-inversor.zip'
+    includeRootFolder: true
+    archiveType: 'zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/bestinver-hazte-inversor.zip'
+    replaceExistingArchive: true
+- task: PublishPipelineArtifact@1
+  inputs:
+    targetPath: '$(Build.ArtifactStagingDirectory)/gestorAltas_bestinver-hazte-inversor.zip'
+    artifact: 'bestinver-hazte-inversor.zip'
+    publishLocation: 'pipeline'
+
+
+- task: ArtifactoryGenericUpload@2
+  inputs:
+    artifactoryService: 'ARTIFACTORY - BESTINVER-bes_GestorAltas'
+    specSource: 'taskConfiguration'
+    fileSpec: |
+      {
+        "files": [
+          {
+            "pattern": "$(Build.ArtifactStagingDirectory)/bestinver-hazte-inversor.zip",
+            "target": "bestinver-deploy/$(System.TeamProject)/$(Build.Repository.Name)/$(Build.BuildNumber)/"
+          }
+        ]
+      }
+    failNoOp: true

@@ -1,0 +1,26 @@
+version: '3.4'
+
+services:
+  bestinver.bbdd:
+    image: microsoft/mssql-server-windows-developer
+    environment:
+      - ACCEPT_EULA=Y
+    
+  bestinver.gestoraltas.web.public:
+    image: ${DOCKER_REGISTRY-}bestinvergestoraltaswebpublic
+    build:
+      context: .
+      dockerfile: BESTINVER.GestorAltas.Web.Public\Dockerfile
+
+  bestinver.gestoraltas.web.management:
+    image: ${DOCKER_REGISTRY-}bestinvergestoraltaswebmanagement
+    build:
+      context: .
+      dockerfile: BESTINVER.GestorAltas.Web.Management\Dockerfile
+
+  bestinver.wordpress.ws:
+    image: ${DOCKER_REGISTRY-}bestinverwordpressws
+    build:
+      context: .
+      dockerfile: BESTINVER.Wordpress.WS\Dockerfile
+

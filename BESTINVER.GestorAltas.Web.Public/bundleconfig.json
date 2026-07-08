@@ -1,0 +1,165 @@
+[
+  {
+    "outputFileName": "wwwroot/css/custom.bestinver.min.css",
+    "inputFiles": [
+      "wwwroot/css/custom.bestinver.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/css/grid.min.css",
+    "inputFiles": [
+      "wwwroot/css/grid.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/css/style.min.css",
+    "inputFiles": [
+      "wwwroot/css/style.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/css/easy-autocomplete.themes.min.css",
+    "inputFiles": [
+      "wwwroot/css/easy-autocomplete.themes.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/css/easy-autocomplete.min.css",
+    "inputFiles": [
+      "wwwroot/css/easy-autocomplete.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/css/scancontrol.min.css",
+    "inputFiles": [
+      "wwwroot/css/scancontrol.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/css/tl-main.min.css",
+    "inputFiles": [
+      "wwwroot/css/tl-main.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/bundles/bundle-knockoutjs.js",
+    "inputFiles": [
+      "node_modules/knockout/build/output/knockout-latest.debug.js",
+      "wwwroot/js/knockout.validation.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/bundles/bundle-knockoutjs.min.js",
+    "inputFiles": [
+      "wwwroot/js/bundles/bundle-knockoutjs.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/bundles/bundle-jquery.js",
+    "inputFiles": [
+      "node_modules/jquery/dist/jquery.js",
+      "node_modules/jquery-ui/ui/widget.js",
+      "node_modules/easy-autocomplete/dist/jquery.easy-autocomplete.js",
+      "node_modules/block-ui/jquery.blockUI.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/bundles/bundle-jquery.min.js",
+    "inputFiles": [
+      "wwwroot/js/bundles/bundle-jquery.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/bundles/bundle-external-libraries.js",
+    "inputFiles": [
+      "node_modules/moment/moment.js",
+      "node_modules/cleave.js/dist/cleave.js",
+      "node_modules/@panzoom/panzoom/dist/panzoom.js",
+      "node_modules/ua-parser-js/dist/ua-parser.min.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/bundles/bundle-external-libraries.min.js",
+    "inputFiles": [
+      "wwwroot/js/bundles/bundle-external-libraries.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/bundles/bundle-redbility.js",
+    "inputFiles": [
+      "node_modules/@panzoom/panzoom/dist/panzoom.js",
+      "wwwroot/js/style.js",
+      "node_modules/magnific-popup/dist/jquery.magnific-popup.js",
+      "node_modules/chart.js/dist/Chart.js",
+      "node_modules/slick-carousel/slick/slick.js",
+      "wwwroot/js/tl-main.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/bundles/bundle-redbility.min.js",
+    "inputFiles": [
+      "wwwroot/js/bundles/bundle-redbility.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/bundles/bundle-bestinver-juridicas.js",
+    "inputFiles": [
+      "wwwroot/js/bestinver/**/*.js",
+      "wwwroot/js/juridica/**/*.js",
+      "wwwroot/js/questions.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/bundles/bundle-bestinver-juridicas.min.js",
+    "inputFiles": [
+      "wwwroot/js/bundles/bundle-bestinver-juridicas.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/bundles/bundle-bestinver.js",
+    "inputFiles": [
+      "wwwroot/js/bestinver/logRocketHelper.js",
+      "wwwroot/js/bestinver/utils.js",
+      "wwwroot/js/bestinver/routeConfig.js",
+      "wwwroot/js/bestinver/tag-manager.js",
+      "wwwroot/js/bestinver/*.js",
+      "wwwroot/js/viewmodel.js",
+      "wwwroot/js/request.js",
+      "wwwroot/js/models.js",
+      "wwwroot/js/questions.js",
+      "wwwroot/js/session-keepalive.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/bundles/bundle-bestinver.min.js",
+    "inputFiles": [
+      "wwwroot/js/bundles/bundle-bestinver.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/bundles/bundle-bestinver-remediacion.js",
+    "inputFiles": [
+      "wwwroot/js/remediacion/*remediacion.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/bundles/bundle-bestinver-remediacion.min.js",
+    "inputFiles": [
+      "wwwroot/js/bundles/bundle-bestinver-remediacion.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/bundles/bundle-bestinver-extranjeros.js",
+    "inputFiles": [
+      "wwwroot/js/bestinver/**/*.js",
+      "wwwroot/js/extranjero/**/*.js",
+      "wwwroot/js/questions.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/bundles/bundle-bestinver-extranjeros.min.js",
+    "inputFiles": [
+      "wwwroot/js/bundles/bundle-bestinver-extranjeros.js"
+    ]
+  }
+]

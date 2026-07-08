@@ -1,0 +1,106 @@
+﻿<h2 id="investment-head" class="form_title" style="display:none">2. ¿Cómo quieres realizar tu inversión?</h2>
+<ul class="form_steps-list" data-bind="foreach: listaOtherProducts , visible: !ProductIsEditing()">
+
+    <li>
+        <h3 class="form_steps-title">
+            <span data-bind="text: ProductHeader"></span>
+            <!-- ko if: $root.Product().Id() != Id() && ProductOperationList().length == 0 -->
+            <button class="link brown darken" data-bind="click:$root.DeleteProduct">
+                <span>Eliminar</span>
+            </button>
+            <!-- /ko -->
+        </h3>
+        <div class="form_block-content big" data-bind="visible: ProductOperationList().length > 0">
+            <div class="infor">
+                <table>
+                    <tbody data-bind="foreach:ProductOperationList">
+                        <tr>
+                            <td><span data-bind="text: OperationTypeName"></span></td>
+                            <td><span data-bind="customtext: AmountToString" data-private></span></td>
+                            <td><span></span></td>
+                            <td>
+
+                                <button class="link brown darken" data-bind="click:$root.DeleteOperation">
+                                    <span>Eliminar</span>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="form_block-content big" data-bind="visible: ProductOperationList().length < 1">
+            <button class="link brown darken plus"
+                    data-bind="click: $root.BeginCreateOperation">
+                <i class="icon_plus"></i>
+                <span>Añadir operación</span>
+            </button>
+        </div>
+    </li>
+
+</ul>
+
+<div class="form_block" data-bind="with: CurrentEditOperation , visible: OperationIsEditing">
+    @{ await Html.RenderPartialAsync("Operation/_OperationSubView"); }
+</div>
+
+<div id="addcoowner-buttons" class="form_block" data-bind="visible: OperationIsEditing">
+    <div class="form_block-content buttons big">
+        <div class="button_back">
+            <a href="" title="Cancelar" class="link brown darken" data-bind="click:$root.CancelOperation">
+                <span>Cancelar</span>
+            </a>
+        </div>
+        <div class="button_next">
+            <a href="" title="Continuar" class="button brown toWhite" data-bind="click:CreateOperation">
+                <span>Guardar operacion</span>
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="form_block-content general_error" data-bind="validationElement: OperationOK">
+    <span class="error_message" data-bind="validationMessage: OperationOK"></span>
+</div>
+<div class="form_block-content general_error" data-bind="validationElement: OperationAmountOK">
+    <span class="error_message" data-bind="validationMessage: OperationAmountOK"></span>
+</div>
+
+<div id="operation-buttons-content" class="form_block buttons" data-bind="visible: !ProductIsEditing()">
+    <div class="form_block-content buttons big">
+        <div class="button_next" data-bind="visible: $root.AllowAddProduct">
+            <a href="" title="Producto" class="button brown toWhite" data-bind="click: $root.BeginCreateProduct"><span>Contratar otro producto</span></a>
+        </div>
+    </div>
+        <div class="form_block-content buttons big">
+            <div class="button_back">
+                <a href="" title="Datos básicos" class="link brown darken back" data-bind="click: $root.goToPrevioustStep">
+                    <i class="arrow">
+                        <svg width="5" height="8" viewBox="0 0 5 8" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M1.143 0L0 1.25 2.514 4 0 6.75 1.143 8 4.8 4z" fill="#B59971" fill-rule="evenodd" />
+                        </svg>
+                    </i><span>Atrás</span>
+                </a>
+            </div>
+            <div class="button_next">
+                <a id="continue-operation-data" href="" title="Continuar" class="button brown toWhite" data-bind="click: CreateListOperationData"><span>Continuar</span></a>
+            </div>
+        </div>
+    </div>
+
+    <div class="form_block-content general_error" data-bind="validationElement: ListOperationOK">
+        <span class="error_message" data-bind="validationMessage: ListOperationOK"></span>
+    </div>
+
+    <div class="form_block" data-bind="with: ProductModel , visible: ProductIsEditing">
+        @{ await Html.RenderPartialAsync("Product/_ProductSelectView"); }
+        <div class="form_block buttons">
+            <div class="form_block-content buttons big">
+                <div class="button_back"><a href="" title="Cancelar" class="link brown darken" data-bind="click:$root.CancelProduct"><span>Cancelar</span></a></div>
+                <div id="btn-select-product" class="button_next"><a href="" title="Continuar" class="button brown toWhite" data-bind="click: $root.CreateProduct"><span>Continuar</span></a></div>
+            </div>
+        </div>
+    </div>
+
+

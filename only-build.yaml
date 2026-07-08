@@ -1,0 +1,82 @@
+
+trigger: none
+
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+  solution: '**/*.sln'
+  buildPlatform: 'Any CPU'
+  buildConfiguration: 'Release'
+
+steps:
+
+- task: NuGetAuthenticate@0
+
+- task: DotNetCoreCLI@2
+  displayName: Restore nugget artifact
+  inputs:
+    command: 'restore'
+    projects: 'BESTINVER.GestorAltas.sln'
+    feedsToUse: 'config'
+    nugetConfigPath: 'nuget.config'
+
+#- task: DotNetCoreCLI@2
+#  displayName: 'Restore Package Solutions'
+#  inputs:
+#    command: 'restore'
+#    projects: 'BESTINVER.GestorAltas.sln'
+#    feedsToUse: 'select'
+#    #vstsFeed: '39298fd1-2803-4eda-bd67-c1537b6db1dc/32f4b40d-794c-4488-ac18-29e1870d67d2'
+#    vstsFeed: 'bes_GestorAltas/bestinver.gestoraltas'
+
+
+- task: DotNetCoreCLI@2
+  displayName: 'Build Solution'
+  inputs:
+    command: 'build'
+    projects: 'BESTINVER.GestorAltas.sln'
+    arguments: '--no-restore --configuration release'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Pusblish Common proyect'
+  inputs:
+    command: publish
+    publishWebProjects: false
+    projects: 'BESTINVER.GestorAltas.Web.Common/BESTINVER.GestorAltas.Web.Common/BESTINVER.GestorAltas.Web.Common.csproj'
+    arguments: '--no-restore --configuration release --output $(Build.StagingDirectory)/WebSites/Common'
+    zipAfterPublish: true
+
+- task: DotNetCoreCLI@2
+  displayName: 'Pusblish Management proyect'
+  inputs:
+    command: publish
+    publishWebProjects: false
+    projects: 'BESTINVER.GestorAltas.Web.Management/BESTINVER.GestorAltas.Web.Management.csproj'
+    arguments: '--no-restore --configuration release --output $(Build.StagingDirectory)/WebSites/Management'
+    zipAfterPublish: true
+
+- task: DotNetCoreCLI@2
+  displayName: 'Pusblish Public proyect'
+  inputs:
+    command: publish
+    publishWebProjects: false
+    projects: 'BESTINVER.GestorAltas.Web.Public/BESTINVER.GestorAltas.Web.Public.csproj'
+    arguments: '--no-restore --configuration release --output $(Build.StagingDirectory)/WebSites/Public'
+    zipAfterPublish: true
+
+- task: DotNetCoreCLI@2
+  displayName: 'Pusblish Wordpress proyect'
+  inputs:
+    command: publish
+    publishWebProjects: false
+    projects: 'BESTINVER.Wordpress.WS/BESTINVER.Wordpress.WS.csproj'
+    arguments: '--no-restore --configuration release --output $(Build.StagingDirectory)/WebSites/Wordpress'
+    zipAfterPublish: true
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish back-end artifact'
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)/WebSites'
+    ArtifactName: 'Apps'
+    publishLocation: 'Container'

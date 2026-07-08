@@ -1,0 +1,44 @@
+﻿@{
+    @model string
+}
+
+@{
+    if (Model == "404")
+    {
+        <section class="bg01 module module-404-error">
+            <div class="module_inner">
+                <div class="col6-xd col6-ld col6-md col6-sd col6-lt col6-st col4-sm module-content">
+                    <h1 class="module-title">404</h1>
+                    <h2 class="module-subtitle">Lo sentimos la página que has solicitado no existe</h2>
+                    <p class="module-text">Si has intentado llegar escribiendo la dirección directamente, por favor asegúrate de que es correcta.</p>
+                </div>
+            </div>
+        </section>
+    }
+    else if (Model == "EXPIRED")
+    {
+        <section class="bg01 module module-404-error">
+            <div class="module_inner">
+                <div class="col6-xd col6-ld col6-md col6-sd col6-lt col6-st col4-sm module-content">
+                    <h1 class="module-title">&nbsp;</h1>
+                    <h2 class="module-subtitle">La sesión ha expirado</h2>
+                    <p class="module-text">Por tu seguridad la sesión se ha cerrado, debes volver a acceder al siguiente enlace para comenzar de nuevo el proceso de alta: <a href="https://www.bestinver.es/hazte-inversor/fisica">https://www.bestinver.es/hazte-inversor/fisica</a></p>
+                    <p class="module-text">Si tienes cualquier duda, contacta con nosotros a través del teléfono 900 878 280 o del correo electrónico bestinver@bestinver.es</p>
+                    <p class="module-text">Muchas gracias.</p>
+                </div>
+            </div>
+        </section>
+    }
+    else
+    {
+        <section class="bg01 module module-404-error">
+            <div class="module_inner">
+                <div class="col6-xd col6-ld col6-md col6-sd col6-lt col6-st col4-sm module-content">
+                    <h1 class="module-title">Error</h1>
+                    <h2 class="module-subtitle">Se ha producido un error</h2>
+                    <p class="module-text">El equipo de Relación con el Inversor de Bestinver contactará contigo para continuar con el proceso de alta.<br /><br />Si lo prefieres, puedes ponerte en contacto con nosotros a través del teléfono 900 878 280 o del correo electrónico bestinver@bestinver.es<br /><br />Muchas gracias.</p>
+                </div>
+            </div>
+        </section>
+    }
+}

@@ -1,0 +1,66 @@
+﻿@using BESTINVER.GestorAltas.Web.Management.Models.Operation;
+
+@model IEnumerable<OperationDocumentModel>
+
+<div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title">Documentos</h4>
+
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+
+        <div class="modal-body">
+
+            @if (Model.Any())
+            {
+                <div class="row">
+                    <div class="col-md-10">
+                        <ul id="documents-list">
+                            @foreach (var operationDoc in Model)
+                            {
+                                <li>
+                                    <h3 class='badge badge-secondary'>Firmante: @operationDoc.Name</h3>
+                                    <div class='alert alert-primary'>
+                                        <table class='table table-bordered'>
+                                            <thead>
+                                                <tr>
+                                                    <th>Documento</th>
+                                                    <th class='text-center'>Enlace</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var doc in operationDoc.Documents)
+                                                {
+                                                    <tr>
+                                                        <td>@doc.Name</td>
+                                                        <td class='text-center'><a class='btn-sm btn-info' role='button' href='@doc.Url' target='_blank'><span class='fas fa-file'></span> Ver documento</a></td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="row">
+                    <div class="col-md-10">
+                        <ul id="documents-list">
+                            <div class='alert alert-primary' role='alert'>La operación no tiene documentos asociados</div>
+                        </ul>
+
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-dismiss="modal">Cerrar</button>
+        </div>
+    </div>
+</div>

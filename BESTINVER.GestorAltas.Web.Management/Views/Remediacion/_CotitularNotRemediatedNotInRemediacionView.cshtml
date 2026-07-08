@@ -1,0 +1,71 @@
+﻿@using BESTINVER.GestorAltas.Web.Management.Models.Remediacion
+@model List<BESTINVER.GestorAltas.Web.Management.Models.Remediacion.NotRemediatedModel>
+
+@if (Model == null || !Model.Any())
+{
+    <div class="row">
+        <div class="col-md-12">
+            No se han encontrado peticiones de remediación para el código cliente introducido
+        </div>
+    </div>
+}
+else
+{
+    <div id="cotitular-remediations">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>CuentaId</th>
+                    <th>TitularId</th>
+                    <th>NIF</th>
+                    <th>Nombre</th>
+                    <th>Apellidos</th>
+                    <th>Fecha de caducidad</th>
+                    <th>Test de conocimiento</th>
+                    <th>Pendiente de remediar</th>
+                    <th>Url de remediación</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    string estado = item.PteRemediarBool ? "Pendiente" : "Remediado";
+                    string trClass = item.PteRemediarBool ? "danger" : "";
+                    switch (item.Status)
+                    {
+                        case RequestStatusEnum.SolicitudPendienteVerificar:
+                            estado = "La solicitud ha sido procesada por el cliente, pero está <strong>pendiente de validar</strong> en remediación";
+                            trClass = "warning";
+                            break;
+                        case RequestStatusEnum.SolicitudFinalizadaParcialmente:
+                            estado = "La solicitud ha sido <strong>validada en remediación</strong>, pero está <strong>pendiente su envío a RD</strong>";
+                            trClass = "warning";
+                            break;
+                    }
+                    <tr class="@trClass">
+                        <td>@item.CuentaId</td>
+                        <td>@item.TitularId</td>
+                        <td>@item.NIF</td>
+                        <td>@item.Nombre</td>
+                        <td>@item.Apellidos</td>
+                        <td>@(item.FechaCaducidadDoc.HasValue ? @item.FechaCaducidadDoc.Value.ToString("dd/MM/yyyy") : "")</td>
+                        <td>@item.TestConocimiento</td>
+                        <td>@Html.Raw(estado)</td>
+                        <td>
+                            @if (!string.IsNullOrWhiteSpace(item.UrlRemediacion))
+                            {
+                                string noselect = "noselect";
+                                bool usoInterno = item.TipoEnvio == SendTypeEnum.Postal;
+                                if (!usoInterno)
+                                {
+                                    noselect = "";
+                                }
+                                <a target="_blank" class="@noselect" href="@(item.UrlRemediacion.StartsWith("http")?item.UrlRemediacion:$"http://{item.UrlRemediacion}")">@item.UrlRemediacion</a>@(usoInterno ? Html.Raw("&nbsp;&nbsp;&nbsp;<span class=\"label label-danger\">¡USO INTERNO!</span>") : Html.Raw(""))
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

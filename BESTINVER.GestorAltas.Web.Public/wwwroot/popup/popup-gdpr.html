@@ -1,0 +1,132 @@
+﻿<section class="popup popup-help">
+    <div class="popup_inner">
+        <div class="module-wysiwyg">
+            <div class="module_inner">
+
+                <h2 class="module-subtitle">Aviso sobre la aceptación de la política de protección de datos</h2>
+
+                <p class="module-text" id="gdpr-title">
+                    Te indicamos que no has aceptado los siguientes consentimientos, por lo que no podremos enviarte cierta información que consideramos que puede ser de tu interés. Si quieres estar informado solo tienes que hacer clic en las siguientes casillas:
+                </p>
+
+
+                <div id="GDPR-Acceptation-1-content" class="form_block-content big">
+                    <input type="checkbox" name="GDPR-Acceptation-1" id="GDPR-Acceptation-1" onchange="Utils.SendGdprCheckAnalitics(this, '1', true);" data-bind="checked: GDPR_Group1">
+                    <label for="GDPR-Acceptation-1">
+                        <i class="icon"></i>
+                        <div class="text">
+                            Consiento el envío de información y recursos sobre ahorro e inversión, así como el envío de comunicaciones comerciales sobre fondos de inversión, fondos de capital riesgo, planes de pensiones, planes de previsión social individual y otros productos gestionados, promovidos o comercializados por las diferentes entidades o empresas de <a href="https://www.bestinver.es/grupo-bestinver/" id="bstInfoResourcesPopUp" target="_blank">BESTINVER</a>.
+                        </div>
+                    </label>
+                </div>
+
+                <div id="GDPR-Acceptation-2-content" class="form_block-content big">
+                    <input type="checkbox" name="GDPR-Acceptation-2" id="GDPR-Acceptation-2" onchange="Utils.SendGdprCheckAnalitics(this, '2', true);" data-bind="checked: GDPR_Group2">
+                    <label for="GDPR-Acceptation-2">
+                        <i class="icon"></i>
+                        <div class="text">
+                            Consiento el envío de invitaciones a eventos promocionales, ponencias y/o webinars organizados por las diferentes entidades o empresas de <a href="https://www.bestinver.es/grupo-bestinver/" id="bstPromosPopUp" target="_blank">BESTINVER</a>.
+                        </div>
+                    </label>
+                </div>
+                
+                <div id="GDPR-Acceptation-3-content" class="form_block-content big">
+                    <input type="checkbox" name="GDPR-Acceptation-3" id="GDPR-Acceptation-3" onchange="Utils.SendGdprCheckAnalitics(this, '3', true);" data-bind="checked: GDPR_Group3">
+                    <label for="GDPR-Acceptation-3">
+                        <i class="icon"></i>
+                        <div class="text">
+                            Consiento el envío de información comercial por cualquier canal de comunicación sobre productos y servicios comercializados por otros <a href="https://www.bestinver.es/grupo-acciona/" id="accionaComercialInfoPopUp" target="_blank">negocios el Grupo ACCIONA</a> sin que ello implique la cesión de mis datos personales.
+                        </div>
+                    </label>
+                </div>
+
+                <div class="form_block-content buttons big">
+                    <div class="button_next">
+                        <a id="save-gdpr-popup" href="#" title="Enviar" class="button brown toWhite"><span>Continuar</span></a>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        isMobileApp();
+        var signatureType = vm.SignatureData().IdDocumentSignatureType();
+        var dni = vm.CurrentEditApplicant().ApplicantBasicData().DNI();
+        
+        var gdpr1, gdpr2 = false, gdpr3 = false;
+        var gdprtext = 'Te indicamos que no has aceptado los siguientes consentimientos, por lo que no podremos enviarte información sobre ahorro e inversión o comunicaciones comerciales sobre nuestros productos, ni invitarte a eventos promocionales, ponencias o webinars que consideramos que pueden ser de tu interés. Si quieres recibir esta información, solo tienes que hacer clic en las siguientes casillas:';
+        
+        if (signatureType == DocumentSignatureTypeEnum.MANUSCRITA) {
+            gdpr1 = vm.SignatureData().GDPR_Group1();
+            gdpr2 = vm.SignatureData().GDPR_Group2();
+            gdpr3 = vm.SignatureData().GDPR_Group3()
+        } else {
+            gdpr1 = vm.CurrentEditApplicant().GDPR1();
+            gdpr2 = vm.CurrentEditApplicant().GDPR2();
+            gdpr3 = vm.CurrentEditApplicant().GDPR3();
+        }
+
+        if (!gdpr1 && !gdpr2 && !gdpr3) {
+            gdprtext = 'Te indicamos que no has aceptado los siguientes consentimientos, por lo que no podremos enviarte información sobre ahorro e inversión o comunicaciones comerciales sobre nuestros productos y tampoco sobre productos o servicios comercializados por otros negocios del grupo ACCIONA. Además, no podremos invitarte a eventos promocionales, ponencias o webinars que consideramos que pueden ser de tu interés. Si quieres recibir esta información, solo tienes que hacer clic en las siguientes casillas:'
+        }
+        else if (gdpr2 && !gdpr1 && !gdpr3) {
+            gdprtext = 'Te indicamos que no has aceptado los siguientes consentimientos, por lo que no podremos enviarte información sobre ahorro e inversión o comunicaciones comerciales sobre nuestros productos y tampoco sobre productos o servicios comercializados por otros negocios del grupo ACCIONA que consideramos que puede ser de tu interés. Si quieres recibir esta información, solo tienes que hacer clic en las siguientes casillas:';
+        }
+        else if (gdpr1 && !gdpr2 && !gdpr3) {
+            gdprtext = 'Te indicamos que no has aceptado los siguientes consentimientos, por lo que no podremos invitarte a eventos promocionales, ponencias o webinars que consideramos que pueden ser de tu interés. Además, tampoco podremos enviarte información sobre productos o servicios comercializados por otros negocios del grupo ACCIONA que quizá podría interesarte. Si quieres recibir esta información, solo tienes que hacer clic en las siguientes casillas:';
+        }
+        else if (gdpr1 && gdpr2 && !gdpr3) {
+            gdprtext = 'Te indicamos que no has aceptado el siguiente consentimiento por lo que no podremos enviarte información sobre productos o servicios comercializados por otros negocios del grupo ACCIONA que consideramos que puede ser de tu interés. Si quieres recibir esta información, solo tienes que hacer clic en las siguientes casillas:';
+        }
+
+        $('#GDPR-Acceptation-1').prop('checked', gdpr1);
+        $('#GDPR-Acceptation-2').prop('checked', gdpr2);
+        $('#GDPR-Acceptation-3').prop('checked', gdpr3);
+
+        $('#GDPR-Acceptation-1-content').addClass(gdpr1 ? 'hidden' : '');
+        $('#GDPR-Acceptation-2-content').addClass(gdpr2 ? 'hidden' : '');
+        $('#GDPR-Acceptation-3-content').addClass(gdpr3 ? 'hidden' : '');
+
+        $("#gdpr-title").html(gdprtext);
+
+        $("#save-gdpr-popup").click(function () {            
+            var gdpr1 = $('#GDPR-Acceptation-1').is(":checked");
+            var gdpr2 = $('#GDPR-Acceptation-2').is(":checked");
+            var gdpr3 = $('#GDPR-Acceptation-3').is(":checked");
+            var isModal = true;
+     
+            vm.SendGDPRAnalitics(gdpr1, gdpr2, gdpr3, isModal);
+            if (signatureType == DocumentSignatureTypeEnum.MANUSCRITA) {
+                vm.SetGDPRAllApplicants(gdpr1, gdpr2, gdpr3);
+            } else {
+                vm.SetGDPRApplicants(dni, gdpr1, gdpr2, gdpr3);
+            }
+
+            $.magnificPopup.close();
+            return false;
+        });
+    });               
+
+    function isMobileApp() {
+        var MobileData = Utils.GetMobileAppData();
+        var isBstapp = MobileData.AppVersion && (MobileData.AppVersion.indexOf("bstapp") != -1 || MobileData.AppVersion.indexOf("bestinver") != -1);
+        if (isBstapp) {
+            $("#bstInfoResourcesPopUp").attr('href', "https://www.bestinver.es/grupo-bestinver/#bstapp");
+            $("#bstInfoResourcesPopUp").removeAttr('target');
+
+            $("#bstPromosPopUp").attr('href', "https://www.bestinver.es/grupo-bestinver/#bstapp");
+            $("#bstPromosPopUp").removeAttr('target');
+
+            $("#accionaComercialInfoPopUp").attr('href', "https://www.bestinver.es/grupo-acciona/#bstapp");
+            $("#accionaComercialInfoPopUp").removeAttr('target');
+        }
+    }
+
+
+</script>

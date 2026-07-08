@@ -1,0 +1,238 @@
+﻿@model BESTINVER.GestorAltas.Web.Management.Models.ManagementRequestModel
+@using BESTINVER.GestorAltas.Web.Management.Models
+@using BestInver.WebPrivada.Shared.Models.Microservices.Tests.Enums
+@using BESTINVER.GestorAltas.Web.Models.Requests
+
+@{
+    int[] operationsReceivedByDefault = new int[] { (int)OperationType.Traspaso, (int)OperationType.Recibo };
+    var disabled = "disabled=\"disabled\"";
+    if ((Model.LockedIsLocked && Model.LockedUserName == User.Identity.Name) && (await AuthorizationService.AuthorizeAsync(User, MiddleOfficeClaimNames.SolicitudModificacion)).Succeeded)
+    {
+        disabled = "";
+    }
+    string tipoEnvio = (SendingWayType?)Model.Request.IdSendingWay != SendingWayType.FirmaOnline && (Model.Request.IdProducto == (int)ProductNames.BESTINVER_INFRA || Model.ProductOperations.Any(p => p.IdProduct == (int)ProductNames.BESTINVER_INFRA))
+         ? BESTINVER.GestorAltas.Utilities.Extensions.StringExtensions.ToDescriptionString(((SendingWayType?)Model.Request.IdSendingWay))
+         : (SendingWayType?)Model.Request.IdSendingWay != SendingWayType.FirmaOnline && (Model.Request.IdProducto != (int)ProductNames.BESTINVER_INFRA || !Model.ProductOperations.Any(p => p.IdProduct != (int)ProductNames.BESTINVER_INFRA))
+             ? BESTINVER.GestorAltas.Utilities.Extensions.StringExtensions.ToDescriptionString(((SendingWayType?)Model.Request.IdSendingWay))
+             : (SendingWayType?)Model.Request.IdSendingWay == SendingWayType.FirmaOnline && (Model.Request.IdProducto != (int)ProductNames.BESTINVER_INFRA && !Model.ProductOperations.Any(p => p.IdProduct != (int)ProductNames.BESTINVER_INFRA))
+                 ? ""
+                 : (SendingWayType?)Model.Request.IdSendingWay == SendingWayType.FirmaOnline && (Model.Request.IdProducto == (int)ProductNames.BESTINVER_INFRA || Model.ProductOperations.Any(p => p.IdProduct == (int)ProductNames.BESTINVER_INFRA))
+                    ? SendingWayType.Adjuntar_Doc.ToString()
+                    : "";
+    string tipoFirma = Model.Request.IdProducto == (int)ProductNames.BESTINVER_INFRA || Model.ProductOperations.Any(p => p.IdProduct == (int)ProductNames.BESTINVER_INFRA)
+        ? DocumentSignatureType.Manuscrita.ToString()
+        : BESTINVER.GestorAltas.Utilities.Extensions.StringExtensions.ToDescriptionString(((DocumentSignatureType?)Model.Request.IdRequestSignature));
+
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card-deck">
+            <div class="card bg-light">
+                <div class="card-header">
+                    Tipo de firma
+                </div>
+                <div class="card-body">
+                    <p class="card-text"> @tipoFirma</p>
+                </div>
+            </div>
+            <div class="card bg-light">
+                <div class="card-header">
+                    Tipo de envío
+                </div>
+                <div class="card-body">
+                    <p class="card-text"> @tipoEnvio</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    @Html.HiddenFor(m => m.Id)
+    <div class="col-md-12">
+
+        <ul id="documents-list" @disabled></ul>
+        <div class="documentSppiner text-center">
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="documentModal" role="dialog" aria-labelledby="alertLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h4 class="modal-title" id="cotitularLabel">Adjuntar documento de identidad</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+
+            <div class="modal-body modal-lg">
+
+                <input type="hidden" id="dnidata-applicantdni" />
+                <input type="hidden" id="dnidata-requestid" />
+                <input type="hidden" id="dnidata-juridicperson" />
+
+                <div class="row">
+                    <div class="form-group col-md-12" id="div-dni-anverso">
+                        <div class="input-group">
+                            <label class="input-group-btn">
+                                <span class="btn btn-primary">
+                                    Anverso DNI <input type="file" id="input-anverso-dni" style="display: none;">
+                                </span>
+                            </label>
+                            <input type="text" class="form-control" readonly style="background-color: #eee !important">
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-12" id="div-dni-reverso">
+                        <div class="input-group">
+                            <label class="input-group-btn">
+                                <span class="btn btn-primary">
+                                    Reverso DNI <input type="file" id="input-reverso-dni" style="display: none;">
+                                </span>
+                            </label>
+                            <input type="text" class="form-control" readonly style="background-color: #eee !important">
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-12" id="div-libro-familia">
+                        <div class="input-group">
+                            <label class="input-group-btn">
+                                <span class="btn btn-primary">
+                                    Libro de familia <input type="file" id="input-libro-familia" style="display: none;">
+                                </span>
+                            </label>
+                            <input type="text" class="form-control" readonly style="background-color: #eee !important">
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-12" id="div-cif">
+                        <div class="input-group">
+                            <label class="input-group-btn">
+                                <span class="btn btn-primary">
+                                    CIF <input type="file" id="input-cif" style="display: none;">
+                                </span>
+                            </label>
+                            <input type="text" class="form-control" readonly style="background-color: #eee !important">
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-12" id="div-poderes-1">
+                        <div class="input-group">
+                            <label class="input-group-btn">
+                                <span class="btn btn-primary">
+                                    Poder 1 <input type="file" id="input-poderes-1" data-file-name="Poder-1" style="display: none;">
+                                </span>
+                            </label>
+                            <input type="text" class="form-control" readonly style="background-color: #eee !important">
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-12" id="div-poderes-2">
+                        <div class="input-group">
+                            <label class="input-group-btn">
+                                <span class="btn btn-primary">
+                                    Poder 2 <input type="file" id="input-poderes-2" data-file-name="Poder-2" style="display: none;">
+                                </span>
+                            </label>
+                            <input type="text" class="form-control" readonly style="background-color: #eee !important">
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-12" id="div-poderes-3">
+                        <div class="input-group">
+                            <label class="input-group-btn">
+                                <span class="btn btn-primary">
+                                    Poder 3 <input type="file" id="input-poderes-3" data-file-name="Poder-3" style="display: none;">
+                                </span>
+                            </label>
+                            <input type="text" class="form-control" readonly style="background-color: #eee !important">
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-12" id="div-poderes-4">
+                        <div class="input-group">
+                            <label class="input-group-btn">
+                                <span class="btn btn-primary">
+                                    Poder 4 <input type="file" id="input-poderes-4" data-file-name="Poder-4" style="display: none;">
+                                </span>
+                            </label>
+                            <input type="text" class="form-control" readonly style="background-color: #eee !important">
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-12" id="div-poderes-5">
+                        <div class="input-group">
+                            <label class="input-group-btn">
+                                <span class="btn btn-primary">
+                                    Poder 5 <input type="file" id="input-poderes-5" data-file-name="Poder-5" style="display: none;">
+                                </span>
+                            </label>
+                            <input type="text" class="form-control" readonly style="background-color: #eee !important">
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-12" id="div-escrituras-1">
+                        <div class="input-group">
+                            <label class="input-group-btn">
+                                <span class="btn btn-primary">
+                                    Escritura 1 <input type="file" id="input-escrituras-1" data-file-name="Escritura-1" style="display: none;">
+                                </span>
+                            </label>
+                            <input type="text" class="form-control" readonly style="background-color: #eee !important">
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-12" id="div-escrituras-2">
+                        <div class="input-group">
+                            <label class="input-group-btn">
+                                <span class="btn btn-primary">
+                                    Escritura 2 <input type="file" id="input-escrituras-2" data-file-name="Escritura-2" style="display: none;">
+                                </span>
+                            </label>
+                            <input type="text" class="form-control" readonly style="background-color: #eee !important">
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-12" id="div-escrituras-3">
+                        <div class="input-group">
+                            <label class="input-group-btn">
+                                <span class="btn btn-primary">
+                                    Escritura 3 <input type="file" id="input-escrituras-3" data-file-name="Escritura-3" style="display: none;">
+                                </span>
+                            </label>
+                            <input type="text" class="form-control" readonly style="background-color: #eee !important">
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-12" id="div-escrituras-4">
+                        <div class="input-group">
+                            <label class="input-group-btn">
+                                <span class="btn btn-primary">
+                                    Escritura 4 <input type="file" id="input-escrituras-4" data-file-name="Escritura-4" style="display: none;">
+                                </span>
+                            </label>
+                            <input type="text" class="form-control" readonly style="background-color: #eee !important">
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-12" id="div-escrituras-5">
+                        <div class="input-group">
+                            <label class="input-group-btn">
+                                <span class="btn btn-primary">
+                                    Escritura 5 <input type="file" id="input-escrituras-5" data-file-name="Escritura-5" style="display: none;">
+                                </span>
+                            </label>
+                            <input type="text" class="form-control" readonly style="background-color: #eee !important">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" id="btn-close-savednidata">Cerrar</button>
+                <button type="button" class="btn btn-primary" id="btn-savednidata">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>

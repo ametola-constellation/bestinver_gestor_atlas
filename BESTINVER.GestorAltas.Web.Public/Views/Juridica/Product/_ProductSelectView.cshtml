@@ -1,0 +1,63 @@
+﻿
+<h2 class="form_title">Comienza a invertir seleccionando uno de nuestros productos</h2>
+
+<div data-selecttitle="Elige un producto" class="form_block boxes" data-bind="foreach: ProductTypeList">
+    <!-- ko if: $index() === 0 -->
+    <span class="label"></span>
+    <!-- /ko -->
+    <div class="form_block-content radio_box small_block">
+        <input type="radio" name="typeproduct" data-bind="attr: {value: Id , id: 'product-type' + Id(), 'data-relative': 'product-content-' + Id()}, checked: $parent.ProductType" />
+        <label data-bind="attr: {for: 'product-type' + Id()}" class="radio_box-label">
+            <i class="label_icon">
+                <svg width="19" height="17" viewBox="0 0 19 17" xmlns="http://www.w3.org/2000/svg">
+                    <g stroke="#B59971" stroke-width="2.25" fill="none" fill-rule="evenodd" stroke-linecap="square">
+                        <path d="M2.289 9.273l4.498 5.51M6.742 14.727L17.426 1.64"></path>
+                    </g>
+                </svg>
+            </i>
+            <i class="block_icon" data-bind="html: svgfile">
+                @*<object type="image/svg+xml" data-bind="attr: {data: 'Content/svg/' + svgfile()}"></object>*@
+            </i>
+            <h4 data-bind="text: Name" class="title"></h4><span data-bind="html: Description" class="text"></span>
+        </label>
+    </div>
+</div>
+
+<div class="index-products" data-bind="foreach: ProductTypeList">
+
+    <div class="form_block boxes hidden" data-bind="attr: {id: 'product-content-' + Id()}">
+
+        <span class="label" data-bind="text: Name"></span>
+        <span class="label" data-bind="visible: $root.ProductModel().ProductType() == '4'">Solo para ahorradores con residencia fiscal en el País Vasco.</span>
+
+        <div class="radio_box-container" data-bind="foreach: Products()">
+            <div class="form_block-content radio_box small_block">
+
+                <input type="radio" data-bind="attr: {value: Id , id: 'product' + Id() , name: 'product-type' + ProductTypeId() }, checked: $root.ProductModel().Product"
+                       onclick="window.scrollWindow('btn-select-product');">
+                <label class="radio_box-label" data-bind="attr: {for: 'product' + Id()}">
+
+                    <i class="label_icon">
+                        <svg width="19" height="17" viewBox="0 0 19 17" xmlns="http://www.w3.org/2000/svg">
+                            <g stroke="#B59971" stroke-width="2.25" fill="none" fill-rule="evenodd" stroke-linecap="square">
+                                <path d="M2.289 9.273l4.498 5.51M6.742 14.727L17.426 1.64"></path>
+                            </g>
+                        </svg>
+                    </i>
+                    <h4 class="title">
+                        <span data-bind="html: Name"></span>
+                    </h4>
+                    <span class="text">
+                        <span data-bind="html: Description"></span>
+                    </span><span class="footer"><span data-bind="html: Profitability()" class="perc"></span><span class="footer_text" data-bind="html: ProfitabilityDateText()"></span></span>
+                </label>
+            </div>
+        </div>
+        <div class="form_block-content big product_help">
+            <span class="mini_text" data-bind="html: $root.ProductModel().ProfitabilityDisclaimer"></span>
+        </div>
+        
+    </div>
+</div>
+
+

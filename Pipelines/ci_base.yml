@@ -1,0 +1,160 @@
+parameters:
+- name: Environment
+  displayName: Environment
+  type: string
+  default: uat
+  values:
+  - uat
+
+- name: ProjectName
+  displayName: Project Name
+  type: string
+  default: All
+  values:
+  - All
+  - MiddleOffice
+  - Altas
+  - Remediacion
+  - WordpressApi
+
+- name: Deploy
+  type: boolean
+  default: true
+
+- name: PublishDocker
+  type: boolean
+  default: true
+
+- name: NugetUser  
+  type: string
+
+- name: NugetPassword  
+  type: string
+
+resources:
+  repositories:
+  - repository: CI_CD
+    type: git
+    name: CI_CD
+    ref: develop 
+
+variables:
+  - template: variables/${{parameters.Environment}}.yml
+  - group: 'Connections'  
+
+stages:
+  - stage: build
+    pool:
+      name: $(PoolName)
+    displayName: "Build"
+    jobs:
+      - ${{ if or(eq(parameters.ProjectName, 'All'), eq(parameters.ProjectName, 'MiddleOffice')) }}:
+        - template: jobs/job-build-publish-docker.yml@CI_CD
+          parameters:                        
+              ContainerRegistry: $(ContainerRegistry)   
+              NugetUser: ${{parameters.NugetUser}}
+              NugetPassword: ${{parameters.NugetPassword}}
+              Repository: 'bestinver.gestoraltas.web.management'
+              DockerFile: '**/BESTINVER.GestorAltas.Web.Management/Dockerfile'
+              PublishDocker: ${{parameters.PublishDocker}}
+      - ${{ if or(eq(parameters.ProjectName, 'All'), eq(parameters.ProjectName, 'Altas'), eq(parameters.ProjectName, 'Remediacion')) }}:
+        - template: jobs/job-build-publish-docker.yml@CI_CD
+          parameters:                        
+              ContainerRegistry: $(ContainerRegistry)   
+              NugetUser: ${{parameters.NugetUser}}
+              NugetPassword: ${{parameters.NugetPassword}}
+              Repository: 'bestinver.gestoraltas.web.public'
+              DockerFile: '**/BESTINVER.GestorAltas.Web.Public/Dockerfile'
+              PublishDocker: ${{parameters.PublishDocker}}
+      - ${{ if or(eq(parameters.ProjectName, 'All'), eq(parameters.ProjectName, 'WordpressApi')) }}:
+        - template: jobs/job-build-publish-docker.yml@CI_CD
+          parameters:                        
+              ContainerRegistry: $(ContainerRegistry)   
+              NugetUser: ${{parameters.NugetUser}}
+              NugetPassword: ${{parameters.NugetPassword}}
+              Repository: 'bestinver.wordpress.ws'
+              DockerFile: '**/BESTINVER.Wordpress.WS/Dockerfile'
+              PublishDocker: ${{parameters.PublishDocker}}
+  - ${{ if eq(parameters.Deploy, true) }}:  
+    - stage: Deploy
+      pool:
+        name: $(PoolName)
+      displayName: "Deploy"
+      jobs:
+        - ${{ if or(eq(parameters.ProjectName, 'All'), eq(parameters.ProjectName, 'MiddleOffice')) }}:
+          - template: jobs/job-deploy-aca.yml@CI_CD
+            parameters:       
+                AzSubscription: $(azSubscription)
+                ContainerApp: $(containerAppMiddleOffice)
+                ResourceGroup: $(azResourceGroup)
+                BuildNumber: $(Build.BuildNumber)
+                Repository: 'bestinver.gestoraltas.web.management'
+        - ${{ if or(eq(parameters.ProjectName, 'All'), eq(parameters.ProjectName, 'Altas')) }}:
+          - template: jobs/job-deploy-aca.yml@CI_CD
+            parameters:       
+                AzSubscription: $(azSubscription)
+                ContainerApp: $(containerAppAltas)
+                ResourceGroup: $(azResourceGroup)
+                BuildNumber: $(Build.BuildNumber)
+                Repository: 'bestinver.gestoraltas.web.public'
+        - ${{ if or(eq(parameters.ProjectName, 'All'), eq(parameters.ProjectName, 'Remediacion')) }}:
+          - template: jobs/job-deploy-aca.yml@CI_CD
+            parameters:       
+                AzSubscription: $(azSubscription)
+                ContainerApp: $(containerAppRemediacion)
+                ResourceGroup: $(azResourceGroup)
+                BuildNumber: $(Build.BuildNumber)
+                Repository: 'bestinver.gestoraltas.web.public.remediacion'
+        - ${{ if or(eq(parameters.ProjectName, 'All'), eq(parameters.ProjectName, 'WordpressApi')) }}:
+          - template: jobs/job-deploy-aca.yml@CI_CD
+            parameters:       
+                AzSubscription: $(azSubscription)
+                ContainerApp: $(containerAppWordPressApi)
+                ResourceGroup: $(azResourceGroup)
+                BuildNumber: $(Build.BuildNumber)
+                Repository: 'bestinver.wordpress.ws'
+    - stage: Swap
+      pool:
+        name: $(PoolName)
+      displayName: "Swap"
+      jobs:      
+        - deployment: "SWAP"
+          environment: "UAT"
+          strategy:
+            runOnce:
+              deploy:
+                steps:
+                  - download: none
+        - ${{ if or(eq(parameters.ProjectName, 'All'), eq(parameters.ProjectName, 'MiddleOffice')) }}:
+          - template: jobs/job-swap-aca.yml@CI_CD
+            parameters:       
+                AzSubscription: $(azSubscription)
+                ContainerApp: $(containerAppMiddleOffice)
+                ResourceGroup: $(azResourceGroup)
+                DependsOn: "SWAP"
+                Repository: 'bestinver.gestoraltas.web.management'
+        - ${{ if or(eq(parameters.ProjectName, 'All'), eq(parameters.ProjectName, 'Altas')) }}:
+          - template: jobs/job-swap-aca.yml@CI_CD
+            parameters:       
+                AzSubscription: $(azSubscription)
+                ContainerApp: $(containerAppAltas)
+                ResourceGroup: $(azResourceGroup)
+                DependsOn: "SWAP"
+                Repository: 'bestinver.gestoraltas.web.public'
+        - ${{ if or(eq(parameters.ProjectName, 'All'), eq(parameters.ProjectName, 'Remediacion')) }}:
+          - template: jobs/job-swap-aca.yml@CI_CD
+            parameters:       
+                AzSubscription: $(azSubscription)
+                ContainerApp: $(containerAppRemediacion)
+                ResourceGroup: $(azResourceGroup)
+                DependsOn: "SWAP"
+                Repository: 'bestinver.gestoraltas.web.public.remediacion'
+        - ${{ if or(eq(parameters.ProjectName, 'All'), eq(parameters.ProjectName, 'WordpressApi')) }}:
+          - template: jobs/job-swap-aca.yml@CI_CD
+            parameters:       
+                AzSubscription: $(azSubscription)
+                ContainerApp: $(containerAppWordPressApi)
+                ResourceGroup: $(azResourceGroup)
+                DependsOn: "SWAP"
+                Repository: 'bestinver.wordpress.ws'
+   

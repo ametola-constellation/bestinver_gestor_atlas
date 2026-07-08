@@ -1,0 +1,166 @@
+﻿.general_error {
+    display: none;
+
+    &.error {
+        display: block;
+    }
+}
+
+.form_block-content.checkRadio_size.fullwidth label {
+    width: 100%;
+    margin-top: 30px;
+}
+
+span.textfilled {
+    padding: 1px 20px;
+    border-bottom: 1px solid #333;
+    text-transform: uppercase;
+    font-style: italic;
+}
+
+.margintop-60 {
+    margin-top: -60px;
+}
+
+
+.index-products {
+    .radio_box-label {
+        min-height: 254.96px;
+    }
+}
+
+@media (max-width: 680px) {
+    .index-products {
+        .radio_box-label {
+            min-height: 0;
+        }
+    }
+}
+
+label[for=GDPR-Acceptation] > i, label[for=GDPR-Online-Acceptation] > i, label[for=popup-gdpr-check] > i {
+    vertical-align: top !important;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    /* display: none; <- Crashes Chrome on hover */
+    -webkit-appearance: none !important;
+    margin: 0 !important; /* <-- Apparently some margin are still there even though it's hidden */
+}
+
+input[type=number] {
+    -moz-appearance: textfield !important; /* Firefox */
+}
+
+.inputHidden {
+    visibility: hidden
+}
+
+
+/*** Form conocimiento********/
+.tl-only-mobile {
+    display: none;
+}
+
+@media only screen and (min-device-width : 320px) and (max-device-width : 768px) {
+    .tl-only-mobile {
+        display: block;
+    }
+}
+
+.tl-check-children {
+    margin-left: 40px !important;
+}
+
+.tl-anidate-checks .form_block-content.big {
+    margin-top: 10px;
+}
+
+.tl-prp-detalle {
+    padding-left: 40px;
+    margin-top: 15px;
+    box-sizing: border-box;
+}
+
+.tl-tooltip-mobile p {
+    font-size: .9rem;
+    margin-bottom: 10px;
+    text-align: left;
+}
+
+.tl-tooltip-cont {
+    display: none;
+    z-index: 9999;
+    position: absolute;
+    margin-left: 20px;
+}
+
+.tl-tooltip-cont:after {
+    border: solid transparent;
+    border-color: transparent;
+    border-top-color: #575757;
+    border-width: .9rem;
+    bottom: -25px;
+    content: "";
+    height: 0;
+    margin-top: -.9rem;
+    pointer-events: none;
+    position: absolute;
+    left: 15px;
+    width: 0;
+}
+
+.tl-tooltip-cont p {
+    display: block;
+    background: #575757;
+    color: #f7f7f7;
+    text-transform: none;
+    padding: 6px;
+    border-radius: 3px;
+    line-height: 1.3;
+    font-size: 1rem;
+    text-align: left;
+    width: 200px;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    font-size: 1rem;
+}
+
+.registration_form .form_text-questions_title ~ .form_block-content select {
+    width: 100%;
+}
+
+.select2-container--default .select2-selection--single {
+    width: 100%;
+    display: inline-block;
+    vertical-align: top;
+    font-family: "Acciona-ExtraLight";
+    font-size: 1rem;
+    line-height: 1.75em;
+    letter-spacing: 0em;
+    font-weight: 400;
+    text-transform: none;
+    font-style: normal;
+    border: 1px solid #cccccc;
+    padding: 15px 45px 15px 20px;
+    box-sizing: border-box;
+    background-image: url(../svg/arrow-down.svg);
+    background-repeat: no-repeat;
+    background-position: top 25px right 15px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.43, 0.39, 0.23, 1.01);
+    border-radius: 0px;
+    height: 60px;
+}
+
+.select2-container--default .select2-selection--single:hover {
+    background-position: top 30px right 15px;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    display: none;
+}
+
+
+/*** Form conocimiento********/

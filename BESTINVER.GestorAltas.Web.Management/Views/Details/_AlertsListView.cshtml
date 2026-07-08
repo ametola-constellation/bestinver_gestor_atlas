@@ -1,0 +1,125 @@
+﻿@using BestInver.WebPrivada.Shared.Models.Microservices.Tests.Enums
+@using Newtonsoft.Json;
+
+@model IEnumerable<RequestAlertModel>
+<script>
+    var requestAlertModel = @Html.Raw(JsonConvert.SerializeObject(Model));
+</script>
+<label class="col-form-label">Alertas</label>
+<div class="alert alert-primary">
+    <table id="alerts-list" class="table table-striped table-bordered dt-responsive wrap" style="width:100%">
+        <thead>
+            <tr>
+                <th>Tipo Alerta</th>
+                <th>Fecha de inicio</th>
+                <th>Fecha de resolución</th>
+                <th>Detalles</th>
+                <th>Responsable</th>
+                <th>Comentarios</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                bool showAlertDetails = (await AuthorizationService.AuthorizeAsync(User, MiddleOfficeClaimNames.ComentariosAlerta)).Succeeded == true;
+                bool disabledSolve = (await AuthorizationService.AuthorizeAsync(User, MiddleOfficeClaimNames.GestionAlertasModificacion)).Succeeded == false;
+                bool disabledAlertPersonalDataDetails = (await AuthorizationService.AuthorizeAsync(User, MiddleOfficeClaimNames.DesbloqueoAlertaDatosPersonales)).Succeeded == false;
+                bool disabledSolveProduct = (await AuthorizationService.AuthorizeAsync(User, MiddleOfficeClaimNames.DesbloqueoAlertaProducto)).Succeeded == false;
+                bool disabledSolveMaintenance = (await AuthorizationService.AuthorizeAsync(User, MiddleOfficeClaimNames.DesbloqueoAlertaMantenimiento)).Succeeded == false;
+            }
+
+            @foreach (var alert in Model.OrderByDescending(i => i.StartDate))
+            {
+                <tr data-type-id="@alert.Id">
+                    <td>@alert.AlertType</td>
+                    <td><span data-datetime="@DateTime.SpecifyKind(alert.StartDate.Value, DateTimeKind.Utc).ToString("O")"></span></td>
+                    <td>
+                        @if (alert.EndDate.HasValue)
+                        {
+                            <span data-datetime="@DateTime.SpecifyKind(alert.EndDate.Value, DateTimeKind.Utc).ToString("O")"></span>
+                        }
+                    </td>
+                    <td>
+                        @if (alert.AlertTypeId == (int)AlertTypes.AlertaPBC)
+                        {
+                            if (showAlertDetails)
+                            {
+                                @alert.Details
+                            }
+                        }
+                        else if (alert.AlertTypeId == (int)AlertTypes.AlertaDatosPersonales)
+                        {
+                            if (!disabledAlertPersonalDataDetails)
+                            {
+                                @alert.Details
+                            }
+                        }
+                        else
+                        {
+                            @alert.Details
+                        }
+                    </td>
+                    <td>@alert.Responsbile</td>
+                    <td>
+                        @if (alert.AlertTypeId == (int)AlertTypes.AlertaPBC)
+                        {
+                            if (showAlertDetails)
+                            {
+                                @alert.Comments
+                            }
+                        }
+                        else if (alert.AlertTypeId == (int)AlertTypes.AlertaDatosPersonales)
+                        {
+                            if (!disabledAlertPersonalDataDetails)
+                            {
+                                @alert.Comments
+                            }
+                        }
+                        else
+                        {
+                            @alert.Comments
+                        }
+                    </td>
+                    <td>
+                        @if (alert.AlertStatus == (int)AlertStatus.Denied)
+                        {
+                            <span class="fas fa-times-circle fa-2x text-danger"></span>
+                        }
+                        else if (alert.EndDate.HasValue)
+                        {
+                            <span class="fas fa-check-circle fa-2x text-success"></span>
+                        }
+                        else if (alert.AllowSolve)
+                        {
+                            bool disableButton = disabledSolve;
+                            if (alert.AlertTypeId == (int)AlertTypes.AlertaProducto)
+                            {
+                                disableButton = disabledSolveProduct;
+                            }
+                            else if (alert.AlertTypeId == 20)
+                            {
+                                disableButton = disabledSolveMaintenance;
+                            }
+                            else if (alert.AlertTypeId == (int)AlertTypes.AlertaDatosPersonales || alert.AlertTypeId == (int)AlertTypes.AlertaMovilDuplicado)
+                            {
+                                disableButton = disabledAlertPersonalDataDetails;
+                            }
+                            <button data-toggle="ajax-modal" data-target="#alertModal" asp-action="ResolveAlertModal" asp-controller="Details" class="btn btn-info btn-sm"
+                                    disabled=@disableButton>
+                                <span class="fas fa-check"></span>
+                                Resolver
+                            </button>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<script>
+    $('[data-datetime]').each(function() {
+        var utcDate = new Date($(this).data('datetime'));
+        $(this).text(utcDate.toLocaleString());
+    });
+</script>

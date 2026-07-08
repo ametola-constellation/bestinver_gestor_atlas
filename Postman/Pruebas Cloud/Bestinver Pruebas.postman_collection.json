@@ -1,0 +1,1646 @@
+{
+	"info": {
+		"_postman_id": "92eb869c-5b44-438e-85dd-d834e4280202",
+		"name": "Bestinver Pruebas",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "32418535"
+	},
+	"item": [
+		{
+			"name": "Wordpress",
+			"item": [
+				{
+					"name": "Rentabilidades",
+					"item": [
+						{
+							"name": "AnnualProfitability",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"response is ok\", function(){",
+											"    pm.response.to.have.status(200);",
+											"})",
+											"",
+											"pm.test(\"response must be valid\", function(){",
+											"    pm.response.to.be.ok;",
+											"    pm.response.to.be.withBody;",
+											"    pm.response.to.be.json;",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url_wordpress}}/api/Profitability/AnnualProfitability?idProduct={{productId}}&chartLegend={{chartLegend}}&countValues={{countValues}}",
+									"host": [
+										"{{url_wordpress}}"
+									],
+									"path": [
+										"api",
+										"Profitability",
+										"AnnualProfitability"
+									],
+									"query": [
+										{
+											"key": "idProduct",
+											"value": "{{productId}}"
+										},
+										{
+											"key": "chartLegend",
+											"value": "{{chartLegend}}"
+										},
+										{
+											"key": "countValues",
+											"value": "{{countValues}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "MonthlyProfitability",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"response is ok\", function(){",
+											"    pm.response.to.have.status(200);",
+											"})",
+											"",
+											"pm.test(\"response must be valid\", function(){",
+											"    pm.response.to.be.ok;",
+											"    pm.response.to.be.withBody;",
+											"    pm.response.to.be.json;",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url_wordpress}}/api/Profitability/MonthlyProfitability?idProduct={{productId}}&chartLegend={{chartLegend}}&countValues={{countValues}}",
+									"host": [
+										"{{url_wordpress}}"
+									],
+									"path": [
+										"api",
+										"Profitability",
+										"MonthlyProfitability"
+									],
+									"query": [
+										{
+											"key": "idProduct",
+											"value": "{{productId}}"
+										},
+										{
+											"key": "chartLegend",
+											"value": "{{chartLegend}}"
+										},
+										{
+											"key": "countValues",
+											"value": "{{countValues}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "ProductResumenProfitability",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"response is ok\", function(){",
+											"    pm.response.to.have.status(200);",
+											"})",
+											"",
+											"pm.test(\"response must be valid\", function(){",
+											"    pm.response.to.be.ok;",
+											"    pm.response.to.be.withBody;",
+											"    pm.response.to.be.json;",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url_wordpress}}/api/Profitability/ProductResumenProfitability?idProduct={{productId}}&chartLegend={{chartLegend}}",
+									"host": [
+										"{{url_wordpress}}"
+									],
+									"path": [
+										"api",
+										"Profitability",
+										"ProductResumenProfitability"
+									],
+									"query": [
+										{
+											"key": "idProduct",
+											"value": "{{productId}}"
+										},
+										{
+											"key": "chartLegend",
+											"value": "{{chartLegend}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GraficaVL",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"response is ok\", function(){",
+											"    pm.response.to.have.status(200);",
+											"})",
+											"",
+											"pm.test(\"response must be valid\", function(){",
+											"    pm.response.to.be.ok;",
+											"    pm.response.to.be.withBody;",
+											"    pm.response.to.be.json;",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url_wordpress}}/api/Profitability/MonthlyVL?idProduct={{productId}}&chartLegend={{chartLegend}}&countValues={{countValues}}",
+									"host": [
+										"{{url_wordpress}}"
+									],
+									"path": [
+										"api",
+										"Profitability",
+										"MonthlyVL"
+									],
+									"query": [
+										{
+											"key": "idProduct",
+											"value": "{{productId}}"
+										},
+										{
+											"key": "chartLegend",
+											"value": "{{chartLegend}}"
+										},
+										{
+											"key": "countValues",
+											"value": "{{countValues}}"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Cartera",
+					"item": [
+						{
+							"name": "SectorialDistribution",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"response is ok\", function(){",
+											"    pm.response.to.have.status(200);",
+											"})",
+											"",
+											"pm.test(\"response must be valid\", function(){",
+											"    pm.response.to.be.ok;",
+											"    pm.response.to.be.withBody;",
+											"    pm.response.to.be.json;",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url_wordpress}}/api/carteras/SectoralDistribution?idCartera={{idCartera}}",
+									"host": [
+										"{{url_wordpress}}"
+									],
+									"path": [
+										"api",
+										"carteras",
+										"SectoralDistribution"
+									],
+									"query": [
+										{
+											"key": "idCartera",
+											"value": "{{idCartera}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GeographicalDistribution",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"response is ok\", function(){",
+											"    pm.response.to.have.status(200);",
+											"})",
+											"",
+											"pm.test(\"response must be valid\", function(){",
+											"    pm.response.to.be.ok;",
+											"    pm.response.to.be.withBody;",
+											"    pm.response.to.be.json;",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url_wordpress}}/api/carteras/GeographicalDistribution?idCartera={{idCartera}}",
+									"host": [
+										"{{url_wordpress}}"
+									],
+									"path": [
+										"api",
+										"carteras",
+										"GeographicalDistribution"
+									],
+									"query": [
+										{
+											"key": "idCartera",
+											"value": "{{idCartera}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "TopPositions Consumo",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"response is ok\", function(){",
+											"    pm.response.to.have.status(200);",
+											"})",
+											"",
+											"pm.test(\"response must be valid\", function(){",
+											"    pm.response.to.be.ok;",
+											"    pm.response.to.be.withBody;",
+											"    pm.response.to.be.json;",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url_wordpress}}/api/carteras/TopPositions?idCartera={{idCartera}}&sector={{sectorConsumo}}&numberOfResults={{numberOfResults}}",
+									"host": [
+										"{{url_wordpress}}"
+									],
+									"path": [
+										"api",
+										"carteras",
+										"TopPositions"
+									],
+									"query": [
+										{
+											"key": "idCartera",
+											"value": "{{idCartera}}"
+										},
+										{
+											"key": "sector",
+											"value": "{{sectorConsumo}}"
+										},
+										{
+											"key": "numberOfResults",
+											"value": "{{numberOfResults}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "TopPositions Industria",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"response is ok\", function(){",
+											"    pm.response.to.have.status(200);",
+											"})",
+											"",
+											"pm.test(\"response must be valid\", function(){",
+											"    pm.response.to.be.ok;",
+											"    pm.response.to.be.withBody;",
+											"    pm.response.to.be.json;",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url_wordpress}}/api/carteras/TopPositions?idCartera={{idCartera}}&sector={{sectorIndustria}}&numberOfResults={{numberOfResults}}",
+									"host": [
+										"{{url_wordpress}}"
+									],
+									"path": [
+										"api",
+										"carteras",
+										"TopPositions"
+									],
+									"query": [
+										{
+											"key": "idCartera",
+											"value": "{{idCartera}}"
+										},
+										{
+											"key": "sector",
+											"value": "{{sectorIndustria}}"
+										},
+										{
+											"key": "numberOfResults",
+											"value": "{{numberOfResults}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "TopPositions financiero",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"response is ok\", function(){",
+											"    pm.response.to.have.status(200);",
+											"})",
+											"",
+											"pm.test(\"response must be valid\", function(){",
+											"    pm.response.to.be.ok;",
+											"    pm.response.to.be.withBody;",
+											"    pm.response.to.be.json;",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url_wordpress}}/api/carteras/TopPositions?idCartera={{idCartera}}&sector={{sectorFinanciero}}&numberOfResults={{numberOfResults}}",
+									"host": [
+										"{{url_wordpress}}"
+									],
+									"path": [
+										"api",
+										"carteras",
+										"TopPositions"
+									],
+									"query": [
+										{
+											"key": "idCartera",
+											"value": "{{idCartera}}"
+										},
+										{
+											"key": "sector",
+											"value": "{{sectorFinanciero}}"
+										},
+										{
+											"key": "numberOfResults",
+											"value": "{{numberOfResults}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "TopPositions comunicacion",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"response is ok\", function(){",
+											"    pm.response.to.have.status(200);",
+											"})",
+											"",
+											"pm.test(\"response must be valid\", function(){",
+											"    pm.response.to.be.ok;",
+											"    pm.response.to.be.withBody;",
+											"    pm.response.to.be.json;",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url_wordpress}}/api/carteras/TopPositions?idCartera={{idCartera}}&sector={{sectorComunicacion}}&numberOfResults={{numberOfResults}}",
+									"host": [
+										"{{url_wordpress}}"
+									],
+									"path": [
+										"api",
+										"carteras",
+										"TopPositions"
+									],
+									"query": [
+										{
+											"key": "idCartera",
+											"value": "{{idCartera}}"
+										},
+										{
+											"key": "sector",
+											"value": "{{sectorComunicacion}}"
+										},
+										{
+											"key": "numberOfResults",
+											"value": "{{numberOfResults}}"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Resumen",
+					"item": [
+						{
+							"name": "GraficaVL",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"response is ok\", function(){",
+											"    pm.response.to.have.status(200);",
+											"})",
+											"",
+											"pm.test(\"response must be valid\", function(){",
+											"    pm.response.to.be.ok;",
+											"    pm.response.to.be.withBody;",
+											"    pm.response.to.be.json;",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url_wordpress}}/api/Profitability/MonthlyVL?idProduct={{productId}}&chartLegend={{chartLegend}}&countValues={{countValues}}",
+									"host": [
+										"{{url_wordpress}}"
+									],
+									"path": [
+										"api",
+										"Profitability",
+										"MonthlyVL"
+									],
+									"query": [
+										{
+											"key": "idProduct",
+											"value": "{{productId}}"
+										},
+										{
+											"key": "chartLegend",
+											"value": "{{chartLegend}}"
+										},
+										{
+											"key": "countValues",
+											"value": "{{countValues}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CumulativeProfitability",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"response is ok\", function(){",
+											"    pm.response.to.have.status(200);",
+											"})",
+											"",
+											"pm.test(\"response must be valid\", function(){",
+											"    pm.response.to.be.ok;",
+											"    pm.response.to.be.withBody;",
+											"    pm.response.to.be.json;",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url_wordpress}}/api/Profitability/CumulativeProfitability?idProduct={{productId}}",
+									"host": [
+										"{{url_wordpress}}"
+									],
+									"path": [
+										"api",
+										"Profitability",
+										"CumulativeProfitability"
+									],
+									"query": [
+										{
+											"key": "idProduct",
+											"value": "{{productId}}"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "AllLiquidityProfitabilityDateLastYear",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"response is ok\", function(){",
+									"    pm.response.to.have.status(200);",
+									"})",
+									"",
+									"pm.test(\"response must be valid\", function(){",
+									"    pm.response.to.be.ok;",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url_wordpress}}/api/Profitability/AllLiquidityProfitabilityDateLastYear",
+							"host": [
+								"{{url_wordpress}}"
+							],
+							"path": [
+								"api",
+								"Profitability",
+								"AllLiquidityProfitabilityDateLastYear"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DataToDateCarteras",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"response is ok\", function(){",
+									"    pm.response.to.have.status(200);",
+									"})",
+									"",
+									"pm.test(\"response must be valid\", function(){",
+									"    pm.response.to.be.ok;",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url_wordpress}}/api/carteras/DataToDateCarteras",
+							"host": [
+								"{{url_wordpress}}"
+							],
+							"path": [
+								"api",
+								"carteras",
+								"DataToDateCarteras"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DownloadExcelLiquidity",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"response is ok\", function(){",
+									"    pm.response.to.have.status(200);",
+									"})",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url_wordpress}}/api/Profitability/DownloadExcelLiquidity?productId={{productId}}",
+							"host": [
+								"{{url_wordpress}}"
+							],
+							"path": [
+								"api",
+								"Profitability",
+								"DownloadExcelLiquidity"
+							],
+							"query": [
+								{
+									"key": "productId",
+									"value": "{{productId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "LiquidityValuesByDate",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"response is ok\", function(){",
+									"    pm.response.to.have.status(200);",
+									"})",
+									"",
+									"pm.test(\"response must be valid\", function(){",
+									"    pm.response.to.be.ok;",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url_wordpress}}/api/Profitability/LiquidityValuesByDate?startDate={{startDate}}",
+							"host": [
+								"{{url_wordpress}}"
+							],
+							"path": [
+								"api",
+								"Profitability",
+								"LiquidityValuesByDate"
+							],
+							"query": [
+								{
+									"key": "startDate",
+									"value": "{{startDate}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "MiddleOffice",
+			"item": [
+				{
+					"name": "Search",
+					"item": [
+						{
+							"name": "Search",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Cookie",
+										"value": "{{Cookie}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{url_middle_office}}/Search",
+									"host": [
+										"{{url_middle_office}}"
+									],
+									"path": [
+										"Search"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "LoadDataTable",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Cookie",
+										"value": "{{Cookie}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{url_middle_office}}/Search/LoadDataTable",
+									"host": [
+										"{{url_middle_office}}"
+									],
+									"path": [
+										"Search",
+										"LoadDataTable"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Security",
+					"item": [
+						{
+							"name": "GetRolesList",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Cookie",
+										"value": "{{Cookie}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{url_middle_office}}/Security/GetRolesList",
+									"host": [
+										"{{url_middle_office}}"
+									],
+									"path": [
+										"Security",
+										"GetRolesList"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GetSecurityUsers",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Cookie",
+										"value": "{{Cookie}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{url_middle_office}}/Security/GetSecurityUsers?sEcho=1&iColumns=5&sColumns=Name%2CEmail%2CRoles%2CId%2CShowRecord&iDisplayStart=0&iDisplayLength=10&mDataProp_0=0&sSearch_0=&bRegex_0=false&bSearchable_0=true&bSortable_0=true&mDataProp_1=1&sSearch_1=&bRegex_1=false&bSearchable_1=true&bSortable_1=true&mDataProp_2=2&sSearch_2=&bRegex_2=false&bSearchable_2=true&bSortable_2=false&mDataProp_3=3&sSearch_3=&bRegex_3=false&bSearchable_3=false&bSortable_3=false&mDataProp_4=&sSearch_4=&bRegex_4=false&bSearchable_4=false&bSortable_4=false&sSearch=&bRegex=false&iSortCol_0=0&sSortDir_0=asc&iSortingCols=1&_=1728297585466&",
+									"host": [
+										"{{url_middle_office}}"
+									],
+									"path": [
+										"Security",
+										"GetSecurityUsers"
+									],
+									"query": [
+										{
+											"key": "sEcho",
+											"value": "1"
+										},
+										{
+											"key": "iColumns",
+											"value": "5"
+										},
+										{
+											"key": "sColumns",
+											"value": "Name%2CEmail%2CRoles%2CId%2CShowRecord"
+										},
+										{
+											"key": "iDisplayStart",
+											"value": "0"
+										},
+										{
+											"key": "iDisplayLength",
+											"value": "10"
+										},
+										{
+											"key": "mDataProp_0",
+											"value": "0"
+										},
+										{
+											"key": "sSearch_0",
+											"value": ""
+										},
+										{
+											"key": "bRegex_0",
+											"value": "false"
+										},
+										{
+											"key": "bSearchable_0",
+											"value": "true"
+										},
+										{
+											"key": "bSortable_0",
+											"value": "true"
+										},
+										{
+											"key": "mDataProp_1",
+											"value": "1"
+										},
+										{
+											"key": "sSearch_1",
+											"value": ""
+										},
+										{
+											"key": "bRegex_1",
+											"value": "false"
+										},
+										{
+											"key": "bSearchable_1",
+											"value": "true"
+										},
+										{
+											"key": "bSortable_1",
+											"value": "true"
+										},
+										{
+											"key": "mDataProp_2",
+											"value": "2"
+										},
+										{
+											"key": "sSearch_2",
+											"value": ""
+										},
+										{
+											"key": "bRegex_2",
+											"value": "false"
+										},
+										{
+											"key": "bSearchable_2",
+											"value": "true"
+										},
+										{
+											"key": "bSortable_2",
+											"value": "false"
+										},
+										{
+											"key": "mDataProp_3",
+											"value": "3"
+										},
+										{
+											"key": "sSearch_3",
+											"value": ""
+										},
+										{
+											"key": "bRegex_3",
+											"value": "false"
+										},
+										{
+											"key": "bSearchable_3",
+											"value": "false"
+										},
+										{
+											"key": "bSortable_3",
+											"value": "false"
+										},
+										{
+											"key": "mDataProp_4",
+											"value": ""
+										},
+										{
+											"key": "sSearch_4",
+											"value": ""
+										},
+										{
+											"key": "bRegex_4",
+											"value": "false"
+										},
+										{
+											"key": "bSearchable_4",
+											"value": "false"
+										},
+										{
+											"key": "bSortable_4",
+											"value": "false"
+										},
+										{
+											"key": "sSearch",
+											"value": ""
+										},
+										{
+											"key": "bRegex",
+											"value": "false"
+										},
+										{
+											"key": "iSortCol_0",
+											"value": "0"
+										},
+										{
+											"key": "sSortDir_0",
+											"value": "asc"
+										},
+										{
+											"key": "iSortingCols",
+											"value": "1"
+										},
+										{
+											"key": "_",
+											"value": "1728297585466"
+										},
+										{
+											"key": "",
+											"value": null
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GetPermissions",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Cookie",
+										"value": "{{Cookie}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{url_middle_office}}/Security/GetPermissions/Admin",
+									"host": [
+										"{{url_middle_office}}"
+									],
+									"path": [
+										"Security",
+										"GetPermissions",
+										"Admin"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Remediacion",
+					"item": [
+						{
+							"name": "FilterDigitalRequests",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Cookie",
+										"value": "{{Cookie}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{url_middle_office}}/Remediacion/FilterDigitalRequests?sEcho=1&iColumns=7&sColumns=%2C%2C%2C%2C%2C%2C&iDisplayStart=0&iDisplayLength=50&mDataProp_0=0&bSortable_0=false&mDataProp_1=1&bSortable_1=true&mDataProp_2=2&bSortable_2=false&mDataProp_3=3&bSortable_3=false&mDataProp_4=4&bSortable_4=true&mDataProp_5=5&bSortable_5=true&mDataProp_6=6&bSortable_6=false&iSortCol_0=4&sSortDir_0=asc&iSortingCols=1&status=1&_=1728298105520",
+									"host": [
+										"{{url_middle_office}}"
+									],
+									"path": [
+										"Remediacion",
+										"FilterDigitalRequests"
+									],
+									"query": [
+										{
+											"key": "sEcho",
+											"value": "1"
+										},
+										{
+											"key": "iColumns",
+											"value": "7"
+										},
+										{
+											"key": "sColumns",
+											"value": "%2C%2C%2C%2C%2C%2C"
+										},
+										{
+											"key": "iDisplayStart",
+											"value": "0"
+										},
+										{
+											"key": "iDisplayLength",
+											"value": "50"
+										},
+										{
+											"key": "mDataProp_0",
+											"value": "0"
+										},
+										{
+											"key": "bSortable_0",
+											"value": "false"
+										},
+										{
+											"key": "mDataProp_1",
+											"value": "1"
+										},
+										{
+											"key": "bSortable_1",
+											"value": "true"
+										},
+										{
+											"key": "mDataProp_2",
+											"value": "2"
+										},
+										{
+											"key": "bSortable_2",
+											"value": "false"
+										},
+										{
+											"key": "mDataProp_3",
+											"value": "3"
+										},
+										{
+											"key": "bSortable_3",
+											"value": "false"
+										},
+										{
+											"key": "mDataProp_4",
+											"value": "4"
+										},
+										{
+											"key": "bSortable_4",
+											"value": "true"
+										},
+										{
+											"key": "mDataProp_5",
+											"value": "5"
+										},
+										{
+											"key": "bSortable_5",
+											"value": "true"
+										},
+										{
+											"key": "mDataProp_6",
+											"value": "6"
+										},
+										{
+											"key": "bSortable_6",
+											"value": "false"
+										},
+										{
+											"key": "iSortCol_0",
+											"value": "4"
+										},
+										{
+											"key": "sSortDir_0",
+											"value": "asc"
+										},
+										{
+											"key": "iSortingCols",
+											"value": "1"
+										},
+										{
+											"key": "status",
+											"value": "1"
+										},
+										{
+											"key": "_",
+											"value": "1728298105520"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CheckRequestStatus",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Cookie",
+										"value": "{{Cookie}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{url_middle_office}}/Remediacion/CheckRequestStatus?idClient={{clientId}}",
+									"host": [
+										"{{url_middle_office}}"
+									],
+									"path": [
+										"Remediacion",
+										"CheckRequestStatus"
+									],
+									"query": [
+										{
+											"key": "idClient",
+											"value": "{{clientId}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CotitularNotRemediated",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Cookie",
+										"value": "{{Cookie}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{url_middle_office}}/Remediacion/CotitularNotRemediated?rdTitular={{rdTitular}}&_=1728298105521",
+									"host": [
+										"{{url_middle_office}}"
+									],
+									"path": [
+										"Remediacion",
+										"CotitularNotRemediated"
+									],
+									"query": [
+										{
+											"key": "rdTitular",
+											"value": "{{rdTitular}}"
+										},
+										{
+											"key": "_",
+											"value": "1728298105521"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "TemplateMaintenance",
+					"item": [
+						{
+							"name": "GetTemplateFields",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Cookie",
+										"value": "{{Cookie}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{url_middle_office}}/TemplateMaintenance/GetTemplateFields?templateName={{templateName}}",
+									"host": [
+										"{{url_middle_office}}"
+									],
+									"path": [
+										"TemplateMaintenance",
+										"GetTemplateFields"
+									],
+									"query": [
+										{
+											"key": "templateName",
+											"value": "{{templateName}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "DownloadTemplate",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Cookie",
+										"value": "{{Cookie}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{url_middle_office}}/TemplateMaintenance/DownloadTemplate?templateName={{templateName}}",
+									"host": [
+										"{{url_middle_office}}"
+									],
+									"path": [
+										"TemplateMaintenance",
+										"DownloadTemplate"
+									],
+									"query": [
+										{
+											"key": "templateName",
+											"value": "{{templateName}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Index",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Cookie",
+										"value": "{{Cookie}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{url_middle_office}}/TemplateMaintenance/Index?templateName={{templateName}}",
+									"host": [
+										"{{url_middle_office}}"
+									],
+									"path": [
+										"TemplateMaintenance",
+										"Index"
+									],
+									"query": [
+										{
+											"key": "templateName",
+											"value": "{{templateName}}"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Representatives",
+					"item": [
+						{
+							"name": "LoadDataTable",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Cookie",
+										"value": "{{Cookie}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{url_middle_office}}/Representatives/LoadDataTable",
+									"host": [
+										"{{url_middle_office}}"
+									],
+									"path": [
+										"Representatives",
+										"LoadDataTable"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Operation",
+					"item": [
+						{
+							"name": "LoadDataTable",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Cookie",
+										"value": "{{Cookie}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{url_middle_office}}/Operation/LoadDataTable",
+									"host": [
+										"{{url_middle_office}}"
+									],
+									"path": [
+										"Operation",
+										"LoadDataTable"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Carteras",
+					"item": [
+						{
+							"name": "GetAllCarterasGrouped",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Cookie",
+										"value": "{{Cookie}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{url_middle_office}}/Carteras/GetAllCarterasGrouped?_=1728297426845",
+									"host": [
+										"{{url_middle_office}}"
+									],
+									"path": [
+										"Carteras",
+										"GetAllCarterasGrouped"
+									],
+									"query": [
+										{
+											"key": "_",
+											"value": "1728297426845"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Movements",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "{{Cookie}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url_middle_office}}/Movements",
+							"host": [
+								"{{url_middle_office}}"
+							],
+							"path": [
+								"Movements"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Altas",
+			"item": [
+				{
+					"name": "Master",
+					"item": [
+						{
+							"name": "GetOperationTypes",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url_altas}}/Master/GetOperationTypes?productType={{productType}}&applicantType={{applicantType}}",
+									"host": [
+										"{{url_altas}}"
+									],
+									"path": [
+										"Master",
+										"GetOperationTypes"
+									],
+									"query": [
+										{
+											"key": "productType",
+											"value": "{{productType}}"
+										},
+										{
+											"key": "applicantType",
+											"value": "{{applicantType}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GetAllQuestions",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url_altas}}/Master/GetAllQuestions",
+									"host": [
+										"{{url_altas}}"
+									],
+									"path": [
+										"Master",
+										"GetAllQuestions"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GetQuestions",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url_altas}}/Master/GetQuestions?requestApplicantType={{requestApplicantType}}&applicantType={{applicantType}}",
+									"host": [
+										"{{url_altas}}"
+									],
+									"path": [
+										"Master",
+										"GetQuestions"
+									],
+									"query": [
+										{
+											"key": "requestApplicantType",
+											"value": "{{requestApplicantType}}"
+										},
+										{
+											"key": "applicantType",
+											"value": "{{applicantType}}"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GetQuestionsByProduct",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url_altas}}/Master/GetQuestionsByProduct?product={{productType}}",
+									"host": [
+										"{{url_altas}}"
+									],
+									"path": [
+										"Master",
+										"GetQuestionsByProduct"
+									],
+									"query": [
+										{
+											"key": "product",
+											"value": "{{productType}}"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Remediacion",
+					"item": [
+						{
+							"name": "LegalModalContent",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url_altas}}/Remediacion/LegalModalContent",
+									"host": [
+										"{{url_altas}}"
+									],
+									"path": [
+										"Remediacion",
+										"LegalModalContent"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "templateName",
+			"value": "",
+			"type": "default"
+		}
+	]
+}

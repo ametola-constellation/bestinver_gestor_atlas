@@ -1,0 +1,116 @@
+﻿@model QuestionDetailModel;
+
+<div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title" id="cotitularLabel">Modificar pregunta</h4>
+
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <form asp-action="SaveQuestionDetail" asp-controller="Details" method="post" id="questionForm">
+
+            <div class="modal-body">
+                @{
+                    @Html.HiddenFor(m => m.RequestId)
+                    @Html.HiddenFor(m => m.IdApplicant)
+                    @Html.HiddenFor(m => m.IdQuestion)
+                    @Html.HiddenFor(m => m.QuestionType)
+                    @Html.HiddenFor(m => m.RequestApplicantType)
+                    @Html.HiddenFor(m => m.IsRequired,
+                         new Dictionary<string, object>{
+                { "id" ,  "questionisrequired"}
+                })
+
+                    @Html.HiddenFor(m => m.IsExtended, new Dictionary<string, object> { { "id", "questionisextended" } })
+
+                    for (int i = 0; i < Model.Answers.Count; i++)
+                    {
+                        @Html.HiddenFor(m => m.Answers[i].IdAnswer)
+
+                        for (int j = 0; j < Model.Answers[i].DependedAnswers.Length; j++)
+                        {
+                            @Html.HiddenFor(m => m.Answers[i].DependedAnswers[j])
+                        }
+                    }
+
+                    var hidden = Model.ComboAnswer != 117 ? "" : "hidden";
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            @Html.Label(Model.Question)
+                            @Html.DropDownListFor(m => m.ComboAnswer, Model.PosibleAnswers.ToSelectListItem(),
+                                 new Dictionary<string, object>{
+                        { "class" ,  "form-control"},
+                        { "data-questionid" ,  Model.IdQuestion },
+                        {"idanswer", Model.ComboAnswer },
+                        { "onchange", "manageOtherAnswerComboCargo.call(this)"}
+                        })
+                        </div>
+                    </div>
+                    @if (Model.ComboAnswer != 117)
+                    {
+                        <div class="row @hidden" id="divextendedanswer">
+
+                            <div class="col-md-12">
+                                <label>En caso de no ser autónomo, indique la denominación social de la empresa (especificar):</label>
+                                @Html.TextBoxFor(m => m.ComboExtendedAnswer, new Dictionary<string, object>
+                        {
+                        { "class" ,  "form-control"},
+                        { "id" ,  "txtcomboextendedanswer" },
+                        {"maxlength" , 50}
+                        })
+                                <span asp-validation-for="ComboExtendedAnswer" class="text-danger"></span>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="row @hidden" id="divextendedanswer">
+
+                            <div class="col-md-12">
+                                <label>En caso de no ser autónomo, indique la denominación social de la empresa (especificar):</label>
+                                @Html.TextBoxFor(m => m.ComboExtendedAnswer, new Dictionary<string, object>
+                        {
+                        { "class" ,  "form-control"},
+                        { "id" ,  "txtcomboextendedanswer" },
+                        {"maxlength" , 50}
+                        })
+                                <span asp-validation-for="ComboExtendedAnswer" class="text-danger"></span>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn btn-primary" data-save="modal" id="saveButton">Guardar</button>
+            </div>
+        </form>
+    </div>
+</div>
+<partial name="_ValidationScriptsPartial" />
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        var $form = $('#questionForm');
+        var $saveButton = $('#saveButton');
+
+        $form.on('submit', function (event) {
+            if ($form[0].checkValidity()) {
+                $saveButton.prop('disabled', true);
+                $saveButton.text('Guardando...');
+            } else {
+                $saveButton.prop('disabled', false);
+                $saveButton.text('Guardar');
+            }
+        });
+
+        $form.on('reset', function () {
+            $saveButton.prop('disabled', false);
+            $saveButton.text('Guardar');
+        });
+    });
+</script>

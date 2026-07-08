@@ -1,0 +1,86 @@
+﻿@{
+    var config = AppSettings.Value;
+    int maxPdfUploadSize = config.MaxPdfUploadSize;
+}
+
+<nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+    <a class="navbar-brand nav-link" href="@Url.Action("Index", "Home")">
+        <img src="//www.bestinver.es/wp-content/themes/bstnvr/images/logo-bestinver.svg" />
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#myNavbar" aria-controls="myNavbar" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="myNavbar">
+        @{
+            if (User.Identity.IsAuthenticated)
+            {
+                <ul class="navbar-nav mr-auto mt-0 mb-0" style="flex: 1; justify-content: space-evenly;">
+                    <li class="nav-item @Html.RouteActive("Dashboard")" hidden>
+                        <a class="nav-link" href="@Url.Action("Index", "Dashboard")"><i class="mr-2 fas fa-home"></i>Dashboards</a>
+                    </li>
+
+                    <li class="nav-item @Html.RouteActive("Search")">
+                        <a class="nav-link" href="@Url.Action("Index", "Search")"><i class="mr-2 fas fa-search"></i>Consultas</a>
+                    </li>
+
+                    @if (User.IsInRole(DefaultRoles.Admin))
+                    {
+                        <li class="nav-item @Html.RouteActive("Security")">
+                            <a class="nav-link" href="@Url.Action("Index", "Security")"><i class="mr-2 fas fa-user-edit"></i>Usuarios</a>
+                        </li>
+                    }
+
+                    <li class="nav-item @Html.RouteActive("Operation")">
+                        <a class="nav-link" href="@Url.Action("Index", "Operation")"><i class="mr-2 fas fa-hand-holding-usd"></i>Operaciones</a>
+                    </li>
+                    
+                    <li class="nav-item @Html.RouteActive("AdviceProduct")">
+                        <a class="nav-link" href="@Url.Action("Index", "AdviceProduct" )"><i class="mr-2 fas fa-briefcase"></i>Asesoramiento</a>
+                    </li>
+
+                    <li class="nav-item @Html.RouteActive("FCRFunds")">
+                        <a class="nav-link" href="@Url.Action("Index", "FCRFunds" )"><i class="mr-2 fas fa-briefcase"></i>Fondos FCR</a>
+                    </li>
+
+                    <li class="nav-item @Html.RouteActive("Remediacion")">
+                        <a class="nav-link" href="@Url.Action("Index", "Remediacion")"><i class="mr-2 fas fa-user"></i>Remediación</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href='@config.BestinverWeb' target="_blank">
+                            <span class="mr-2 fas fa-globe"></span>Web de Altas
+                        </a>
+                    </li>
+
+                    <li class="nav-item @Html.RouteActive("TemplateMaintenance")">
+                        <a class="nav-link" href="@Url.Action("Index", "TemplateMaintenance")"><i class="mr-2 fas fa-cog"></i>Mantenimiento Plantillas</a>
+                    </li>
+
+                    @if (User.IsInRole(DefaultRoles.Admin))
+                    {
+                        <li class="nav-item @Html.RouteActive("TemplateMaintenanceCommunications")">
+                            <a class="nav-link" href="@Url.Action("Index", "TemplateMaintenanceCommunications")"><i class="mr-2 fas fa-envelope"></i>Plantillas Comunicados</a>
+                        </li>
+
+                        <li class="nav-item @Html.RouteActive("Communications")">
+                            <a class="nav-link" href="@Url.Action("Index", "Communications")"><i class="mr-2 fas fa-bullhorn"></i>Comunicados</a>
+                        </li>
+                    }
+                </ul>
+                <ul class="navbar-nav ml-auto flex-column align-items-end">
+                    <li class="nav-item nav-justified">
+                        <a class="nav-link py-0" href="#">
+                            <i class="mr-2 fas fa-user"></i>Hola @User.Identity.Name.Split("@")[0]
+                        </a>
+                    </li>
+                    <li class="nav-item nav-justified">
+                        <a class="nav-link py-0" asp-area="" asp-controller="Home" asp-action="Logout">
+                            <span class="mr-2 fas fa-sign-out-alt"></span>Cerrar sesión
+                        </a>
+                    </li>
+                </ul>
+            }
+        }
+    </div>
+</nav>

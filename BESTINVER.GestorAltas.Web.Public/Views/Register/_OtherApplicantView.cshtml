@@ -1,0 +1,172 @@
+﻿@model OtherApplicantModel
+
+@{
+    string ApplicantRequestType = Model.ApplicantRequestType; //(ViewData["ApplicantRequestType"] ?? "").ToString();
+    string ApplicantRequestName = Model.ApplicantRequestName; //(ViewData["ApplicantRequestName"] ?? "").ToString();
+}
+
+<!-- ko if: !ApplicantListVisible() -->
+<div class="form_block-content big"
+     data-bind="attr: {id: 'other-applicant-add-' + '@ApplicantRequestType'} , visible: '@ApplicantRequestType' != '5' || ('@ApplicantRequestType' == '5' && GetApplicantsByType().length > 0)">
+    <div class="form_block-content big" data-bind="visible: !ApplicantListVisible()">
+        <span class="label" data-bind="text: '@ApplicantRequestName' == 'coheredero' ? '¿Quieres añadir cotitular?' : '¿Quieres añadir ' + '@ApplicantRequestName' + '?' "></span>
+        <input type="radio"
+               value="S" data-bind="attr: {id: 'addtype-' + '@ApplicantRequestType' , name: '@ApplicantRequestName'}, checked: $root.radioSelectedOptionValue">
+        <label data-bind="attr: {for: 'addtype-' + '@ApplicantRequestType'}" class="eyeable-skipContrast">
+            <i class="icon eyeable-skipContrast"></i>
+            <div class="text">Si</div>
+        </label>
+        <input type="radio"
+               value="N" data-bind="attr: {id: 'noaddtype-' + '@ApplicantRequestType' , name: '@ApplicantRequestName'}, checked: $root.radioSelectedOptionValue">
+        <label data-bind="attr: {for: 'noaddtype-' + '@ApplicantRequestType'}" class="eyeable-skipContrast">
+            <i class="icon"></i>
+            <div class="text">No</div>
+        </label>
+    </div>
+</div>
+<!-- /ko -->
+<!-- ko if:ApplicantListVisible -->
+<div class="form_block-content big">
+    <span class="label" data-bind="text:'@ApplicantRequestName' == 'coheredero' ? 'cotitular' : '@ApplicantRequestName'"></span>
+    <div class="infor">
+        <table>
+            <tbody data-bind="foreach:GetApplicantsByType">
+                <tr>
+                    <td><span data-bind="text: ApplicantBasicData().FullName" data-private></span></td>
+                    <td><span data-bind="customtext: ApplicantBasicData().DNI" data-private></span></td>
+                    <td><span data-bind="customtext: ApplicantBasicData().Email" data-private></span></td>
+                    <td>
+                        <button class="link brown darken" data-bind="click:$root.DeleteApplicant">
+                            <span>Eliminar</span>
+                        </button>
+                        <!-- ko if: !IsTutorFromCoowner()-->
+                        <button data-relative="titular-knowledgetest-content titular-knowledgetest-buttons" class="link brown darken" data-bind="click:$root.BeginUpdateApplicant, disable: $root.ApplicantIsEditing">
+                            <span>Editar</span>
+                        </button>
+                        <!-- /ko -->
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<!-- /ko -->
+<!-- ko if:ApplicantListVisible -->
+<div class="form_block-content big">
+    <button class="link brown darken plus"
+            data-bind="click: BeginCreateApplicant, disable: $root.ApplicantIsEditing">
+        <i class="icon_plus"></i>
+        <span data-bind="text: '@ApplicantRequestName' == 'coheredero' ? 'Añadir cotitular' : 'Añadir ' + '@ApplicantRequestName'"></span>
+    </button>
+</div>
+<!-- /ko -->
+<!-- ko if: ApplicantIsEditing  -->
+<div class="form_block-content big" data-bind="with: CurrentEditApplicant, visible: ('@ApplicantRequestType' == '5' || '@ApplicantRequestType' == '8')  && $root.ExistsTutors().length > 0">
+
+    <label for="add-exists-tutor"><span>Titulares</span></label>
+    <select id="add-exists-tutor"
+            data-bind="options: $root.ExistsTutors,
+                optionsValue: 'id',
+            optionsText: 'valor', value: $root.CurrentTutor ,
+            optionsCaption: 'Seleccionar titular'"></select>
+
+    <button class="link brown darken plus"
+            data-bind="click: $root.AddExistsTutor">
+        <i class="icon_plus"></i>
+        <span>Añadir como tutor</span>
+    </button>
+</div>
+<!-- /ko -->
+
+<div class="form_block" data-bind="visible: ApplicantIsEditing , with: CurrentEditApplicant">
+    <div class="form_block-content big subtitle">
+        <span class="form_block-subtitle">Datos personales</span>
+    </div>
+    @{
+        var otherAplicantModel = new
+        {
+            ApplicantRequestType = ApplicantRequestType
+        };
+    }
+    @{ await Html.RenderPartialAsync("OtherApplicant/_OtherApplicantSubView", otherAplicantModel);}
+</div>
+
+
+<div class="form_block" data-bind="visible: ApplicantIsEditing">
+    <div class="form_block-content big subtitle"><span class="form_block-subtitle">Dirección fiscal</span></div>
+
+    <div class="form_block-content big">
+        <input id="@($"fiscaladdress-check-{ApplicantRequestType}")" type="checkbox" name="personaldata-coowner-fiscaladdress-check" data-relative="personaldata-coowner-fiscaladdress"
+               data-bind="checked: CurrentEditApplicant().IsSameAddress">
+        <label for="@($"fiscaladdress-check-{ApplicantRequestType}")">
+            <i class="icon"></i>
+            <div class="text">Los datos de la dirección fiscal son los mismos que los del titular</div>
+        </label><span class="error_message"></span>
+    </div>
+</div>
+
+<div class="form_block"
+     data-bind="with: CurrentEditApplicant().ApplicantContactData().FiscalAddress, visible: !CurrentEditApplicant().IsSameAddress() &&  ApplicantIsEditing()">
+    @{ await Html.RenderPartialAsync("_AddressView", otherAplicantModel); }
+</div>
+
+<div class="form_block-content general_error" data-bind="validationElement: ApplicantOk">
+    <span class="error_message" data-bind="validationMessage: ApplicantOk"></span>
+</div>
+<div class="form_block-content general_error" data-bind="validationElement: ApplicantCountryOk">
+    <span class="error_message" data-bind="validationMessage: ApplicantCountryOk"></span>
+</div>
+
+<div class="form_block" data-bind="visible: ApplicantIsEditing">
+    <div class="form_block-content buttons big">
+        <div class="button_back">
+            <a href="" title="Cancelar" class="link brown darken" data-bind="click:$root.CancelApplicant">
+                <span>Cancelar</span>
+            </a>
+        </div>
+        <div class="button_next">
+            <a href="" title="Continuar" class="button brown toWhite" data-bind="click:$root.SaveApplicant, disable: $root.hasValidationError">
+                <span data-bind="text:'@ApplicantRequestName' == 'coheredero' ? 'Guardar Cotitular' : 'Guardar ' + '@ApplicantRequestName'"></span>
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="form_block" data-bind="visible: ApplicantListVisible() && CurrentType() == 2">
+    <div class="form_block-content big subtitle"><span class="form_block-subtitle">Firma</span></div>
+    <div class="form_block-content big help"><span class="mini_text">Seleccionar el tipo de firma para realizar operaciones posteriores.</span></div>
+    <div class="form_block-content big">
+        <span class="label">Tipo de firma</span>
+        <input type="radio" id="personaldata-authorizedsign-indistinct"
+               value="1" data-bind="attr: {name: 'SignatureType_' + '@ApplicantRequestType'} , checked: SignatureType">
+        <label for="personaldata-authorizedsign-indistinct">
+            <i class="icon"></i>
+            <div class="text"><button class="tooltip_button underline"><span>Indistinta</span><span class="tooltip_content eyeable-skipContrast">Si se escoge firma indistinta, para firmar un documento tan solo será necesaria la firma de uno de los titulares.</span></button></div>
+        </label>
+        <input type="radio" id="personaldata-authorizedsign-joint"
+               value="2" data-bind="attr: {name: 'SignatureType_' + '@ApplicantRequestType'} ,checked: SignatureType">
+        <label for="personaldata-authorizedsign-joint">
+            <i class="icon"></i>
+            <div class="text"><button class="tooltip_button underline"><span>Conjunta</span><span class="tooltip_content eyeable-skipContrast">Si se elige firma conjunta, para firmar un documento será siempre necesario que todos los titulares firmen el documento.</span></button></div>
+        </label>
+    </div>
+</div>
+
+<div class="form_block-content general_error" data-bind="validationElement: TutorOk">
+    <span class="error_message" data-bind="validationMessage: TutorOk"></span>
+</div>
+
+<div class="form_block buttons" data-bind="visible: !ApplicantIsEditing()">
+    <div class="form_block-content buttons big">
+        <div class="button_back">
+            <a href="" title="Datos básicos" class="link brown darken back" data-bind="click: $root.goToPrevioustStep">
+                <i class="arrow">
+                    <svg width="5" height="8" viewBox="0 0 5 8" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M1.143 0L0 1.25 2.514 4 0 6.75 1.143 8 4.8 4z" fill="#B59971" fill-rule="evenodd" />
+                    </svg>
+                </i><span>Atrás</span>
+            </a>
+        </div>
+        <div class="button_next"><a href="#" title="Continuar" class="button brown toWhite" data-bind="click: $root.goToNextStep"><span>Continuar</span></a></div>
+    </div>
+</div>

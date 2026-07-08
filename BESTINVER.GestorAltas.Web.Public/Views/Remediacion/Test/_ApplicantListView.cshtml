@@ -1,0 +1,29 @@
+﻿<span class="label" data-bind="text: personalDataModel().profileText"></span>
+<div class="infor">
+    <table>
+        <tbody>
+            <tr>
+                <td data-bind="text: personalDataModel().userName"></td>
+                <td data-bind="text: personalDataModel().dni" data-private></td>
+                <td data-bind="text: personalDataModel().email" data-private></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div data-bind="foreach: RequestApplicantTypeEnum , visible: juridicSignersCollection().length > 0">
+    <span class="label" data-bind="text:  $data == 'Coheredero' ? 'Cotitular' : $data , visible: vm.juridicSignersCollection().filter(function(a) { return a.ApplicantTypeJuridic() == $data }).length >= 1"></span>
+    <div class="infor" data-bind="foreach: vm.juridicSignersCollection().filter(function(a) { return a.ApplicantTypeJuridic() == $data }) , visible: vm.juridicSignersCollection().filter(function(a) { return a.ApplicantTypeJuridic() == $data }).length >=1 ">
+        <table>
+            <tbody>
+                <tr>
+                    <td data-bind="text: userName()"></td>
+                    <td data-bind="customtext: dni" data-private></td>
+                    <td data-bind="customtext: email" data-private></td>
+                    <td>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

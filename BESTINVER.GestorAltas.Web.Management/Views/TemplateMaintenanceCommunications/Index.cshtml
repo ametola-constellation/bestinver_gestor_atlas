@@ -1,0 +1,127 @@
+﻿@using BESTINVER.GestorAltas.Web.Management.ViewModels
+
+@model TemplateMaintenanceCommunicationsViewModel
+
+@{
+    ViewBag.Title = "Index";
+}
+<div class="card-group" id="accordion" role="tablist" aria-multiselectable="true">
+    <div class="card">
+        <div class="card-header" role="tab" id="headingOne">
+            <h4 class="card-title">
+                <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    <span class="mr-2 fas fa-search"></span>
+                    Listado de plantillas
+                </a>
+            </h4>
+        </div>
+        <div id="collapseOne" class="collapse in show" role="tabpanel" aria-labelledby="headingOne">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        @using (Html.BeginForm("Index", "TemplateMaintenanceCommunications", FormMethod.Get))
+                        {
+                            <div class="row">
+                                <div class="form-group col-md-12">
+                                    <label>Listado de productos: </label>
+                                    @Html.DropDownListFor(m => m.ProductList, Model.Products, "Elegir...", new { @class = "form-control" })
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    <div class="col">
+                        @using (Html.BeginForm("Index", "TemplateMaintenanceCommunications", FormMethod.Get))
+                        {
+                            <div class="row">
+                                <div class="form-group col-md-12">
+                                    <label>Listado de plantillas: </label>
+                                    @Html.DropDownListFor(m => m.TemplateList, Model.Templates, "Elegir...", new { @class = "form-control" })
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="btn-group m-2" role="group">
+                                        <button id="btnDownload" class="btn btn-primary" onclick="DownloadTemplate()" disabled><span class="mr-2 fas fa-arrow-down"></span>Descargar</button>
+                                        <button id="btnTemplateTest" onclick="TestTemplate()" type="button" class="btn btn-outline-success" disabled><span class="mr-2 fas fa-play"></span>Probar</button>
+                                        <button id="btnConfirmDeleteTemplate" type="button" class="btn btn-outline-danger" disabled><span class="mr-2 fas fa-trash-alt"></span>Borrar</button>
+                                    </div>
+                                </div>
+
+                            </div>
+                        }
+                    </div>
+                    <div class="col">
+                        <div>
+                            <form asp-action="UploadTemplate" asp-controller="TemplateMaintenanceCommunications" method="post" enctype="multipart/form-data">
+                                <label class="formFileMultiple" for="customFile">Subir nueva plantilla: </label>
+                                <input asp-for="File" class="form-control" type="file" id="InUploadFile" name="File" accept="application/pdf" />
+                                <input asp-for="@Model.ProductSelected" type="hidden" id="ProductSelectedControl" />
+                                <input asp-for="@Model.ProductNameSelected" type="hidden" id="ProductNameSelectedControl" />
+                                <button type="submit" class="btn btn-outline-success" id="UploadFile" style="margin-top: 23px" disabled>
+                                    <span class="mr-2 fas fa-cloud-upload-alt"></span>Subir <i class="fas fa-spinner fa-spin hide" id="spinner"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card-group" id="accordion" role="tablist" aria-multiselectable="true" style="margin-top: 30px">
+    <div class="card">
+        <div class="card-header" role="tab" id="headingOne">
+            <h4 class="card-title">
+                <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="true" aria-controls="collapseOne">
+                    <span class="mr-2 fas fa-table"></span>
+                    Campos de prueba
+                </a>
+            </h4>
+        </div>
+        <div id="collapseTwo" class="collapse in show" role="tabpanel" aria-labelledby="headingOne">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <table id="templatefields" class="datatable table striped hovered cell-hovered border bordered" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th>Nombre del Campo</th>
+                                    <th>Tipo</th>
+                                    <th>Valor</th>
+                                </tr>
+                            </thead>
+                            <tbody id="fieldsbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id='CancelOperationModal' class='modal fade' role="dialog" aria-labelledby="CancelOperationLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Confirmar</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                ¿Estas seguro de borrar la plantilla?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal" id="ConfirmCancelOperation">Borrar Plantilla</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <environment include="Development">
+        <script src="~/js/TemplateMaintenanceCommunications.js" asp-append-version="true"></script>
+    </environment>
+
+    <environment exclude="Development">
+        <script src="~/js/TemplateMaintenanceCommunications.min.js" asp-append-version="true"></script>
+    </environment>
+}

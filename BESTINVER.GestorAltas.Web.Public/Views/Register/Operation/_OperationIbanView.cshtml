@@ -1,0 +1,81 @@
+﻿<h2 id="investment-head" class="form_title" style="@(User.Identity.IsAuthenticated ? "display:none" : "")">2. realiza tu inversión</h2>
+<div id="operationtype-data-content" class="form_block hidden" data-bind="with: vm">
+    <ul id="operation-data-content-steps" class="form_steps-list">
+        <li id="operationtype-content-head" class="form_steps-list_element hidden" data-circle="2" data-progress="0" data-step="@(User.Identity.IsAuthenticated ? "" : "OperationData")">
+            <h3 class="form_steps-title">
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <span data-bind="text: Product().ProductHeader"></span>
+                    <button class="form_steps-edit_button link brown darken" data-bind="click:function () { Navigation.EditData(1 , this, 'OperationData'); }">
+                        <span>Editar</span>
+                    </button>
+                }
+                else
+                {
+                    <span>Tipo de Operación</span>
+                    <button class="form_steps-edit_button link brown darken" data-bind="click:function () { Navigation.EditData(1 , this, 'OperationData'); }">
+                        <span>Editar</span>
+                    </button>
+                }
+            </h3>
+            <div id="operationtype-content" class="form_block hidden" style="@(User.Identity.IsAuthenticated ? "display:none" : "")" data-bind="with: CurrentEditOperation">
+                @{ await Html.RenderPartialAsync("Operation/_OperationSubView"); }
+            </div>
+
+        </li>
+        <li id="iban-content-head" class="form_steps-list_element hidden" data-circle="2" data-progress="50" data-step="@(User.Identity.IsAuthenticated ? "OperationIbanAssistedData" : "OperationIbanData")">
+            <h3 class="form_steps-title">
+                Número de cuenta asociado
+                <button class="form_steps-edit_button link brown darken" data-bind="click:function () { Navigation.EditData(1 , this, 'OperationIbanData'); }">
+                    <span> Editar </span>
+                </button>
+            </h3>
+            <div id="iban-content" class="form_block_iban hidden" data-bind="with: MainApplicant">
+                @{ await Html.RenderPartialAsync("Operation/_OperationIbanSubView"); }
+            </div>
+        </li>
+    </ul>
+</div>
+
+<div id="operation-buttons-content" class="form_block buttons">
+    <div class="form_block-content buttons big">
+        <div class="button_back">
+            <a href="" title="Datos de Operación" class="link brown darken back" data-bind="click: $root.goToPrevioustStep">
+                <i class="arrow">
+                    <svg width="5" height="8" viewBox="0 0 5 8" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M1.143 0L0 1.25 2.514 4 0 6.75 1.143 8 4.8 4z" fill="#B59971" fill-rule="evenodd" />
+                    </svg>
+                </i><span>Atrás</span>
+            </a>
+        </div>
+        <div id="save-operation-button" class="button_next" style="display:none;">
+            <a href="" title="Continuar" id="save-operation-data" class="button brown toWhite" data-bind="click: CreateOperationData"><span>Continuar</span></a>
+        </div>
+
+        <div id="save-refund-button" class="button_next" style="display:none;">
+            <a href="" title="Continuar" id="btn-refund-data" class="button brown toWhite" data-bind="css: {disabled: MainApplicant().ApplicantRefundAccountNumberData().btnNextBlocked}, click: function (item, event) { MainApplicant().ApplicantRefundAccountNumberData().CreateRefundAccountNumberData($root, event); }"><span>Continuar</span></a>
+        </div>
+    </div>
+</div>
+
+<style>
+    .button.disabled {
+        pointer-events: none;
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var saveOperationButton = document.getElementById('save-operation-data');
+
+        saveOperationButton.addEventListener('click', function () {
+            saveOperationButton.classList.add('disabled');
+
+            setTimeout(function () {
+                saveOperationButton.classList.remove('disabled');
+            }, 2000);
+        });
+    });
+</script>

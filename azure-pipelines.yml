@@ -1,0 +1,48 @@
+# ASP.NET
+# Build and test ASP.NET projects.
+# Add steps that publish symbols, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/apps/aspnet/build-aspnet-4
+
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+  solution: '**/*.sln'
+  buildPlatform: 'Any CPU'
+  buildConfiguration: 'Release'
+  build_revision: $[counter(variables['version'], 1)]
+  app_version: '$(major).$(version).$(build_revision)'
+
+steps:
+- bash: |    
+      echo "Generando versión"
+      echo $(Build.BuildNumber)
+      echo $(app_version)
+
+- task: Docker@2
+  inputs:
+    containerRegistry: 'BSTCONTAINERREGISTRY01-GestorAltas'
+    repository: 'negocio/webpublica/wordPressws'
+    command: 'buildAndPush'
+    Dockerfile: '$(Build.SourcesDirectory)/BESTINVER.Wordpress.WS/**/Dockerfile'
+    buildContext: '$(Build.SourcesDirectory)'
+    tags: 'windows.v$(app_version)'
+
+- task: Docker@2
+  inputs:
+    containerRegistry: 'BSTCONTAINERREGISTRY01-GestorAltas'
+    repository: 'operaciones/Backoffice'
+    command: 'buildAndPush'
+    Dockerfile: '$(Build.SourcesDirectory)/BESTINVER.GestorAltas.Web.Management/**/Dockerfile'
+    buildContext: '$(Build.SourcesDirectory)'
+    tags: 'windows.v$(app_version)'
+
+- task: Docker@2
+  inputs:
+    containerRegistry: 'BSTCONTAINERREGISTRY01-GestorAltas'
+    repository: 'negocio/webpublica/Altas'
+    command: 'buildAndPush'
+    Dockerfile: '$(Build.SourcesDirectory)/BESTINVER.GestorAltas.Web.Public/**/Dockerfile'
+    buildContext: '$(Build.SourcesDirectory)'
+    tags: 'windows.v$(app_version)'
+

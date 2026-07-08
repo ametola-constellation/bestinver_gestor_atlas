@@ -1,0 +1,111 @@
+﻿<span class="label">Opciones de envío de documentación</span>
+
+<div id="documentationdelivery-others-content">
+    <label for="documentationdelivery-others">
+        <span>Elige una opción para enviar la documentación</span>
+    </label>
+
+    <select data-bind="options: MasterData.DocumentSendingWayList, optionsText: 'valor', optionsValue: 'id',
+            value: IdSendingWay, optionsCaption: 'Selecciona una opción'"></select>
+
+    <div class="form_block-content general_error" data-bind="validationElement: IdSendingWay">
+        <span class="error_message" data-bind="validationMessage: IdSendingWay"></span>
+    </div>
+
+    <div id="documentationdelivery-id1" class="form_block-content documentation_info big" data-bind="visible: IdSendingWay() == '1'">
+        <span class="title">Adjuntar Copia CIF sociedad</span>
+        <p class="text" data-bind="text: 'Adjuntar documentos de la Sociedad '+supportedFormat"> </p>
+        <input type="file" name="documentationdelivery-idfiles01" accept="image/*,application/pdf" id="documentationdelivery-idfiles01" class="empty">
+        <div id="documentationdelivery-idfiles-data" class="upload_data hidden">
+            <ul class="upload_list"></ul>
+        </div>
+        <label id="documentationdelivery-idfiles-label" for="documentationdelivery-idfiles01" class="upload_label link brown darken">
+            <i class="icon">
+                <svg width="14" height="16" viewBox="0 0 14 16" xmlns="http://www.w3.org/2000/svg">
+                    <g stroke="#B59971" fill="#B59971" fill-rule="evenodd" opacity=".8">
+                        <path stroke-width=".5" d="M1 14.821h12v-.884H1z"></path>
+                        <path stroke-width=".3" d="M11.11 4.753l-.645.634-3.03-3.035V11h-.9V2.337l-3.09 3.05-.645-.634L7 .643z"></path>
+                    </g>
+                </svg>
+            </i><span>Adjuntar documentos</span>
+        </label>
+        <span class="error_message" data-bind="validationMessage: CIFSociedad, visible: !IsUploading()"></span>
+    </div>
+
+    <div id="documentationdelivery-id2" class="form_block-content documentation_info big" data-bind="visible: IdSendingWay() == '1'"
+         data-extrainputs="documentationdelivery-idfiles50">
+        <span class="title">Adjuntar copia escritura de constitución</span>
+        <p class="text" data-bind="text: 'Adjuntar documentos de la Sociedad '+supportedLargeFormat"> </p>
+        <input type="file" name="documentationdelivery-idfiles03" accept="image/*,application/pdf" id="documentationdelivery-idfiles03" class="empty">
+        <div id="documentationdelivery-idfiles-data" class="upload_data hidden">
+            <ul class="upload_list"></ul>
+        </div>
+        <label id="documentationdelivery-idfiles-label" for="documentationdelivery-idfiles03" class="upload_label link brown darken unlimited_upload">
+            <i class="icon">
+                <svg width="14" height="16" viewBox="0 0 14 16" xmlns="http://www.w3.org/2000/svg">
+                    <g stroke="#B59971" fill="#B59971" fill-rule="evenodd" opacity=".8">
+                        <path stroke-width=".5" d="M1 14.821h12v-.884H1z"></path>
+                        <path stroke-width=".3" d="M11.11 4.753l-.645.634-3.03-3.035V11h-.9V2.337l-3.09 3.05-.645-.634L7 .643z"></path>
+                    </g>
+                </svg>
+            </i><span>Adjuntar documentos</span>
+        </label>
+        <span class="error_message" data-bind="validationMessage: EscriturasCertificado, visible: !IsUploading()"></span>
+    </div>
+
+    <div id="documentationdelivery-id3" class="form_block-content documentation_info big" data-bind="visible: IdSendingWay() == '1'"
+         data-extrainputs="documentationdelivery-idfiles6">
+        <span class="title">Adjuntar copia escritura de nombramiento administrador/otorgamiento de poder</span>
+        <p class="text" data-bind="text: 'Adjuntar documentos de la Sociedad '+supportedLargeFormat"> </p>
+        <input type="file" name="documentationdelivery-idfiles05" accept="image/*,application/pdf" id="documentationdelivery-idfiles05" class="empty">
+        <div id="documentationdelivery-idfiles-data" class="upload_data hidden">
+            <ul class="upload_list"></ul>
+        </div>
+        <label id="documentationdelivery-idfiles-label" for="documentationdelivery-idfiles05" class="upload_label link brown darken unlimited_upload">
+            <i class="icon">
+                <svg width="14" height="16" viewBox="0 0 14 16" xmlns="http://www.w3.org/2000/svg">
+                    <g stroke="#B59971" fill="#B59971" fill-rule="evenodd" opacity=".8">
+                        <path stroke-width=".5" d="M1 14.821h12v-.884H1z"></path>
+                        <path stroke-width=".3" d="M11.11 4.753l-.645.634-3.03-3.035V11h-.9V2.337l-3.09 3.05-.645-.634L7 .643z"></path>
+                    </g>
+                </svg>
+            </i><span>Adjuntar documentos</span>
+        </label>
+        <span class="error_message" data-bind="validationMessage: PoderesApoderados, visible: !IsUploading()"></span>
+    </div>
+
+    <div id="documentcontentdni" class="form_block-content documentation_info big" data-bind="foreach: ListaOtherApplicants()">
+        <div class="form_block-content documentation_info big" data-bind="visible: $parent.IdSendingWay() == '1', attr:{id:'documentationdelivery-id4'+$index(), 'data-extrainputs':'documentationdelivery-idfiles7'+$index()+'0'}">
+            <span class="title">Adjuntar Copia del DNI en vigor de <em data-bind="text: ApplicantBasicData().FullName()"></em></span>
+            <p class="text" data-bind="text: 'Adjuntar DNI/NIE del '+ApplicantType()+' con DNI '+ApplicantBasicData().DNI()+' '+supportedFormat"> </p>
+            <input type="file" accept="image/*,application/pdf" data-bind="attr:{id:'documentationdelivery-idfiles0'+(6+$index()), name: 'documentationdelivery-idfiles0'+(6+$index())}" class="empty">
+            <div id="documentationdelivery-idfiles-data" class="upload_data hidden">
+                <ul class="upload_list"></ul>
+            </div>
+            <label id="documentationdelivery-idfiles-label" data-bind="attr:{for:'documentationdelivery-idfiles0'+(6+$index())}" class="upload_label link brown darken">
+                <i class="icon">
+                    <svg width="14" height="16" viewBox="0 0 14 16" xmlns="http://www.w3.org/2000/svg">
+                        <g stroke="#B59971" fill="#B59971" fill-rule="evenodd" opacity=".8">
+                            <path stroke-width=".5" d="M1 14.821h12v-.884H1z"></path>
+                            <path stroke-width=".3" d="M11.11 4.753l-.645.634-3.03-3.035V11h-.9V2.337l-3.09 3.05-.645-.634L7 .643z"></path>
+                        </g>
+                    </svg>
+                </i><span>Adjuntar documentos</span>
+            </label>
+            <span class="error_message" data-bind="text: $parent.DNIsPersonasFisicasLength(ApplicantBasicData().DNI()), visible: $parent.DNIsPersonasFisicasLength(ApplicantBasicData().DNI())!=''"></span>
+        </div>
+    </div>
+
+    <div id="documentationdelivery-email" class="form_block-content documentation_info big" data-bind="visible: IdSendingWay() == '4'">
+        <span class="title">Enviar por email</span>
+        <p class="text">Adjunta los documentos solicitados en un archivo adjunto al email <a href="mailto:bestinver@bestinver.es" class="link brown darken">bestinver@bestinver.es</a>  escribiendo en el asunto el número de su documento de identidad.</p>
+    </div>
+    <div id="documentationdelivery-postal" class="form_block-content documentation_info big" data-bind="visible: IdSendingWay() == '2'">
+        <span class="title">Enviar por correo postal</span>
+        <p class="text">Envía los documentos solicitados por correo postal a la siguiente dirección: CAMPUS ACCIONA - BESTINVER Gran Vía de Hortaleza, 3, 28043 Madrid</p>
+    </div>
+    <div id="documentationdelivery-messenger" class="form_block-content documentation_info big" data-bind="visible: IdSendingWay() == '3'">
+        <span class="title">Solicitar mensajero gratuito</span>
+        <p class="text">Ponte en contacto con el Centro de Relación con el Inversor a través del teléfono 900 878 280 para solicitar el servicio de mensajería gratuito que recogerá tus documentos firmados en la dirección que prefieras.</p>
+    </div>
+</div>

@@ -1,0 +1,10 @@
+﻿
+<div class="form_block-content big">
+    <div class="infor" data-bind="with: CurrentEditApplicant">
+        <span data-bind="text: 'Documentos para firmar por ' + ApplicantBasicData().FullName()" data-private> </span>
+    </div>
+</div>
+
+<div class="form_block-content big" data-bind="with: CurrentEditApplicant().PdfDocumentData">
+    @{ await Html.RenderPartialAsync("Documents/_SignatureDocumentSubView");}
+</div>

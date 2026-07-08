@@ -1,0 +1,134 @@
+﻿@model QuestionSecondFiscalCountry;
+
+<div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title" id="cotitularLabel">Modificar pregunta</h4>
+
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+
+        <form asp-action="SaveQuestionSecondCountryDetail" asp-controller="Details" method="post" id="questionForm">
+
+            <div class="modal-body">
+                @{
+                    @Html.HiddenFor(m => m.RequestId)
+                    @Html.HiddenFor(m => m.IdApplicant)
+                    @Html.HiddenFor(m => m.IdQuestion)
+                    @Html.HiddenFor(m => m.QuestionType)
+                    @Html.HiddenFor(m => m.RequestApplicantType)
+
+                    @Html.HiddenFor(m => m.IsRequired,
+                         new Dictionary<string, object>{
+                { "id" ,  "questionisrequired"}
+                })
+
+                    int type = (int)Model.QuestionType;
+
+                    @*<input asp-for="Question" class="form-control"
+                data-val="true"
+                data-val-differentfiscalcountry="El segundo país de residencia tiene que ser diferente al país de residencia fiscal"
+                data-val-differentfiscalcountry-fiscalcountry="@Model.FiscalCountry"
+                hidden />*@
+
+                    @Html.HiddenFor(m => m.IsExtended, new Dictionary<string, object> { { "id", "questionisextended" } })
+
+                    bool visibleextended = !string.IsNullOrEmpty(Model.ComboExtendedAnswer);
+                    var cssClass = Model.Country > 1 ? "" : "hide";
+
+                    <div class="row">
+                        <div class="form-group col-md-10">
+                            @Html.Label(Model.Question)
+
+                            @Html.DropDownListFor(m => m.Country, Model.Countries.ToSelectListItem(), "Elegir...",
+                                 new Dictionary<string, object>{
+                        { "class" ,  "form-control col-md-10"},
+                        { "id" ,  "combo-country"},
+                        { "onchange", "manageSecondCountry.call(this)"},
+                        { "data-val", "true"},
+                        { "data-val-differentfiscalcountry", "El segundo país de residencia tiene que ser diferente al país de residencia"},
+                        { "data-val-differentfiscalcountry-fiscalcountry", Model.FiscalCountry},
+                        })
+                            <span asp-validation-for="Country" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div id="second-country-subquestion" class="@cssClass">
+                        <div class="row">
+                            <div class="form-group col-md-10">
+                                <label>Tipo de documento</label>
+                                <select asp-for="DocumentType" asp-items="@Model.DocumentTypes.ToSelectListItem()" class="form-control col-md-10">
+                                    <option value="" hidden disabled selected>Seleccione una opción</option>
+                                </select>
+                                <span asp-validation-for="DocumentType" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-10">
+                                <label>Documento</label>
+                                <input asp-for="DocumentNumber" class="form-control col-md-10" maxlength="15"/>
+                                <span asp-validation-for="DocumentNumber" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-10">
+                                <label>Fecha de caducidad</label>
+                                <input asp-for="DocumentExpirationDate" class="form-control col-md-10" type="date"
+                                       data-val="true"
+                                       data-val-expirationdate="La fecha de caducidad no es correcta"/>
+                                <span asp-validation-for="DocumentExpirationDate" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-10">
+                                <label>Número de identificación fiscal</label>
+                                <input asp-for="DocumentIdentification" class="form-control col-md-10" maxlength="15"/>
+                                <span asp-validation-for="DocumentIdentification" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                    </div>
+                }
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn btn-primary" data-save="modal" id="saveButton">Guardar</button>
+            </div>
+        </form>
+    </div>
+</div>
+<partial name="_ValidationScriptsPartial" />
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        var country = $('#combo-country').val();
+        if (country == "" || country == 1) {
+            $('#second-country-subquestion :input').prop('required', false);
+        } else {
+            $('#second-country-subquestion :input').prop('required', true);
+        }
+    });
+
+    $(document).ready(function () {
+        var $form = $('#questionForm');
+        var $saveButton = $('#saveButton');
+
+        $form.on('submit', function (event) {
+            if ($form[0].checkValidity()) {
+                $saveButton.prop('disabled', true);
+                $saveButton.text('Guardando...');
+            } else {
+                $saveButton.prop('disabled', false);
+                $saveButton.text('Guardar');
+            }
+        });
+
+        $form.on('reset', function () {
+            $saveButton.prop('disabled', false);
+            $saveButton.text('Guardar');
+        });
+    });
+
+</script>

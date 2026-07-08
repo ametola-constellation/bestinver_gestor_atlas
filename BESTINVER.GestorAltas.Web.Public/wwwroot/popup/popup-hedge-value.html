@@ -1,0 +1,35 @@
+﻿<section class="popup popup-hedge-value">
+    <div class="popup_inner">
+        <h2 class="popup-title" id="fil-name"></h2>
+        <ul class="popup-list">
+            <li class="popup-list_element"><span>La frecuencia del cálculo del valor liquidativo y de las suscripciones y reembolsos son mensuales. Por tanto, sus órdenes podrían tardar hasta un mes en ejecutarse.</span></li>
+            <li class="popup-list_element"><span>Período mínimo de permanencia: no podrá solicitar reembolsos ni traspasos de participaciones durante los primeros 12 meses después de su suscripción.</span></li>
+            <li class="popup-list_element"><span>Se aplica una comisión de reembolso del 5% sobre el importe reembolsado correspondiente a las participaciones con antigüedad superior a un año e inferior a dos años.</span></li>
+            <li class="popup-list_element"><span>La inversión mínima inicial y a mantener es de 100.000 euros.</span></li>
+        </ul>
+        <div class="popup-check">
+            <input type="checkbox" name="bestinverhedgevalue-check" id="bestinverhedgevalue-check"  onclick="$('#hedge-continue').toggleClass('disabled');"   />
+            <label for="bestinverhedgevalue-check">
+                <i class="icon">
+                </i><span class="text">El cliente conoce los riesgos asociados a este tipo de producto.</span>
+            </label>
+            <span class="error_message"></span>
+        </div>
+        <a href="" title="Continuar" class="button brown toWhite disabled" id="hedge-continue">
+            <span>Continuar</span>
+        </a>
+    </div>
+</section>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        var productID = sessionStorage.getItem('currentproduct');
+        if (productID == '9') {
+            $("#fil-name").html("Bestinver Consumo Global");
+        } else if (productID == '21') {
+            $("#fil-name").html("Bestinver Tordesillas");
+        }
+    });
+</script>
+
+

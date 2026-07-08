@@ -1,0 +1,85 @@
+﻿@using Newtonsoft.Json;
+
+@model BESTINVER.GestorAltas.Web.Public.Models.Register.PersonalDataViewModel
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout_Juridico.cshtml";
+
+}
+@Html.AntiForgeryToken()
+
+@section scripts{
+    <script language="javascript" type="text/javascript">
+
+        $.blockUI.defaults.css.cursor = "dafault";
+        $.blockUI.defaults.css.backgroundColor = "#fff";
+        $.blockUI.defaults.overlayCSS.cursor = "default";
+        $.blockUI.defaults.overlayCSS.backgroundColor = "#fff";
+
+        var vm = null;
+
+        var localStorageEnabled = true;
+        try {
+            // Test webstorage existence.
+            if (!window.localStorage || !window.sessionStorage) throw "exception";
+            // Test webstorage accessibility - Needed for Safari private browsing.
+            localStorage.setItem('storage_test', 1);
+            localStorage.removeItem('storage_test');
+        } catch (e) {
+            localStorageEnabled = false;
+        }
+
+        if (localStorageEnabled) {
+            var modal = '@Model.Modal';
+            var types = @Html.Raw(JsonConvert.SerializeObject(Model.ProductTypes));
+            var products = @Html.Raw(JsonConvert.SerializeObject(Model.Products));
+            var ProductTypePredef = '@Model.ProductTypePredef';
+            var IsAuthenticated = '@User.Identity.IsAuthenticated.ToString().ToLower()' == 'true';
+            var md = new MasterDataModel(2);
+
+            md.setProductList(products)
+                .then(function () { return md.setProductTypeList(types, !IsAuthenticated) })
+                .then(function () {
+                    $(document).ready(function () {
+                        vm = new SelectProductViewModel(md.ProductTypeList());
+                        ko.applyBindings(vm);
+                        vm.Init(ProductTypePredef);
+
+                        if (modal == 'S') {
+                            setTimeout(function () {
+                                window.launchAjax(routeConfig.GA_Register_PopPup_popup_cta_access);
+                            }, 1000);
+                        }
+                    });
+                })
+        } else {
+            $('#errorStorage .error_message').text('Tu navegador no es compatible en modo privado con el proceso de alta. Por favor, inicia el navegador en modo normal.');
+            $('.registration_inner').addClass('hidden');
+            $('#errorStorage').removeClass('hidden');
+        }
+    </script>
+}
+
+<div data-bind="with: ProductModel">
+    <div id="select-product-content" class="registration_form">
+        <div class="registration_inner">
+            <partial name="Product/_ProductSelectView" />
+            <div class="form_block-content general_error" data-bind="validationElement: $root.ErrorMessage">
+                <span class="error_message" data-bind="text: $root.ErrorMessage"></span>
+            </div>
+            <div class="form_block buttons product_buttons">
+                <div class="form_block-content buttons big">
+                    <div class="button_next">
+                        <a id="btn-select-product" href="" title="Continuar" class="button brown toWhite" data-bind="click: $root.GoToPersonalDataView, css:{disabled: !vm.ProductModel().Product()}"><span>Continuar</span></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="registration_inner hidden" id="errorStorage">
+            <div class="form_block-content general_error error">
+                <span class="error_message"></span>
+            </div>
+        </div>
+    </div>
+</div>

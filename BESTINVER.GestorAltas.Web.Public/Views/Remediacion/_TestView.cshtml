@@ -1,0 +1,52 @@
+﻿<p class="form_inlet" data-bind="visible: testClientVisible">Para cumplir la normativa vigente, a continuación te solicitamos que actualices el test de conocimiento rellenando todos los datos solicitados.</p>
+<p class="form_inlet" data-bind="visible: testAgentVisible">Para cumplir la normativa vigente, a continuación te solicitamos que actualices el test de conocimiento de representante rellenando todos los datos solicitados.</p>
+
+<div class="form_block">
+    <div class="form_block-content big" id="applicant-test-head">
+        @{ await Html.RenderPartialAsync("Test/_ApplicantListView"); }
+    </div>
+    <span class="form_text-title" data-bind="text: textHeader"></span>
+    <div id="test-question-collection">
+        <!-- ko if: RequestApplicantType() == 1 -->
+        @{ await Html.RenderPartialAsync("Test/TestTypes/_knowledgeTest"); }
+        <!-- /ko -->
+        <!-- ko if: RequestApplicantType() == 2 -->
+        @{ await Html.RenderPartialAsync("Test/TestTypes/_knowledgeTestRepresentative"); }
+        <!-- /ko -->
+        <!-- ko if: RequestApplicantType() == 3 -->
+        @{ await Html.RenderPartialAsync("Test/TestTypes/_knowledgeTestTutor"); }
+        <!-- /ko -->
+        <!-- ko if: RequestApplicantType() == 4 -->
+        @{ await Html.RenderPartialAsync("Test/TestTypes/_knowledgeTestJuridica"); }
+        <!-- /ko -->
+        <!-- ko if: RequestApplicantType() != 1 && RequestApplicantType() != 2 && RequestApplicantType() != 3 && RequestApplicantType() != 4 -->
+        @{ await Html.RenderPartialAsync("Test/TestTypes/_knowledgeTestRepresentative"); }
+        <!-- /ko -->
+    </div>
+
+    <!-- ko if: sendType() == 2 && RemediacionChannel() != 1 -->
+    <div id="test-input-file">
+        @{ await Html.RenderPartialAsync("Test/_ApplicantTestUploadFileView"); }
+    </div>
+    <!-- /ko -->
+
+</div>
+
+<span class="error_message" data-bind="text: errorMessage"></span>
+
+<div id="personaldata-address-buttons-content" class="form_block-content buttons big">
+    <div class="form_block-content buttons big">
+        <div class="button_back">
+            <a href="" title="Datos personales" class="link brown darken back" data-bind="click:function () { gotoPreviousStep(); }">
+                <i class="arrow">
+                    <svg width="5" height="8" viewBox="0 0 5 8" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M1.143 0L0 1.25 2.514 4 0 6.75 1.143 8 4.8 4z" fill="#B59971" fill-rule="evenodd" />
+                    </svg>
+                </i><span>Atrás</span>
+            </a>
+        </div>
+        <div class="button_next">
+            <a href="" title="Continuar" class="button brown toWhite" id="save-request-data" data-bind="click:function () { SaveKnowledgeTest(); }"><span>Continuar</span></a>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,54 @@
+# ASP.NET
+# Build and test ASP.NET projects.
+# Add steps that publish symbols, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/apps/aspnet/build-aspnet-4
+
+trigger: none
+
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+  solution: '**/*.sln'
+  buildPlatform: 'Any CPU'
+  buildConfiguration: 'Release'
+  build_revision: $[counter(variables['version'], 1)]
+  app_version: '$(major).$(version).$(build_revision)'
+
+jobs:
+- job: 'Remediacion'
+  displayName: 'Remediacion'
+  steps:
+  - template: 'devops-gestorAltas-remediacion.yml'
+    parameters:
+      solution: '**/*.sln'
+      buildPlatform: 'Any CPU'
+      buildConfiguration: 'Release'
+
+- job: 'Altas'
+  displayName: 'Altas'
+  steps:
+  - template: 'devops-gestorAltas-altas.yml'
+    parameters:
+      solution: '**/*.sln'
+      buildPlatform: 'Any CPU'
+      buildConfiguration: 'Release'
+
+- job: 'BackOffice'
+  displayName: 'BackOffice'
+  steps:
+  - template: 'devops-gestorAltas-backoffice.yml'
+    parameters:
+      solution: '**/*.sln'
+      buildPlatform: 'Any CPU'
+      buildConfiguration: 'Release'
+
+- job: 'WebService'
+  displayName: 'WebService'
+  steps:
+  - template: 'devops-gestorAltas-webservice.yml'
+    parameters:
+      solution: '**/*.sln'
+      buildPlatform: 'Any CPU'
+      buildConfiguration: 'Release'
+

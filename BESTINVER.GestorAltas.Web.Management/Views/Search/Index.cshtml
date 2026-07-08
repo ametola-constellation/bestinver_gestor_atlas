@@ -1,0 +1,344 @@
+﻿@model ApplicantSearchListModel
+@{
+    ViewBag.Title = "Index";
+
+    string filterButtonClass = Model.RequestAlertType.Any() ? "btn-outline-secondary" : "btn-outline-secondary";
+}
+
+<div class="card-group" id="accordion" role="tablist" aria-multiselectable="true">
+    <div class="card">
+        <div class="card-header" role="tab" id="headingOne">
+            <h4 class="card-title">
+                <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    <span class="mr-2 fas fa-search"></span>
+                    Filtros de búsqueda
+                </a>
+            </h4>
+        </div>
+        <div id="collapseOne" class="in collapse show" role="tabpanel" aria-labelledby="headingOne">
+            <div class="card-body">                
+
+                @using (Html.BeginForm("Index", "Search", FormMethod.Post, new { @id = "filterForm" }))
+                {
+                    @Html.HiddenFor(m => m.Filtered, new { @Value = Model.Filtered })
+
+                    if (User.IsInRole(DefaultRoles.Admin))
+                    {
+                        <div class="row">
+                            <div class="form-group col-md-3">
+                                @Html.LabelFor(m => m.Type, new { @class = "" })
+                                @Html.DropDownListFor(m => m.Type, new List<SelectListItem>
+                                         ()
+                            {
+                            new SelectListItem() { Text= "Alta", Value="1" },
+                            new SelectListItem() {Text="Operación", Value="2" }
+                            }, "Elegir...", new { @class = "form-control col-md-12 controlType" })
+                            </div>
+                        </div>
+                    }                                       
+
+                    for (int i = 0; i < Model.RequestAlertTypes.Count(); i++)
+                    {
+                        @Html.HiddenFor(model => Model.RequestAlertTypes[i].Id)
+                        @Html.HiddenFor(model => Model.RequestAlertTypes[i].Description)
+                    }
+
+                    for (int i = 0; i < Model.OperationTypes.Count(); i++)
+                    {
+                        @Html.HiddenFor(model => Model.OperationTypes[i].Id)
+                        @Html.HiddenFor(model => Model.OperationTypes[i].Description)
+                    }
+
+                    for (int i = 0; i < Model.Products.Count(); i++)
+                    {
+                        @Html.HiddenFor(model => Model.Products[i].Id)
+                        @Html.HiddenFor(model => Model.Products[i].Description)
+                    }
+
+                    for (int i = 0; i < Model.DocumentSignatureTypes.Count(); i++)
+                    {
+                        @Html.HiddenFor(model => Model.DocumentSignatureTypes[i].Id)
+                        @Html.HiddenFor(model => Model.DocumentSignatureTypes[i].Description)
+                    }
+
+                    for (int i = 0; i < Model.FundStatuses.Count(); i++)
+                    {
+                        @Html.HiddenFor(model => Model.FundStatuses[i].Id)
+                        @Html.HiddenFor(model => Model.FundStatuses[i].Description)
+                    }
+
+                    for (int i = 0; i < Model.RequestStatusTypes.Count(); i++)
+                    {
+                        @Html.HiddenFor(model => Model.RequestStatusTypes[i].Id)
+                        @Html.HiddenFor(model => Model.RequestStatusTypes[i].Description)
+                    }
+
+                    for (int i = 0; i < Model.SalesChannles.Count(); i++)
+                    {
+                        @Html.HiddenFor(model => Model.SalesChannles[i].Id)
+                        @Html.HiddenFor(model => Model.SalesChannles[i].Description)
+                    }
+
+                    for (int i = 0; i < Model.RequestApplicantTypes.Count(); i++)
+                    {
+                        @Html.HiddenFor(model => Model.RequestApplicantTypes[i].Id)
+                        @Html.HiddenFor(model => Model.RequestApplicantTypes[i].Description)
+                    }
+
+                    for (int i = 0; i < Model.PersonTypes.Count(); i++)
+                    {
+                        @Html.HiddenFor(model => Model.PersonTypes[i].Id)
+                        @Html.HiddenFor(model => Model.PersonTypes[i].Description)
+                    }
+
+                    for (int i = 0; i < Model.ProductsTypes.Count(); i++)
+                    {
+                        @Html.HiddenFor(model => Model.ProductsTypes[i].Id)
+                        @Html.HiddenFor(model => Model.ProductsTypes[i].Description)
+                    }
+
+                    <div id="selectedContent">
+                        <div class="row">
+                            <div class="form-group col-md-4">
+                                @Html.LabelFor(m => m.IDSolicitud, new { @class = "" })
+                                @Html.TextBoxFor(m => m.IDSolicitud, new { @class = "form-control col-md-12" })
+                            </div>
+                            <div class="form-group col-md-4">
+                                @Html.LabelFor(m => m.StartDate, new { @class = "" })
+                                @Html.TextBoxFor(m => m.StartDate, new { @class = "form-control col-md-12", @type = "date" })
+                            </div>
+                            <div class="form-group col-md-4">
+                                @Html.LabelFor(m => m.EndDate, new { @class = "" })
+                                @Html.TextBoxFor(m => m.EndDate, new { @class = "form-control col-md-12", @type = "date" })
+                            </div>
+
+
+                            <div class="form-group col-md-3">
+                                @Html.LabelFor(m => m.DNI, new { @class = "" })
+                                @Html.TextBoxFor(m => m.DNI, new { @class = "form-control col-md-12" })
+                            </div>
+                            <div class="form-group col-md-3">
+                                @Html.LabelFor(m => m.Name, new { @class = "" })
+                                @Html.TextBoxFor(m => m.Name, new { @class = "form-control col-md-12" })
+                            </div>
+                            <div class="form-group col-md-3">
+                                @Html.LabelFor(m => m.FirstSurname, new { @class = "" })
+                                @Html.TextBoxFor(m => m.FirstSurname, new { @class = "form-control col-md-12" })
+                            </div>
+                            <div class="form-group col-md-3">
+                                @Html.LabelFor(m => m.SecondSurname, new { @class = "" })
+                                @Html.TextBoxFor(m => m.SecondSurname, new { @class = "form-control col-md-12" })
+                            </div>
+
+
+
+                            <div class="form-group col-md-3">
+                                @Html.LabelFor(m => m.OperationType, new { @class = "" })
+                                @Html.DropDownListFor(m => m.OperationType, Model.OperationTypes.ToSelectListItem(), "Elegir...", new { @class = "form-control col-md-12" })
+                            </div>
+                            <div class="form-group col-md-3">
+                                @Html.LabelFor(m => m.ProductType, new { @class = "" })
+                                @Html.DropDownListFor(m => m.ProductType, Model.ProductsTypes.ToSelectListItem(), "Elegir...", new { @class = "form-control col-md-12" })
+                            </div>
+                            <div class="form-group col-md-3">
+                                @Html.LabelFor(m => m.Product, new { @class = "" })
+                                @Html.DropDownListFor(m => m.Product, Model.Products.ToSelectListItem(), "Elegir...", new { @class = "form-control col-md-12" })
+                            </div>
+                            <div class="form-group col-md-3">
+                                @Html.LabelFor(m => m.SignType, new { @class = "" })
+                                @Html.DropDownListFor(m => m.SignType, Model.DocumentSignatureTypes.ToSelectListItem(), "Elegir...", new { @class = "form-control col-md-12" })
+                            </div>
+
+
+
+
+
+
+
+                            <div class="form-group col-md-3">
+                                @Html.LabelFor(m => m.FromPrice, new { @class = "" })
+                                @Html.TextBoxFor(m => m.FromPrice, new { @class = "form-control col-md-12" })
+                            </div>
+                            <div class="form-group col-md-3">
+                                @Html.LabelFor(m => m.ToPrice, new { @class = "" })
+                                @Html.TextBoxFor(m => m.ToPrice, new { @class = "form-control col-md-12" })
+                            </div>
+                            <div class="form-group col-md-3">
+                                @Html.LabelFor(m => m.DocStatus, new { @class = "" })
+                                @Html.DropDownListFor(m => m.DocStatus, new List<SelectListItem>
+                                         ()
+                            {
+                            new SelectListItem() { Text= "Documentación recibida", Value="True" },
+                            new SelectListItem() {Text = "Documentación pendiente", Value="False" }
+                            }, "Elegir...", new { @class = "form-control col-md-12" })
+                            </div>
+                            <div class="form-group col-md-3">
+                                @Html.LabelFor(m => m.SignStatus, new { @class = "" })
+                                @Html.DropDownListFor(m => m.SignStatus, new List<SelectListItem>
+                                         ()
+                            {
+                            new SelectListItem() { Text= "Firmado", Value="True" },
+                            new SelectListItem() {Text="Pendiente", Value="False" }
+                            }, "Elegir...", new { @class = "form-control col-md-12" })
+                            </div>
+
+
+
+                            <div class="form-group col-md-3">
+                                @Html.LabelFor(m => m.FundStatus, new { @class = "" })
+                                @Html.DropDownListFor(x => x.FundStatus, Model.FundStatuses.ToSelectListItem(), "Elegir...", new { @class = "form-control col-md-12" })
+                            </div>
+                            <div class="form-group col-md-3">
+                                @Html.LabelFor(m => m.Status, new { @class = "" })
+                                @Html.DropDownListFor(m => m.Status, Model.RequestStatusTypes.ToSelectListItem(), "Elegir...", new { @class = "form-control col-md-12" })
+                            </div>
+                            <div class="form-group col-md-3">
+                                @Html.LabelFor(m => m.LockedBy, new { @class = "" })
+                                @Html.TextBoxFor(m => m.LockedBy, new { @class = "form-control col-md-12" })
+                            </div>
+                            <div class="form-group col-md-3">
+                                @Html.LabelFor(m => m.SalesChannel, new { @class = "" })
+                                @Html.DropDownListFor(m => m.SalesChannel, Model.SalesChannles.ToSelectListItem(), "Elegir...", new { @class = "form-control col-md-12" })
+                            </div>
+
+
+                            <div class="form-group col-md-3">
+                                @Html.LabelFor(m => m.Username, new { @class = "" })
+                                @Html.TextBoxFor(m => m.Username, new { @class = "form-control col-md-12" })
+                            </div>
+                            <div class="form-group col-md-3">
+                                @Html.LabelFor(m => m.ManagedByCommercial, new { @class = "" })
+                                @Html.DropDownListFor(m => m.ManagedByCommercial, new List<SelectListItem>
+                                         ()
+                            {
+                            new SelectListItem() { Text= "Si", Value="True" },
+                            new SelectListItem() {Text="No", Value="False" }
+                            }, "Elegir...", new { @class = "form-control col-md-12" })
+                            </div>
+                            <div class="form-group col-md-3">
+                                @Html.LabelFor(m => m.RequestApplicantType, new { @class = "" })
+                                @Html.DropDownListFor(m => m.RequestApplicantType, Model.RequestApplicantTypes.ToSelectListItem(), "Elegir...", new { @class = "form-control col-md-12" })
+                            </div>
+                            <div class="form-group col-md-3">
+                                @Html.LabelFor(m => m.PersonType, new { @class = "" })
+                                @Html.DropDownListFor(m => m.PersonType, Model.PersonTypes.ToSelectListItem(), "Elegir...", new { @class = "form-control col-md-12" })
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col m-3">
+                                <div class="alert alert-primary">
+                                    @foreach (var tipo in Model.RequestAlertTypes)
+                                    {
+                                        bool selected = Model.RequestAlertType.Contains(int.Parse(tipo.Id));
+                                        string buttonclass = selected ? "active" : "";
+                                        string checkedInput = selected ? "checked='checked'" : "";
+
+                                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+
+                                            <label class="btn btn-outline-secondary @buttonclass">
+                                                <input type="checkbox" name="RequestAlertType" value="@tipo.Id" autocomplete="off" @checkedInput><span class="label-text">@tipo.Description</span>
+                                            </label>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>                    
+
+                    <div class="row">
+                        <div class="col m-3">
+                            <div class="btn-group" role="group" aria-label="Basic example">
+                                <button class="btn btn-primary" onclick="loadSearchResultsTable(event)"><span class="mr-2 fas fa-sync"></span> Cargar datos</button>
+                                <button id="btnClearFilter" type="button" class="btn btn-outline-secondary"><span class="mr-2 fas fa-trash-alt"></span> Quitar filtros</button>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-md-offset-4" id="exportButtons">
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="progress" id="searchLoader" style="display:none">
+            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+                cargando
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="row py-3" id="searchResult">
+    <div class="col">
+        <table id="request-list" class="table table-striped table-bordered dt-responsive wrap" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Id Solicitud</th>
+                    <th>Fecha Solicitud</th>
+                    <th>Nombre completo</th>
+                    <th>NIF/NIE/CIF</th>
+                    <th>Estado</th>
+                    <th>Alertas</th>
+                    <th>Bloqueado por</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        @{await Html.PartialAsync("_TableLeyend"); }
+    </div>
+</div>
+
+@section Style {
+
+    <environment include="Development">
+        <link href="~/css/search.css" asp-append-version="true" rel="stylesheet" />
+    </environment>
+
+    <environment exclude="Development">
+        <link href="~/css/search.min.css" asp-append-version="true" rel="stylesheet" />
+    </environment>
+}
+
+@section Scripts {
+
+    <environment include="Development">
+        <script src="~/js/search.js" asp-append-version="true"></script>
+    </environment>
+
+    <environment exclude="Development">
+        <script src="~/js/search.min.js" asp-append-version="true"></script>
+    </environment>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const typeDropdown = document.querySelector('[name="Type"]');
+            const selectedContent = document.getElementById("selectedContent");
+            const clearFilterButton = document.getElementById("btnClearFilter");
+
+            if (typeDropdown) {
+                typeDropdown.addEventListener("change", function () {
+                    if (this.value === "2") { // "Operación"
+                        selectedContent.style.display = "none";
+                        clearFilterButton.style.display = "none";
+                        // Limpiar filtros
+                        $('#filterForm input').val('');
+                        $.each($('#filterForm select').not('.controlType'), function () {
+                            $(this).find('option:eq(0)').prop('selected', true);
+                        });
+                    } else {
+                        selectedContent.style.display = "block";
+                        clearFilterButton.style.display = "inline-block";
+                    }                    
+                });
+
+                // Inicializar visibilidad al cargar la página
+                if (typeDropdown.value === "2") {
+                    selectedContent.style.display = "none";
+                    clearFilterButton.style.display = "none";
+                }
+            }
+        });
+    </script>
+}

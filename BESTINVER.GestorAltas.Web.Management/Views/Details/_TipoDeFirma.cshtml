@@ -1,0 +1,29 @@
+﻿@model BESTINVER.GestorAltas.Web.Management.Models.DocumentGroupData
+@using BestInver.WebPrivada.Shared.Models.Microservices.Tests.Enums
+
+<div class="form-group col-md-4">
+    <label for="IdSendingWay">Tipo de firma</label>
+
+    @{
+        var signatureOptions = new List<SelectListItem>();
+
+        if (Model.AllowDigitalSignature)
+        {
+            signatureOptions.Add(new SelectListItem { Text = "Digital", Value = "1" });
+        }
+
+        if (Model.AllowManualSignature)
+        {
+            signatureOptions.Add(new SelectListItem { Text = "Manuscrita", Value = "2" });
+        }
+    }
+
+    @if (signatureOptions.Any())
+    {
+        @Html.DropDownListFor(m => m.IdDocumentSignatureType, signatureOptions, new { @class = "form-control signaturetype" })
+    }
+    else
+    {
+        <span>No se dispone de ningún tipo de firma, ni digital, ni manual</span>
+    }
+</div>

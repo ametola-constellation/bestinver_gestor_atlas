@@ -1,0 +1,13 @@
+﻿<section class="bg01 module module-404-error">
+    <div class="module_inner">
+        <div class="col6-xd col6-ld col6-md col6-sd col6-lt col6-st col4-sm module-content">
+            <h2 class="module-subtitle">No es posible realizar la remediación</h2>
+            <!-- ko if:(AnySigner() == false) -->
+            <p class="module-text">No existen apoderados ni administradores asociados a la remediación.</p>
+            <!-- /ko -->
+            <!-- ko if:(isPatron() && isRepresentative() && AnySigner()) -->
+            <p class="module-text">Verifica patronos u órganos de representación ya que no pueden existir ambos a la vez.</p>
+            <!-- /ko -->
+        </div>
+    </div>
+</section>

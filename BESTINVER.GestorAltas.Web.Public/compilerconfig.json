@@ -1,0 +1,81 @@
+﻿[
+  {
+    "outputFile": "wwwroot/css/style.css",
+    "inputFile": "wwwroot/css/style.scss",
+    "minify": {
+      "enabled": true
+    },
+    "options": {
+      "sourceMap": true
+    },
+    "includeInProject": false
+  },
+  {
+    "outputFile": "wwwroot/css/custom.bestinver.css",
+    "inputFile": "wwwroot/css/custom.bestinver.scss",
+    "minify": {
+      "enabled": true
+    },
+    "options": {
+      "sourceMap": true
+    },
+    "includeInProject": false
+  },
+  {
+    "outputFile": "wwwroot/css/easy-autocomplete.css",
+    "inputFile": "wwwroot/css/easy-autocomplete.scss",
+    "minify": {
+      "enabled": true
+    },
+    "options": {
+      "sourceMap": true
+    },
+    "includeInProject": false
+  },
+  {
+    "outputFile": "wwwroot/css/easy-autocomplete.themes.css",
+    "inputFile": "wwwroot/css/easy-autocomplete.themes.scss",
+    "minify": {
+      "enabled": true
+    },
+    "options": {
+      "sourceMap": true
+    },
+    "includeInProject": false
+  },
+  {
+    "outputFile": "wwwroot/css/grid.css",
+    "inputFile": "wwwroot/css/grid.scss",
+    "minify": {
+      "enabled": true
+    },
+    "options": {
+      "sourceMap": true
+    },
+    "includeInProject": false
+  },
+  {
+    "outputFile": "wwwroot/css/scancontrol.css",
+    "inputFile": "wwwroot/css/scancontrol.scss",
+    "minify": {
+      "enabled": true
+    },
+    "options": {
+      "sourceMap": true
+    },
+    "includeInProject": false
+  },
+
+  {
+    "outputFile": "wwwroot/css/tl-main.css",
+    "inputFile": "wwwroot/css/tl-main.scss",
+    "minify": {
+      "enabled": true
+    },
+    "options": {
+      "sourceMap": true
+    },
+    "includeInProject": false
+  }
+
+]

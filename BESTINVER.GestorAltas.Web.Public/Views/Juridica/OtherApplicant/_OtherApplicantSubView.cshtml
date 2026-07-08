@@ -1,0 +1,157 @@
+﻿@{
+    string ApplicantRequestType = Model.ApplicantRequestType;
+}
+
+
+<div class="form_block-content" data-bind="with: ApplicantBasicData">
+    <label for="personaldata-coowner-name"><span>Nombre</span></label>
+    <input type="text" name="personaldata-coowner-name" id="personaldata-coowner-name"
+           data-bind="value: Name" maxlength="20" data-private>
+    <span class="error_message" data-bind="validationMessage: Name"></span>
+</div>
+<div class="form_block-content" data-bind="with: ApplicantBasicData">
+    <label for="personaldata-coowner-surname"><span>Primer apellido</span></label>
+    <input type="text" name="personaldata-coowner-surname" id="personaldata-coowner-surname"
+           data-bind="value: FirstSurname" maxlength="30" data-private>
+    <span class="error_message" data-bind="validationMessage: FirstSurname"></span>
+</div>
+<div class="form_block-content" data-bind="with: ApplicantBasicData">
+    <label for="personaldata-coowner-secondsurname"><span>Segundo apellido</span></label>
+    <input type="text" name="personaldata-coowner-secondsurname" id="personaldata-coowner-secondsurname"
+           data-bind="value: SecondSurname" maxlength="30" data-private>
+    <span class="error_message" data-bind="validationMessage: SecondSurname"></span>
+</div>
+<div class="form_block-content date" data-bind="with: ApplicantPersonalData">
+    <label for="personaldata-coowner-birthday-day"><span>Fecha de nacimiento</span><span class="optional">(dd/mm/aaaa)</span></label>
+    <input type="text" class="input-integer-2 numonly"     
+           placeholder="dd" max="31" min="1"            
+           name="personaldata-coowner-birthday-day" id="personaldata-coowner-birthday-day"
+           data-bind="value: Birthday().Day">
+    <input type="text" class="input-integer-2 numonly" 
+           placeholder="mm" max="12" min="1" 
+           name="personaldata-coowner-birthday-month" id="personaldata-coowner-birthday-month"
+           data-bind="value: Birthday().Month">
+    <input type="text" class="input-integer-4 numonly birthyear" placeholder="aaaa" 
+           max="9999" min="1900" name="personaldata-coowner-birthday-year" id="personaldata-coowner-birthday-year"
+           data-bind="value: Birthday().Year"
+           >
+    <span class="error_message" data-bind="validationMessage: Birthday"></span>
+</div>
+<div class="form_block-content" data-bind="with: ApplicantPersonalData">
+    <label for="personaldata-coowner-sex"><span>Sexo</span></label>
+    <select id="personaldata-coowner-sex"
+            data-bind="options: MasterData.GenderList,  optionsText: 'valor', value: Gender,
+            optionsCaption: 'Seleccionar sexo'"></select>
+    <span class="error_message" data-bind="validationMessage: Gender"></span>
+</div>
+<div class="form_block-content" data-bind="with: ApplicantBasicData">
+    <label for="personaldata-coowner-dni"><span>NIF / NIE (Con letra)</span></label>
+    <input type="text" name="personaldata-coowner-dni" id="personaldata-coowner-dni"
+           maxlength="9" data-bind="value: DNI" data-private>
+    <span class="mini_text">Ejemplos NIF: 12345678Z, NIE: X1234567P</span>
+    <span class="error_message" data-bind="validationMessage: DNI"></span>
+</div>
+<div class="form_block-content date" data-bind="with: ApplicantPersonalData ,
+         visible: ApplicantPersonalData().ShowDocumentExpirationDate">
+    <label for="personaldata-coownner-expiration-day"><span>Fecha caducidad NIF / NIE</span></label>
+    <input type="text" class="input-integer-2 numonly" placeholder="dd" max="31" min="1" 
+           name="personaldata-coownner-expiration-day" id="personaldata-coownner-expiration-day"
+           data-bind="value: IDDocumentExpirationDate().Day">
+    <input type="text" class="input-integer-2 numonly" placeholder="mm" max="12" min="1" 
+           name="personaldata-coownner-expiration-month" id="personaldata-coownner-expiration-month"
+           data-bind="value: IDDocumentExpirationDate().Month">
+    <input type="text" class="input-integer-4 numonly" placeholder="aaaa" max="9999" min="1" 
+           name="personaldata-coownner-expiration-year" id="personaldata-coownner-expiration-year"
+           data-bind="value: IDDocumentExpirationDate().Year">
+    <span class="error_message" data-bind="validationMessage: IDDocumentExpirationDate"></span>
+</div>
+
+<div class="form_block-content"></div>
+
+<div class="form_block-content big" data-bind="with: ApplicantPersonalData , visible: ApplicantPersonalData().ShowPermanentValidity"">
+    <input type="checkbox" name="personaldata-coowner-permanent-expiration" id="personaldata-coowner-permanent-expiration"
+           data-bind="checked: IDDocumentIsPermanent">
+    <label for="personaldata-coowner-permanent-expiration">
+        <i class="icon"></i>
+        <div class="text">Validez permanente del DNI / NIE</div>
+    </label>
+</div>
+<div class="form_block-content" data-bind="with: ApplicantPersonalData">
+    <label for="personaldata-coowner-nationality"><span>Nacionalidad</span></label>
+    <select id="personaldata-coowner-nationality"
+            data-bind="options: MasterData.NationalityList,  optionsText: 'valor', value: Nationality,
+            optionsCaption: 'Seleccionar nacionalidad'"></select>
+    <span class="error_message" data-bind="validationMessage: Nationality"></span>
+</div>
+<div class="form_block-content" data-bind="with: ApplicantPersonalData">
+    <label for="personaldata-coowner-country"><span>País de nacimiento</span></label>
+    <select id="personaldata-coowner-country"
+            data-bind="options: MasterData.CountryList, optionsText: 'valor' , value: Country,
+            optionsCaption: 'Seleccionar país'"></select>
+    <span class="error_message" data-bind="validationMessage: Country"></span>
+</div>
+<div class="form_block-content" data-bind="with: ApplicantPersonalData">
+    <span class="label">Residente en españa</span>
+    <input type="radio" id="personaldata-coowner-spainresicdence-true"
+           value="true" data-bind="checked: IsResident , attr: {name: 'IsResidentGroup_' + '@ApplicantRequestType'}">
+    <label for="personaldata-coowner-spainresicdence-true">
+        <i class="icon"></i>
+        <div class="text">Sí</div>
+    </label>
+    <input type="radio" id="personaldata-coowner-spainresidence-false"
+           value="false" data-bind="checked: IsResident , attr: {name: 'IsResidentGroup_' + '@ApplicantRequestType'}">
+    <label for="personaldata-coowner-spainresidence-false">
+        <i class="icon"></i>
+        <div class="text">No</div>
+    </label>
+</div>
+
+<div class="form_block-content" data-bind="with: ApplicantPersonalData">
+    <label for="personaldata-birthday-place"><span>Lugar de nacimiento</span></label>
+    <input type="text" name="personaldata-birthday-place" id="personaldata-birthday-place" data-bind="value: BornPlace" maxlength="40">
+    <span class="error_message" data-bind="validationMessage: BornPlace"></span>
+</div>
+
+<div class="form_block-content" data-bind="with: ApplicantBasicData">
+    <label for="personaldata-coowner-email">
+        <span>Email</span>
+    </label>
+    <input type="text" name="personaldata-coowner-email" id="personaldata-coowner-email"
+           data-bind="value: Email" max="50" data-private>
+    <span class="error_message" data-bind="validationMessage: Email"></span>
+</div>
+<div class="form_block-content phone" data-bind="with: ApplicantBasicData">
+    <label for="personadata-coowner-mobilephone">
+        <span>Teléfono móvil</span>
+    </label>
+    <input class="input-tel-prefix numonly" type="text" name="personadata-coowner-mobilephone-prefix"
+           data-bind="value:MobilePhonePrefix , attr:{id: 'mobileprefix' + '@ApplicantRequestType' , readonly: $parent.ApplicantPersonalData().IsResident() == 'true'} ">
+    <input type="tel" class="inputphone numonly" maxlength="9" name="personadata-coowner-mobilephone" id="personadata-coowner-mobilephone"
+           data-bind="value:MobilePhoneNumber" data-private>
+    <span class="error_message" data-bind="validationMessage: MobilePhoneNumber"></span>
+    <span class="error_message" data-bind="validationMessage: MobilePhonePrefix"></span>
+</div>
+<div class="form_block-content phone" data-bind="with: ApplicantBasicData">
+    <label for="personadata-coowner-phone"><span>Teléfono fijo</span><span class="optional" data-bind="visible: Assisted()">(Opcional)</span></label>
+    <input class="input-tel-prefix numonly" id="personadata-coowner-phone-prefix" name="personadata-coowner-phone-prefix" type="text"
+           data-bind="value:PhoneNumberPrefix, attr:{id: 'mobileprefix' + '@ApplicantRequestType' , readonly: $parent.ApplicantPersonalData().IsResident() == 'true'} ">
+    <input type="tel" class="inputphone numonly" maxlength="20" name="personadata-coowner-phone" id="personadata-coowner-phone"
+           data-bind="value:PhoneNumber" data-private="">
+    <span class="error_message" data-bind="validationMessage: PhoneNumberPrefix" style="display: none;"></span>
+    <span class="error_message" data-bind="validationMessage: PhoneNumber"></span>
+</div>
+<div class="form_block-content" data-bind="with: ApplicantPersonalData">
+    <span class="label">Tipo de poder para firmar del apoderado</span>
+    <input type="radio" id="personaldata-coowner-signpermission-true"
+           value="true" data-bind="checked: SignPermission , attr: {name: 'SignPermission_' + '@ApplicantRequestType'}">
+    <label for="personaldata-coowner-signpermission-true">
+        <i class="icon"></i>
+        <div class="text">Solidaria</div>
+    </label>
+    <input type="radio" id="personaldata-coowner-signpermission-false"
+           value="false" data-bind="checked: SignPermission , attr: {name: 'SignPermission_' + '@ApplicantRequestType'}">
+    <label for="personaldata-coowner-signpermission-false">
+        <i class="icon"></i>
+        <div class="text">Mancomunada</div>
+    </label>
+</div>

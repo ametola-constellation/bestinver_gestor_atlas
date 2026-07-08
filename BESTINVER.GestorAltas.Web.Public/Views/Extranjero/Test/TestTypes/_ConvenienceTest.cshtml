@@ -1,0 +1,230 @@
+﻿<!-- ko with: $root.CurrentConvenienceTest -->
+<!-- ko if: Family() == 12 -->
+@{ await Html.RenderPartialAsync("Test/TestTypes/_ConvenienceTestInfra"); }
+<!-- /ko -->
+<!-- ko if: Family() != 12 -->
+<ul id="coowner-knowledgetest-content" class="form_text-questions_list style02">
+    <!-- ko if: !showConfirmQuestion() -->
+    <!-- ko foreach: experiencequestions -->
+    <li class="form_text-questions_list_element">
+        <label for="f-conveniencia-exp" class="form_text-questions_title" data-bind="text: Question"></label>
+        <div class="form_block-content big">
+
+            <!-- ko if: !$parent.HideGenericQuestions() -->
+            <select id="f-conveniencia-exp" name="f-conveniencia-exp"
+                    data-bind="attr:{'data-answerindex': answerIndex()},  options: Answers,  optionsText: 'Answer', value: SelectedAnswer,
+            optionsCaption: 'Seleccionar experiencia'" style="max-width: 100%"></select>
+            <!-- /ko -->
+            <!-- ko if: $parent.HideGenericQuestions() -->
+            <select id="f-conveniencia-exp" name="f-conveniencia-exp"
+                    data-bind="attr:{'data-answerindex': answerIndex()}, options: Answers,  optionsText: 'Answer', value: SelectedAnswer,
+            optionsCaption: 'Seleccionar experiencia'" style="max-width: 100%" disabled></select>
+            <!-- /ko -->
+
+
+            <span class="error_message" data-bind="validationMessage: questionOK"></span>
+        </div>
+    </li>
+    <!-- /ko -->
+    <!-- ko foreach: subexperiencequestions -->
+    <li class="form_text-questions_list_element tl-hidden tl-subexp-cont">
+        <label class="form_text-questions_title" data-bind="attr: {for: 'f-conveniencia-subexp-' + IdQuestion()}, text: Question"></label>
+        <div class="form_block-content big">
+            <!-- ko if: showRadioQuestion() -->
+            <!-- ko if: $parent.HideGenericQuestions() -->
+            <!-- ko foreach: Answers -->
+            <input type="radio" data-bind="attr:{ name: 'f-conveniencia-subexp-' + $parent.IdQuestion(), id: 'tl-subexp-' +  IdAnswer(), 'data-answer': Answer()} , value: IdAnswer, checked: $parent.SelectedAnswer" disabled>
+            <label data-bind="attr: {for: 'tl-subexp-' + IdAnswer()}">
+                <i class="icon"></i>
+                <span class="text" data-bind="text: Answer"></span>
+            </label>
+            <!-- /ko -->
+            <!-- /ko -->
+            <!-- ko if: !$parent.HideGenericQuestions() -->
+            <!-- ko foreach: Answers -->
+            <input type="radio" data-bind="attr:{ name: 'f-conveniencia-subexp-' + $parent.IdQuestion(), id: 'tl-subexp-' +  IdAnswer(), 'data-answer': Answer()} , value: IdAnswer, checked: $parent.SelectedAnswer">
+            <label data-bind="attr: {for: 'tl-subexp-' + IdAnswer()}">
+                <i class="icon"></i>
+                <span class="text" data-bind="text: Answer"></span>
+            </label>
+            <!-- /ko -->
+            <!-- /ko -->
+            <!-- /ko -->
+            <!-- ko if: showInputQuestion() -->
+            <!-- ko if: $parent.HideGenericQuestions() -->
+            <div data-bind="with: $parent.subExperienceInputQuestion">
+                <label><span data-bind="html: questionLabel"></span></label>
+                <input type="text" name="f-conveniencia-subexp-input" id="f-conveniencia-subexp-input" data-bind="value: value" style="max-width: 100%" disabled>
+                <span class="error_message" data-bind="validationMessage: questionOK"></span>
+            </div>
+            <!-- /ko -->
+            <!-- ko if: !$parent.HideGenericQuestions() -->
+            <div data-bind="with: $parent.subExperienceInputQuestion">
+                <label><span data-bind="html: questionLabel"></span></label>
+                <input type="text" name="f-conveniencia-subexp-input" id="f-conveniencia-subexp-input" data-bind="value: value" style="max-width: 100%">
+                <span class="error_message" data-bind="validationMessage: questionOK"></span>
+            </div>
+            <!-- /ko -->
+            <!-- /ko -->
+            <!-- ko if: showSelectQuestion() -->
+            <!-- ko if: !$parent.HideGenericQuestions() -->
+            <select data-bind="attr:{'data-answerindex': answerIndex(), name: 'f-conveniencia-subexp-' + IdQuestion(), id: 'tl-subexp-' +  IdQuestion()},  options: Answers,  optionsText: 'Answer', value: SelectedAnswer,
+                optionsCaption: 'Seleccionar experiencia'" style="max-width: 100%"></select>
+            <!-- /ko -->
+            <!-- ko if: $parent.HideGenericQuestions() -->
+            <select data-bind="attr:{'data-answerindex': answerIndex(), name: 'f-conveniencia-subexp-' + IdQuestion(), id: 'tl-subexp-' +  IdQuestion()},  options: Answers,  optionsText: 'Answer', value: SelectedAnswer,
+                optionsCaption: 'Seleccionar experiencia'" style="max-width: 100%" disabled></select>
+            <!-- /ko -->
+            <!-- /ko -->
+            <span class="error_message" data-bind="validationMessage: questionOK"></span>
+        </div>
+    </li>
+    <!-- /ko -->
+    <!-- ko foreach: formationquestions -->
+    <li class="form_text-questions_list_element">
+        <label for="f-conveniencia-formation" class="form_text-questions_title" data-bind="text: Question"></label>
+        <div class="form_block-content big">
+            <!-- ko if: !$parent.HideGenericQuestions() -->
+            <select id="f-conveniencia-formation" name="f-conveniencia-formation"
+                    data-bind="attr:{'data-answerindex': answerIndex()},  options: Answers,  optionsText: 'Answer', value: SelectedAnswer,
+            optionsCaption: 'Seleccionar formación'" style="max-width: 100%"></select>
+            <!-- /ko -->
+            <!-- ko if: $parent.HideGenericQuestions() -->
+            <select id="f-conveniencia-formation" name="f-conveniencia-formation"
+                    data-bind="attr:{'data-answerindex': answerIndex()}, options: Answers,  optionsText: 'Answer', value: SelectedAnswer,
+            optionsCaption: 'Seleccionar formación'" style="max-width: 100%" disabled></select>
+            <!-- /ko -->
+            <span class="error_message" data-bind="validationMessage: questionOK"></span>
+        </div>
+    </li>
+    <!-- /ko -->
+
+    @if (User.Identity.IsAuthenticated)
+    {
+        <!-- ko if: IsProductComplex() -->
+        <!-- ko foreach: additionalformationquestions -->
+        <li class="form_text-questions_list_element tl-hidden tl-additionalformation-cont complex">
+
+            <div class="form_block-content big">
+                <!-- ko if: showAdditionalCheckboxQuestion() -->
+                <!-- ko foreach: Answers -->
+                <input type="checkbox" data-bind="attr:{ name: 'f-conveniencia-additionalformation-checkbox', id: 'f-conveniencia-additionalformation-checkbox'}, checked: $parent.Checked">
+                <label for="f-conveniencia-additionalformation-checkbox">
+                    <i class="icon"></i>
+                    <span class="text" data-bind="text: $parent.Question">
+                    </span>
+                </label>
+                <!-- /ko -->
+                <!-- /ko -->
+                <!-- ko if: showAdditionalInputQuestion() -->
+                <div data-bind="with: $parent.additionalFormationInputQuestion" style="max-width: 95%; float:right; width:100%">
+                    <label for="f-conveniencia-additionalformation-input" class="form_text-questions_title" data-bind="text: $parent.Question"></label>
+                    <textarea name="f-conveniencia-additionalformation-input" id="f-conveniencia-additionalformation-input" data-bind="value: value" style="max-width: 100%; width:100%" rows="2"></textarea>
+                    <span class="error_message" data-bind="validationMessage: questionOK"></span>
+                </div>
+                <!-- /ko -->
+            </div>
+        </li>
+        <!-- /ko -->
+        <!-- /ko -->
+    }
+
+    <!-- ko foreach: productquestions -->
+    <li class="form_text-questions_list_element f-conveniencia-operaciones-element">
+        <h4 for="f-conveniencia-formacion" class="form_text-questions_title" data-bind="text: Question"></h4>
+
+        <!-- ko foreach: Answers -->
+        <div class="form_block-content big">
+            <input type="radio" data-bind="attr:{ name: 'f-conveniencia-operaciones-' + $parent.IdQuestion(), id: 'tl-operaciones-1-' + IdAnswer() , 'data-answer': Answer(), 'data-complex': $root.CurrentConvenienceTest().IsComplex()} , value: IdAnswer, checked: $parent.SelectedAnswer">
+            <label data-bind="attr: {for: 'tl-operaciones-1-' + IdAnswer()}">
+                <i class="icon"></i>
+                <span class="text" data-bind="text: Answer"></span>
+            </label>
+        </div>
+        <!-- /ko -->
+        <div class="form_block-content big">
+            <span class="error_message" data-bind="validationMessage: questionOK"></span>
+        </div>
+    </li>
+    <!-- /ko -->
+    @if (User.Identity.IsAuthenticated)
+    {
+        <!-- ko if: IsProductComplex() -->
+        <!-- ko foreach: additionalexperiencequestions -->
+        <li class="form_text-questions_list_element tl-hidden tl-additionalexp-cont complex">
+            <div class="form_block-content big">
+                <!-- ko if: showAdditionalCheckboxQuestion() -->
+                <!-- ko foreach: Answers -->
+                <input type="checkbox" data-bind="attr:{ name: 'f-conveniencia-additionalexp-checkbox', id: 'f-conveniencia-additionalexp-checkbox'}, checked: $parent.Checked">
+                <label for="f-conveniencia-additionalexp-checkbox">
+                    <i class="icon"></i>
+                    <span class="text" data-bind="text: $parent.Question">
+                    </span>
+                </label>
+                <!-- /ko -->
+                <!-- /ko -->
+                <!-- ko if: showAdditionalInputQuestion() -->
+                <div data-bind="with: $parent.additionalExperienceInputQuestion" style="max-width: 95%; float:right">
+                    <label for="f-conveniencia-additionalexp-input" class="form_text-questions_title" data-bind="text: $parent.Question"></label>
+                    <textarea name="f-conveniencia-additionalexp-input" id="f-conveniencia-additionalexp-input" data-bind="value: value" style="max-width: 100%" rows="2"></textarea>
+                    <span class="error_message" data-bind="validationMessage: questionOK"></span>
+                </div>
+                <!-- /ko -->
+            </div>
+        </li>
+        <!-- /ko -->
+        <!-- /ko -->
+    }
+
+    <li class="form_text-questions_list_element tl-hidden" id="tl-financieros-cont">
+        <h4 class="form_text-questions_title" style="margin-bottom: 10px">Tus conocimientos financieros específicos:</h4>
+        <!-- ko foreach: specificquestions -->
+        <div class="form_text-questions_tl_list">
+            <p class="form_text-tl-p" data-bind="text: Question"></p>
+
+            <!-- ko foreach: Answers -->
+            <div class="form_block-content big">
+
+                <input type="radio" data-bind="attr:{ name: 'f-conveniencia-financieros-1-' + $parent.IdQuestion(), id: 'tl-financieros-1-' +  IdAnswer()} , value: IdAnswer, checked: $parent.SelectedAnswer">
+                <label data-bind="attr: {for: 'tl-financieros-1-' + IdAnswer()}">
+                    <i class="icon"></i>
+                    <span class="text" data-bind="text: Answer"></span>
+                </label>
+
+            </div>
+            <!-- /ko -->
+            <div class="form_block-content big">
+                <span class="error_message" data-bind="validationMessage: questionOK"></span>
+            </div>
+            <span class="tl-space-top"></span>
+        </div>
+        <!-- /ko -->
+    </li>
+
+
+    <!-- /ko -->
+    <!-- ko if: showConfirmQuestion() -->
+    <!-- ko if: !UnansweredQuestions() -->
+    <li class="form_text-questions_list_element" data-bind="with: NoCovenienceConfirmQuestion">
+        <h4 class="form_text-questions_title" data-bind="html: questionText"></h4>
+        <div class="form_block-content big">
+            <label><span data-bind="html: questionLabel"></span></label>
+            <input type="text" name="confirm-question" id="confirm-question" data-bind="value: value" style="max-width: 100%">
+            <span class="error_message" data-bind="validationMessage: questionOK"></span>
+        </div>
+    </li>
+    <!-- /ko -->
+    <!-- ko if: UnansweredQuestions() -->
+    <li class="form_text-questions_list_element" data-bind="with: NoAnswerConfirmQuestion">
+        <h4 class="form_text-questions_title" data-bind="html: questionText"></h4>
+        <div class="form_block-content big">
+            <label><span data-bind="html: questionLabel"></span></label>
+            <input type="text" name="confirm-question" id="confirm-question" data-bind="value: value" style="max-width: 100%">
+            <span class="error_message" data-bind="validationMessage: questionOK"></span>
+        </div>
+    </li>
+    <!-- /ko -->
+    <!-- /ko -->
+</ul>
+<!-- /ko -->
+<!-- /ko -->

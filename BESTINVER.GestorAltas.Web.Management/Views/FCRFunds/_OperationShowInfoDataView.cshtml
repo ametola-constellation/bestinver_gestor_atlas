@@ -1,0 +1,47 @@
+﻿@using BestInver.WebPrivada.Shared.Models.Microservices.Requests;
+@using BESTINVER.GestorAltas.Web.Management.Models.Operation;
+
+@model OperationInfoModel
+
+@using (Html.BeginForm("CreateFileOperations", "FCRFunds", FormMethod.Post, new { @class = "container", id = "CreateFileOperationForm" }))
+{
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Operaciones</h4>
+
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+
+                @Html.HiddenFor(m => m.LiquidativeDate)
+                @{
+                    for (int i = 0; i < Model.RequestIds.Count(); i++)
+                    {
+                        @Html.HiddenFor(model => Model.RequestIds[i])
+                    }
+
+                    for (int i = 0; i < Model.Requests.Count(); i++)
+                    {
+                        @Html.HiddenFor(model => Model.Requests[i])
+                    }
+                }
+
+                @{
+                    <object type="application/pdf" data="@Url.Action("GetPDF", Model)" width="100%" height="600px"></object>
+                }
+            </div>
+            <div class="modal-footer">
+                @{
+                    if (Model.GenerateFile)
+                    {
+                        <button type="button" class="btn btn-primary" data-save="modal" onclick="CreateFileOperations(this)">Generar fichero</button>
+                    }
+                }
+
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+}

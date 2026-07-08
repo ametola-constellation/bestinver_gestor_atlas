@@ -1,0 +1,50 @@
+﻿<p class="form_inlet">Antes de cumplimentar el test de conocimiento, es necesario actualizar los siguientes datos.</p>
+
+<div class="form_block-content hidden">
+</div>
+<div class="form_block-content date">
+    <label for="personaldata-birthday-day">
+        <span>Fecha de nacimiento</span><span class="optional">(dd/mm/aaaa)</span>
+    </label>
+    <input type="text" placeholder="dd" max="31" min="0" name="personaldata-birthday-day" id="personaldata-birthday-day"
+           maxlength="2" data-bind="value: personalDataModel().day" class="input-integer-2 numonly">
+    <input type="text" placeholder="mm" max="12" min="0" name="personaldata-birthday-month" id="personaldata-birthday-month"
+           maxlength="2" data-bind="value: personalDataModel().month" class="input-integer-2 numonly">
+    <input type="text" placeholder="aaaa" max="9999" min="0" name="personaldata-birthday-year" id="personaldata-birthday-year"
+           maxlength="4" data-bind="value: personalDataModel().year" class="input-integer-4 numonly birthyear">
+    <span class="error_message" data-bind="text: personalDataModel().errorMessageBirthday"></span>
+</div>
+
+<div class="form_block-content" data-bind="with: personalDataModel">
+    <label for="personaldata-nationality"><span>Nacionalidad</span></label>
+    <select id="personaldata-nationality" data-bind="options: $root.nacionalityCollection(),  optionsText: 'valor', value: nacionalityValue, optionsCaption: 'Seleccionar nacionalidad...'"></select>
+    <span class="error_message" data-bind="text: errorMessageNacionality"></span>
+</div>
+
+<div class="form_block-content" data-bind="with: personalDataModel">
+    <label for="personaldata-country"><span>País de nacimiento</span></label>
+    <select id="personaldata-country" data-bind="options: $root.countryCollection(),  optionsText: 'valor', value: countryValue, optionsCaption: 'Seleccionar país...'"></select>
+    <span class="error_message" data-bind="text: errorMessageCountry"></span>
+</div>
+
+<div class="form_block-content" style="margin-left:60px;">
+    <label for="personaldata-birthday-place"><span>Lugar de nacimiento</span></label>
+    <input type="text" name="personaldata-birthday-place" id="personaldata-birthday-place" maxlength="40" data-bind="value: personalDataModel().bornPlace">
+    <span class="error_message" data-bind="text: personalDataModel().errorMessagePlace"></span>
+</div>
+
+<div class="form_block-content" data-bind="css: { inputHidden: personalDataModel().isForeignDniVisible() == 'False' }">
+    <label for="personaldata-foreigndni"><span>Número de identificación fiscal en país de residencia</span></label>
+    <input type="text" name="personaldata-foreigndni" id="personaldata-foreigndni" maxlength="20" data-bind="value: personalDataModel().dni" data-private>
+    <span class="error_message" data-bind="text: personalDataModel().errorMessageForeignDni"></span>
+</div>
+
+<div class="form_block-content buttons big">
+    <div class="button_next">
+        <a id="save_personal_data" href="" title="Continuar" class="button brown toWhite" data-bind="click:function () { personalDataModel().savePersonalData(); }">
+            <span>Continuar</span>
+        </a>
+    </div>
+</div>
+
+<span class="error_message" data-bind="text: personalDataModel().errorMessage"></span>

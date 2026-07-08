@@ -1,0 +1,61 @@
+﻿<ul id="coowner-knowledgetest-content" class="form_text-questions_list style02">
+
+    <!-- ko foreach: experiencequestions -->
+    <li class="form_text-questions_list_element">
+        <label for="f-conveniencia-exp" class="form_text-questions_title" data-bind="text: Question"></label>
+        <div class="form_block-content big">
+
+            <select id="f-conveniencia-exp"
+                    data-bind="options: Answers,  optionsText: 'Answer', value: SelectedAnswer,
+            optionsCaption: 'Seleccionar experiencia'" style="max-width: 100%"></select>
+            <span class="error_message" data-bind="validationMessage: questionOK"></span>
+        </div>
+    </li>
+    <!-- /ko -->
+    <!-- ko foreach: productquestions -->
+    <li class="form_text-questions_list_element">
+        <h4 for="f-conveniencia-formacion" class="form_text-questions_title" data-bind="text: Question"></h4>
+
+        <!-- ko foreach: Answers -->
+        <div class="form_block-content big">
+            <input type="radio" name="f-conveniencia-operaciones" data-bind="attr:{ id: 'tl-operaciones-1-' + IdAnswer() , 'data-answer': Answer()} , value: IdAnswer, checked: $parent.SelectedAnswer">
+            <label data-bind="attr: {for: 'tl-operaciones-1-' + IdAnswer()}">
+                <i class="icon"></i>
+                <span class="text" data-bind="text: Answer"></span>
+            </label>
+        </div>
+        <!-- /ko -->
+        <div class="form_block-content big">
+            <span class="error_message" data-bind="validationMessage: questionOK"></span>
+        </div>
+    </li>
+    <!-- /ko -->
+
+   
+    <li class="form_text-questions_list_element tl-hidden" id="tl-financieros-cont">
+        <h4 class="form_text-questions_title">Tus conocimientos financieros específicos:</h4>
+        <!-- ko foreach: specificquestions -->
+        <div class="form_text-questions_tl_list">
+            <p class="form_text-tl-p" data-bind="text: Question"></p>
+
+            <!-- ko foreach: Answers -->
+            <div class="form_block-content big">
+
+                <input type="radio" data-bind="attr:{ name: 'f-conveniencia-financieros-1-' + $parent.IdQuestion(), id: 'tl-financieros-1-' + IdAnswer()} , value: IdAnswer, checked: $parent.SelectedAnswer">
+                <label data-bind="attr: {for: 'tl-financieros-1-' + IdAnswer()}">
+                    <i class="icon"></i>
+                    <span class="text" data-bind="text: Answer"></span>
+                </label>
+
+            </div>
+            <!-- /ko -->
+            <div class="form_block-content big">
+                <span class="error_message" data-bind="validationMessage: questionOK"></span>
+            </div>
+            <span class="tl-space-top"></span>
+        </div>
+        <!-- /ko -->
+    </li>
+    
+
+</ul>

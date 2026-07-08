@@ -1,0 +1,67 @@
+﻿@model UpdateRequestOperationModel;
+
+@{
+    var minamount = Model.MinAmount.HasValue ? Model.MinAmount.Value.ToString("0.00").Replace(",", ".") : "0";
+    var maxamount = Model.MaxAmount.HasValue ? Model.MaxAmount.Value.ToString("0.00").Replace(",", ".") : Int32.MaxValue.ToString();
+    var cssClass = Model.FondoRecibido ? "" : "hide";
+}
+
+<div class="modal-dialog" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title">Modificar operación</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+        <form asp-action="UpdateOperation" asp-controller="Details" method="post">
+            <div class="modal-body">
+
+                <input asp-for="Id" hidden />
+                <input asp-for="RequestId" hidden />
+                <input asp-for="FondoRecibido" hidden />
+                <input asp-for="FondoRecibidoFecha" hidden />
+                <div class="row">
+                    <div class="form-group col-md-12">
+                        <label asp-for="Importe"></label>
+                        <input asp-for="Importe" class="form-control input-decimal-2" required />
+                        <span asp-validation-for="Amount" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row fundreceived-check">
+                    <div class="form-group col-md-12">
+                        <label>Recibido</label>
+                        <input type="checkbox" asp-for="FondoRecibido" class="form-check" />
+                    </div>
+                </div>
+
+                <div class="row @cssClass" id="fundreceived-date">
+                    <div class="form-group col-md-12">
+                        <label>Recibido</label>
+                        <input asp-for="FondoRecibidoFecha" class="form-control col-md-12" type="date"/>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary" data-save="modal">Guardar</button>
+                <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cerrar</button>
+            </div>
+        </form>
+    </div>
+
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('.fundreceived-check').on('click', 'input[type="checkbox"]', function (e) {
+            var elem = $(this);
+            if (elem.is(':checked')) {
+                $('#fundreceived-date').removeClass("hide");
+            } else {
+                $('#fundreceived-date').addClass("hide");
+            }
+        });
+    });
+</script>
+
+<partial name="_ValidationScriptsPartial" />

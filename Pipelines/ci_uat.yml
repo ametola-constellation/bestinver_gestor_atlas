@@ -1,0 +1,12 @@
+trigger:
+- 'none'
+
+extends:
+  template: ci_base.yml
+  parameters:    
+    Environment: uat
+    NugetUser: $(JFROG_USER)
+    NugetPassword: $(JFROG_PASS)
+    ProjectName: All
+    PublishDocker: false
+    Deploy: false

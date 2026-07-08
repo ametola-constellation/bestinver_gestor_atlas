@@ -1,0 +1,15 @@
+trigger:
+  batch: true
+  branches:
+    include:
+    - develop
+
+extends:
+  template: ci_base.yml
+  parameters:    
+    Environment: uat
+    NugetUser: $(JFROG_USER)
+    NugetPassword: $(JFROG_PASS)
+    ProjectName: All
+    PublishDocker: true
+    Deploy: true

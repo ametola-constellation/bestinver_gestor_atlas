@@ -1,0 +1,111 @@
+﻿@model BESTINVER.GestorAltas.Web.Management.Models.ManagementRequestModel
+@using BestInver.WebPrivada.Shared.Models.Microservices.Tests.Enums
+
+@Html.HiddenFor(m => m.Id, new { @Id = "IDSolicitud", @Value = Model.Id })
+
+@{
+    bool showApproveButton = false;
+    if ((await AuthorizationService.AuthorizeAsync(User, MiddleOfficeClaimNames.CotitularesValidar)).Succeeded)
+    {
+        showApproveButton = true;
+    }
+    var hasAlertasActivas = Model.Alerts?.Any(a => !a.EndDate.HasValue && a.AlertTypeId != (int)AlertTypes.AlertaPendienteValidarJuridico && a.AlertTypeId != (int)AlertTypes.AlertaPBC) == true;
+    var hasAlertaPendienteJuridicoActivas = Model.Alerts?.Any(a => !a.EndDate.HasValue && a.AlertTypeId == (int)AlertTypes.AlertaPendienteValidarJuridico) == true;
+    var hasAlertaPBC = Model.Alerts?.Any(a => !a.EndDate.HasValue && a.AlertTypeId == (int)AlertTypes.AlertaPBC) == true;
+
+    if (hasAlertasActivas || !hasAlertaPendienteJuridicoActivas || hasAlertaPBC)
+    {
+        showApproveButton = false;
+    }
+    var alertaValidarJuridico = Model.Alerts?.FirstOrDefault(a => a.AlertTypeId == (int)AlertTypes.AlertaPendienteValidarJuridico && !a.EndDate.HasValue);
+    var idAlertaValidarJuridico = alertaValidarJuridico?.Id;
+}
+
+<div class="hidden">
+    @if (!String.IsNullOrWhiteSpace(Model.Data.BasicData.MobilePhoneNumber))
+    {
+        <div class="phone">
+            <span class="dni">@Model.Data.BasicData.DNI</span>
+            <span class="mobile">@Model.Data.BasicData.MobilePhoneNumber</span>
+            @if (Model.Data.PersonalData.Birthday.HasValue)
+            {
+                <span class="birthday">@Model.Data.PersonalData.Birthday.Value.ToString("dd/MM/yyyy")</span>
+            }
+        </div>
+    }
+    @foreach (var phone in Model.Cotitulares.Where(p => !String.IsNullOrWhiteSpace(p.MobilePhoneNumber)))
+    {
+        <div class="phone">
+            <span class="dni">@phone.NIF</span>
+            <span class="mobile">@phone.MobilePhoneNumber</span>
+            <span class="birthday">@phone.Birthday.ToString("dd/MM/yyyy")</span>
+        </div>
+    }
+</div>
+<div class="row">
+    <div class="col-md-12">
+        @if (Model.Data?.BasicData?.ApplicantType == (int)ApplicantType.Juridica && showApproveButton)
+        {
+            <button id="btnApproveCotitulares" name="btnApproveCotitulares" type="button" class="btn btn-outline-secondary" data-toggle="ajax-modal" data-target="#approve-applicant-modal"
+                    asp-action="ApproveApplicantModal"
+                    asp-route-id="@Model.Id">
+                <span class="mr-2 fas fa-bell"></span>
+                Aprobar cotitulares
+            </button>
+        }
+    </div>
+    <div class="col-md-12">
+        <table id="cotitulares-list" class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Id Cliente</th>
+                    <th>Fecha Solicitud</th>
+                    <th>Nombre completo</th>
+                    <th>Tipo cotitularidad</th>
+                    <th>Porcentaje</th>
+                    <th>Código cliente</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Cotitulares)
+                {
+                    string percentageString = "";
+                    if (!string.IsNullOrWhiteSpace(item.Porcentaje))
+                    {
+                        percentageString = $"({item.Porcentaje}%)";
+                    }
+                    <tr>
+                        <td>@item.NIF</td>
+                        <td><span data-datetime="@DateTime.SpecifyKind(item.RequestStartDate, DateTimeKind.Utc).ToString("O")"></span></td>
+                        <td>@item.Name</td>
+                        <td>@item.TipoCotitularidad</td>
+                        <td>
+                            @if (Model.Cotitulares.Any(c => !string.IsNullOrWhiteSpace(c.Porcentaje)))
+                            {
+                                @percentageString
+                            }
+                        </td>
+                        <td>
+                            @if (item.RdCode.HasValue && item.RdCode.Value > 0)
+                            {
+                                @item.RdCode
+                            }
+                        </td>
+                        <td></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div id='cotitularModal' class='modal fade' role="dialog" aria-labelledby="cotitularlabel" data-url='@Url.Action("getcotitulardetails")'>
+</div>
+
+<script>
+    $('[data-datetime]').each(function() {
+        var utcDate = new Date($(this).data('datetime'));
+        $(this).text(utcDate.toLocaleString());
+    });
+</script>

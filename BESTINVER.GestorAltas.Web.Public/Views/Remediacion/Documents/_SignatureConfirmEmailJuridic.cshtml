@@ -1,0 +1,36 @@
+﻿<div class="form_block" data-bind="with: $data">
+
+    <div class="form_block-content big">
+        <div class="infor">
+            <span data-bind="text: userName() + ': ' + email()"></span>
+        </div>
+    </div>
+
+    <div class="form_block-content big vertical">
+        <input type="radio" value=true
+               data-bind="attr: {name: dni() + '-is-email-ok', id: dni() + '-email-ok'},
+           checked: isEmailOk()" />
+        <label data-bind="attr: {for: dni() + '-email-ok'}">
+            <i class="icon"></i><span class="text">Es correcto</span>
+        </label>
+
+        <input type="radio" data-relative="mobilephone-number" value=false
+               data-bind="attr: {name: dni() + '-is-email-ok', id: dni() + '-email-no-ok' ,
+               'data-relative': dni() + '-email'}, checked: isEmailOk()" />
+        <label data-bind="attr: {for: dni() + '-email-no-ok'}">
+            <i class="icon"></i><span class="text">No es correcto</span>
+        </label>
+        <span class="error_message"></span>
+    </div>
+
+    <div data-bind="attr: {id: dni() + '-email'}, css: { hidden: isEmailOk() == 'true' }" class="form_block-content hidden">
+
+        <label for="new-email"><span>Indica el email</span></label>
+
+        <input type="text" maxlength="255" data-private
+               data-bind="attr: {id: dni() + '-new-email', name: dni() + '-new-email'},
+               value: email">
+        <span class="error_message" data-bind="text: errorMessageEmail()"></span>
+    </div>
+
+</div>

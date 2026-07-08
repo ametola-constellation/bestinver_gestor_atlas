@@ -1,0 +1,33 @@
+﻿#accordion {
+    .card-title {
+        a {
+            text-decoration: none;
+
+            span {
+                margin-right: 8px;
+            }
+        }
+    }
+}
+
+#request-list {
+    span {
+        &.label {
+            margin: 0 2px;
+        }
+    }
+
+    p.onlyExport {
+        display: none;
+    }
+}
+
+#filterForm {
+    .dt-buttons {
+        text-align: right;
+
+        a {
+            margin-left: 5px;
+        }
+    }
+}

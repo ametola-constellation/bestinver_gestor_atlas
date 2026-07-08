@@ -1,0 +1,254 @@
+﻿@model List<BESTINVER.GestorAltas.Web.Management.Models.Remediacion.UpdateResultModel>
+@using BESTINVER.GestorAltas.Web.Management.Models.Remediacion
+@using Newtonsoft.Json;
+@using System.ComponentModel
+@using System.Reflection
+
+@section Style {
+
+    <environment include="Development">
+        <link href="~/css/details.css" asp-append-version="true" rel="stylesheet" />
+    </environment>
+
+    <environment exclude="Development">
+        <link href="~/css/details.min.css" asp-append-version="true" rel="stylesheet" />
+    </environment>
+}
+
+@{
+    bool allowModificarEstados = (await AuthorizationService.AuthorizeAsync(User, MiddleOfficeClaimNames.RemediacionEstadosModificacion)).Succeeded;
+}
+
+<div class="row">
+    <div class="col-md-10">
+        <h3>Remediación</h3>
+    </div>
+    <div class="col-md-2">
+        @if (User.IsInRole(DefaultRoles.Admin))
+        {
+            <button type="button" id="btnSyncUrls" class="btn btn-primary">
+                <span class="mr-2 fas fa-sync-alt"></span>Sincronizar Urls
+            </button>
+        }
+    </div>
+</div>
+
+<div class="row"></div>
+
+@if (Model != null)
+{
+    <div id="resultRow" class="row">
+        <div class="well">
+            <h4>Resultados de la carga</h4>
+            <div>
+                <span>Total filas procesadas: </span><span class="badge">@Model.Count()</span>
+                <span>Total filas fallidas: </span><span class="badge">@Model.Count(m => m.Exception != null)</span>
+                <span>Total filas cargas: </span><span class="badge">@Model.Count(m => m.Exception == null)</span>
+            </div>
+            @if (Model.Count(m => m.Exception != null) > 0)
+            {
+                <div>
+                    <h4>Errores:</h4>
+                    <ul>
+                        @foreach (var item in Model.Where(m => m.Exception != null))
+                        {
+                            <li>@($"Cliente con código {item.RDTitular} error: {item.Exception.Message}")</li>
+                        }
+                    </ul>
+                </div>
+            }
+        </div>
+    </div>
+}
+
+<div class="row">
+    <ul class="nav nav-tabs w-100" id="myTab" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Detalle</a>
+        </li>
+        @if (allowModificarEstados)
+        {
+            <li class="nav-item">
+                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Listado de solicitudes</a>
+            </li>
+        }
+
+    </ul>
+    <div class="tab-content w-100" id="myTabContent">
+        <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+
+            <div class="card-group" id="accordion" role="tablist" aria-multiselectable="true">
+                <div class="card">
+                    <div class="card-header" role="tab" id="headingOne">
+                        <h4 class="card-title">
+                            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                <span class="mr-2 fas fa-search"></span>
+                                Filtros de búsqueda
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapseOne" class="in collapse show" role="tabpanel" aria-labelledby="headingOne">
+                        <div class="card-body">
+                            @using (Html.BeginForm("CheckRequestStatus", "Remediacion", FormMethod.Get, new { @id = "filterForm" }))
+                            {
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <label for="idClientRD">Código de cliente o DNI</label>
+                                        <input class="form-control" id="idClient" name="idClient" type="text" value="">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <button id="btnFilter" type="submit" class="btn btn-primary">
+                                            <span class="mr-2 fas fa-search"></span>Buscar
+                                        </button>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="result-remediacion" style="margin:20px">
+            </div>
+        </div>
+
+        @if (allowModificarEstados)
+        {
+            <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                <div role="tabpanel" class="tab-pane" id="list">
+                    <div class="card-group" id="accordion2" role="tablist" aria-multiselectable="true">
+                        <div class="card">
+                            <div class="card-header" role="tab" id="headingTwo">
+                                <h5 class="card-title">
+                                    <a role="button" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+                                        <span class="fas fa-search"></span>
+                                        Filtros de búsqueda
+                                    </a>
+                                </h5>
+                            </div>
+                            <div id="collapseTwo" class="card-body" role="tabpanel" aria-labelledby="headingTwo">
+                                @using (Html.BeginForm("FilterDigitalRequests", "Remediacion", FormMethod.Get, new { @id = "filterListForm" }))
+                                {
+                                    <div class="row">
+                                        <div class="form-group col-md-3">
+                                            <label for="from">Fecha desde</label>
+                                            <input class="form-control" id="from" name="from" type="date">
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label for="to">Fecha hasta</label>
+                                            <input class="form-control " id="to" name="to" type="date">
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label for="to">Estado</label>
+                                            @{
+                                                var statusEnumType = typeof(RequestStatusEnum);
+                                                var statusOptions = Enum.GetValues(statusEnumType)
+                                                .Cast<RequestStatusEnum>()
+                                                .Select(e => new SelectListItem
+                                                {
+                                                    Value = ((int)e).ToString(),
+                                                    Text = e.GetType()
+                                                        .GetMember(e.ToString())
+                                                        .FirstOrDefault()
+                                                        .GetCustomAttribute<DescriptionAttribute>()?.Description ?? e.ToString()
+                                                }).ToList();
+                                            }
+                                            <select class="form-control" name="status">
+                                                @foreach (var item in statusOptions)
+                                                {
+                                                    <option value="@item.Value">@item.Text</option>
+                                                }
+                                            </select>
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <label for="laststatusdate">Fecha último estado</label>
+                                            <input class="form-control " id="laststatusdate" name="laststatusdate" type="date">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <button id="btnFilter" type="submit" class="btn btn-primary">
+                                                <span class="mr-2 fas fa-search"></span>Buscar
+                                            </button>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                            <div class="col-md-12">
+                                <br />
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <table id="remediacion-list" class="table table-striped table-bordered dt-responsive wrap" style="width:100%;">
+                                            <thead>
+                                                <tr>
+                                                    <th>ID</th>
+                                                    <th>DNI</th>
+                                                    <th>Código cliente</th>
+                                                    <th>Email</th>
+                                                    <th>Fecha creación</th>
+                                                    <th>Nombre</th>
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<script>
+    var sendArrayTypes = '@Html.Raw(JsonConvert.SerializeObject(((SendTypeEnum[])Enum.GetValues(typeof(SendTypeEnum))).Select(t => new { text = BESTINVER.GestorAltas.Utilities.Extensions.StringExtensions.ToDescriptionString(t), value = ((int)t).ToString() })))';
+    var requestTypesArray = '@Html.Raw(JsonConvert.SerializeObject(((RequestTypeEnum[])Enum.GetValues(typeof(RequestTypeEnum))).Select(t=>new { text = BESTINVER.GestorAltas.Utilities.Extensions.StringExtensions.ToDescriptionString(t), value= ((int)t).ToString() })))';
+    var requestChannelArray = '@Html.Raw(JsonConvert.SerializeObject(((RemediationChannelType[])Enum.GetValues(typeof(RemediationChannelType))).Select(t => new
+                          {
+                              text = BESTINVER.GestorAltas.Utilities.Extensions.StringExtensions.ToDescriptionString(t) == null ? "No informado" : BESTINVER.GestorAltas.Utilities.Extensions.StringExtensions.ToDescriptionString(t),
+                              value = ((int)t).ToString()
+                          })))';
+</script>
+
+<div class="hide">
+    <div class="resetDialog">
+        <p>En esta pantalla podrás validar el proceso o marcarlo para reiniciar.</p>
+        <p>Recuerda que puedes cambiar el tipo de remediacion desde esta pantalla (Solo Test/Solo DNI/Test y DNI)</p>
+        <select class="selectOption bootbox-input bootbox-input-select form-control">
+            <option value="0">Selecciona una opción</option>
+            <option value="1">Hay errores en la remediación (es necesario especificar el motivo)</option>
+            <option value="7">La remediación está bien. Marcar para procesar en RD</option>
+        </select>
+        <br />
+        <div class="otros-especificar hide">
+            <label>Especificar el motivo (máximo 250 caracteres):</label>
+            <textarea maxlength="250" class="textarea bootbox-input bootbox-input-textarea form-control"></textarea>
+        </div>
+    </div>
+</div>
+
+<div class="hide">
+    <div class="changeDateDialog form-group">
+        <label>Fecha de expiración </label>
+        <input type="date" class="form-control" />
+        <br />
+        <label>No expira </label>
+        <input type="checkbox" class="input-checkbox" value="true" />
+    </div>
+</div>
+
+@section Scripts {
+
+    <environment include="Development">
+        <script src="~/js/remediation.js" asp-append-version="true"></script>
+    </environment>
+
+    <environment exclude="Development">
+        <script src="~/js/remediation.min.js" asp-append-version="true"></script>
+    </environment>
+}

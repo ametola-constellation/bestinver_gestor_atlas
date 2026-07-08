@@ -1,0 +1,63 @@
+﻿@model BESTINVER.GestorAltas.Web.Management.Models.DocumentGroupData
+
+<div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="cotitularLabel">Generar documentación para esta petición</h4>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                @await Html.PartialAsync("_TipoDeFirma", Model)
+                @await Html.PartialAsync("_TipoDeEnvio", Model)
+            </div>
+
+            <div class="row">
+                <div class="form-group col-md-12">
+                    <label>Partícipes</label>
+                    @Html.HiddenFor(m => m.RequestId)
+                    @Html.HiddenFor(m => m.DisableUpdateSendingWays)
+                    @Html.HiddenFor(m => m.DocAction)
+                    <table class="table">
+                        <tr>
+                            <th>DNI</th>
+                            <th>Teléfono móvil</th>
+                            <th>Tipo cotitularidad</th>
+                        </tr>
+                        @for (int i = 0; i < Model.MobilePhoneByApplicant.Count; i++)
+                        {
+                            <tr>
+                                <td>@Html.TextBoxFor(model => Model.MobilePhoneByApplicant[i].ApplicantId, new { @class = "form-control", @readonly = "readonly" })</td>
+                                <td>
+                                    @Html.TextBoxFor(model => Model.MobilePhoneByApplicant[i].MobilePhone, new { @class = "form-control", @readonly = "readonly" })
+                                    @Html.HiddenFor(model => Model.MobilePhoneByApplicant[i].RequestApplicantType, new { @class = "form-control" })
+                                    @Html.HiddenFor(model => Model.MobilePhoneByApplicant[i].IsMobilePhoneOk, new { @class = "form-control" })
+                                </td>
+                                <td>@Html.TextBoxFor(model => Model.MobilePhoneByApplicant[i].RequestApplicantTypeName, new { @class = "form-control", @readonly = "readonly" })</td>
+                            </tr>
+                        }
+                    </table>
+                </div>
+            </div>
+
+
+            @{
+                if (Model.DocAction == GenerateDocAction.Regenerar)
+                {
+                    <div class="row">
+                        <div class="col-md-12">
+                            <p>Este proceso genera una petición de alta nueva, y cancela la actual</p>
+                            <h3>Este proceso sólo se podrá llevar a cabo 2 veces por petición</h3>
+                        </div>
+                    </div>
+                }
+            }
+
+        </div>
+
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Generar documentación</button>
+            <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cerrar</button>
+        </div>
+    </div>
+</div>

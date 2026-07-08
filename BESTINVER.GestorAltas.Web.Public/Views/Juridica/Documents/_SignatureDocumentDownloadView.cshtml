@@ -1,0 +1,86 @@
+﻿<div class="form_block">
+    <p class="form_inlet">
+        Descarga y lee la documentación mostrada. Estos documentos también te los hemos enviado por e-mail para tu comodidad.
+    </p>
+</div>
+
+<div class="form_block" data-bind="with: MainApplicant">
+    <h4 class="form_text-questions_title" data-bind="visible: IsOlderThan18() == true">Documentación incluida para la firma manuescrita de <span data-bind="text: ApplicantBasicData().FullName" data-private></span></h4>
+    <ul class="form_text-questions_list" data-bind="with: PdfDocumentData, visible: IsOlderThan18() == true">
+        <li class="form_text-questions_list_element">
+            <div class="form_block-content big">
+                <ul class="documentation-list" data-bind="foreach: DocumentList">
+                    <li class="documentation-list_element">
+                        <i>
+                            <svg width="30" height="38" viewBox="0 0 30 38" xmlns="http://www.w3.org/2000/svg">
+                                <g stroke="#000" fill="none" fill-rule="evenodd">
+                                    <path stroke-width="2.188" d="M28.399 32.406h-21.9V2h16.228l5.672 5.928z"></path>
+                                    <path stroke-width="2.188" d="M23.899 33.175v3.734h-21.9V6.504h3.993"></path>
+                                    <path stroke-width="1.094" d="M22.305 2.776v6.192h5.625"></path>
+                                </g>
+                            </svg>
+                        </i>
+                        <h5 class="document_title" data-bind="text: name"></h5>
+                        <p data-bind="html: linkhtml"></p>
+                    </li>
+                </ul>
+            </div>
+        </li>
+    </ul>
+</div>
+
+<div class="form_block" data-bind="foreach: listaOtherApplicants">
+    <h4 class="form_text-questions_title">Documentación incluida para la firma manuescrita de <span data-bind="text: ApplicantBasicData().FullName" data-private></span></h4>
+    <ul class="form_text-questions_list" data-bind="with: PdfDocumentData">
+        <li class="form_text-questions_list_element">
+            <div class="form_block-content big">
+                <ul class="documentation-list" data-bind="foreach: DocumentList">
+                    <li class="documentation-list_element">
+                        <i>
+                            <svg width="30" height="38" viewBox="0 0 30 38" xmlns="http://www.w3.org/2000/svg">
+                                <g stroke="#000" fill="none" fill-rule="evenodd">
+                                    <path stroke-width="2.188" d="M28.399 32.406h-21.9V2h16.228l5.672 5.928z"></path>
+                                    <path stroke-width="2.188" d="M23.899 33.175v3.734h-21.9V6.504h3.993"></path>
+                                    <path stroke-width="1.094" d="M22.305 2.776v6.192h5.625"></path>
+                                </g>
+                            </svg>
+                        </i>
+                        <h5 class="document_title" data-bind="text: name"></h5>
+                        <p data-bind="html: linkhtml"></p>
+                    </li>
+                </ul>
+            </div>
+        </li>
+    </ul>
+</div>
+
+<div class="form_block">
+    <p class="form_inlet">
+        Firma todos los documentos e incluye una fotocopia de los NIF/NIE de todos los titulares. Envíanos todo a través de correo postal en la dirección que te indicamos a continuación o solicítanos un mensajero que recogerá los documentos de forma gratuita en la dirección que nos indiques:
+    </p>
+</div>
+
+<div class="form_block">
+    <ul class="documentation_complete-list">
+        <li class="documentation_complete-list_element phone">
+            <h4 class="title">Envío a través de Correos:</h4>
+            <p class="text">
+                Envía por correo postal los documentos impresos y firmados a la siguiente dirección: CAMPUS ACCIONA - BESTINVER Gran Vía de Hortaleza, 3, 28043 Madrid.
+            </p>
+        </li>
+        <li class="documentation_complete-list_element ofice">
+            <h4 class="title">Envío a través de mensajería gratuita</h4>
+            <p class="text">
+                Ponte en contacto con el Centro de Relación con el Inversor a través del teléfono 900 878 280 para solicitar el servicio de mensajería gratuito que recogerá tus documentos firmados en la dirección que prefieras.
+            </p>
+        </li>
+    </ul>
+</div>
+
+<div class="form_block buttons">
+    <div class="form_block-content buttons big">
+        <div class="button_next">
+            <a href="" title="Continuar" class="button brown toWhite" id="save-signature-data" data-bind="click:function () { $root.MessageToEmail(); Navigation.NextStep($root.CurrentStep, 'Success'); }"><span>Continuar</span></a>
+        </div>
+    </div>
+</div>

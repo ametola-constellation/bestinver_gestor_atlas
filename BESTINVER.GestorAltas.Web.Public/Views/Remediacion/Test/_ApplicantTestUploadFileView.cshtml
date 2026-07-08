@@ -1,0 +1,23 @@
+﻿@{
+    decimal maxPdfUploadSizeIbMB = (decimal)AppSettings.Value.MaxPdfUploadSize / 1048576;
+    string maxPdfUploadSizeIbMBString = maxPdfUploadSizeIbMB.ToString("0.##").Replace(".", ",");
+}
+<div id="testdelivery-id" class="form_block-content documentation_info big">
+    <span class="title">Adjuntar Test de conocimiento</span>
+    <p class="text">Adjuntar documento del Test de conocimiento en formato JPG o PDF (máximo @maxPdfUploadSizeIbMBString MB) </p>
+    <input type="file" name="testdelivery-idfiles01" accept="image/*" id="testdelivery-idfiles01" class="empty">
+    <div id="testdelivery-idfiles-data" class="upload_data hidden">
+        <ul class="upload_list"></ul>
+    </div>
+    <label id="testdelivery-idfiles-label" for="testdelivery-idfiles01" class="upload_label link brown darken">
+        <i class="icon">
+            <svg width="14" height="16" viewBox="0 0 14 16" xmlns="http://www.w3.org/2000/svg">
+                <g stroke="#B59971" fill="#B59971" fill-rule="evenodd" opacity=".8">
+                    <path stroke-width=".5" d="M1 14.821h12v-.884H1z"></path>
+                    <path stroke-width=".3" d="M11.11 4.753l-.645.634-3.03-3.035V11h-.9V2.337l-3.09 3.05-.645-.634L7 .643z"></path>
+                </g>
+            </svg>
+        </i><span>Adjuntar documentos</span>
+    </label>
+    <span class="error_message"></span>
+</div>

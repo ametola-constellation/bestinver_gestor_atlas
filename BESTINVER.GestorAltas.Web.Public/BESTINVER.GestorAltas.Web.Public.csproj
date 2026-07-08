@@ -1,0 +1,108 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<TargetFramework>$(NetVersion)</TargetFramework>
+		<Configurations>Debug;Release;Development</Configurations>
+		<DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
+		<DockerDefaultTargetOS>Windows</DockerDefaultTargetOS>
+		<UserSecretsId>2663270C-7610-4137-99BF-AE0D02075BC1</UserSecretsId>
+		<CodeAnalysisRuleSet>..\.sonarlint\bes_gestoraltas__bes_gestoraltascsharp.ruleset</CodeAnalysisRuleSet>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Compile Remove="Views\Juridica\LegalEntity\**" />
+		<Content Remove="Views\Juridica\LegalEntity\**" />
+		<EmbeddedResource Remove="Views\Juridica\LegalEntity\**" />
+		<None Remove="Views\Juridica\LegalEntity\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Remove="Models\Remediacion\RemediacionTestQuestionAnswerModel.cs" />
+		<Compile Remove="Models\Remediacion\RemediacionTestQuestionModel.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Content Remove="Views\Juridica\Documents\_MinorDocumentSubView.cshtml" />
+		<Content Remove="Views\Juridica\Documents\_OtherOptionsDocumentView.cshtml" />
+		<Content Remove="Views\Juridica\Documents\_ScanDocumentView.cshtml" />
+		<Content Remove="Views\Juridica\_CheckAllDataView.cshtml" />
+		<Content Remove="Views\Juridica\_PersonalDataView.cshtml" />
+		<Content Remove="wwwroot\js\bundles\bundle-bestinver-extranjeros.js" />
+		<Content Remove="wwwroot\js\bundles\bundle-bestinver-juridicas.js" />
+		<Content Remove="wwwroot\js\bundles\bundle-bestinver-juridicas.min.js" />
+		<Content Remove="wwwroot\js\bundles\bundle-bestinver.js" />
+		<Content Remove="wwwroot\js\bundles\bundle-bestinver.min.js" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<_ContentIncludedByDefault Remove="wwwroot\js\bundles\bundle-bestinver-extranjeros.js" />
+		<_ContentIncludedByDefault Remove="wwwroot\js\bundles\bundle-bestinver-juridicas.js" />
+		<_ContentIncludedByDefault Remove="wwwroot\js\bundles\bundle-bestinver-juridicas.min.js" />
+		<_ContentIncludedByDefault Remove="wwwroot\js\bundles\bundle-bestinver.js" />
+		<_ContentIncludedByDefault Remove="wwwroot\js\bundles\bundle-bestinver.min.js" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<AdditionalFiles Include="..\.sonarlint\bes_gestoraltas__bes_gestoraltas\CSharp\SonarLint.xml" Link="SonarLint.xml" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="AspNetCore.HealthChecks.Redis" />
+		<PackageReference Include="AutoMapper" />
+		<PackageReference Include="BestInver.Core.Cache" VersionOverride="8.1.*" />
+		<PackageReference Include="BestInver.Core.Otel" VersionOverride="8.1.*" />
+		<PackageReference Include="BestInver.Core.Http" VersionOverride="8.1.*" />
+		<PackageReference Include="BestInver.Core.Utils" VersionOverride="8.1.*" />
+		<PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" />
+		<PackageReference Include="Microsoft.FeatureManagement.AspNetCore" />
+		<PackageReference Include="Microsoft.CodeAnalysis.Analyzers">			
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" />
+		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" />
+		<PackageReference Include="Serilog" />
+		<PackageReference Include="Serilog.AspNetCore" />
+		<PackageReference Include="Serilog.Sinks.ApplicationInsights" />
+		<PackageReference Include="Azure.Extensions.AspNetCore.DataProtection.Blobs" />
+		<PackageReference Include="Azure.Extensions.AspNetCore.DataProtection.Keys" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\BESTINVER.GestorAltas.Domain.Interfaces\BESTINVER.GestorAltas.Domain.Interfaces.csproj" />
+		<ProjectReference Include="..\BESTINVER.GestorAltas.Domain\BESTINVER.GestorAltas.Domain.csproj" />
+		<ProjectReference Include="..\BESTINVER.GestorAltas.MicroservicesProxy\BESTINVER.GestorAltas.MicroservicesProxy.csproj" />
+		<ProjectReference Include="..\BESTINVER.GestorAltas.Utilities\BESTINVER.GestorAltas.Utilities.csproj" />
+		<ProjectReference Include="..\BESTINVER.GestorAltas.Web.Common\BESTINVER.GestorAltas.Web.Common\BESTINVER.GestorAltas.Web.Common.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="Views\Juridica\Documents\_SignatureView.cshtml" />
+		<None Include="Views\Juridica\Operation\_CriiOperationView.cshtml" />
+		<None Include="Views\Juridica\Operation\_OperationListView.cshtml" />
+		<None Include="Views\Juridica\Operation\_OperationSubView.cshtml" />
+		<None Include="Views\Juridica\Operation\_OperationView.cshtml" />
+		<None Include="Views\Juridica\OtherApplicant\_OtherApplicantListView.cshtml" />
+		<None Include="Views\Juridica\OtherApplicant\_OtherApplicantSubView.cshtml" />
+		<None Include="Views\Juridica\Product\_ProductListView.cshtml" />
+		<None Include="Views\Juridica\Product\_ProductSelectView.cshtml" />
+		<None Include="Views\Juridica\Test\_ApplicantListView.cshtml" />
+		<None Include="Views\Juridica\Test\_ApplicantTestView.cshtml" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Folder Include="Views\Juridica\Test\Questions\" />
+		<Folder Include="Views\Register\Test\Questions\" />
+		<Folder Include="wwwroot\js\bundles\" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Content Update="nuget.config">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+		</Content>
+	</ItemGroup>
+
+</Project>

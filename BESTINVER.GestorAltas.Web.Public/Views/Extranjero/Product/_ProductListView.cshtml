@@ -1,0 +1,16 @@
+﻿<table class="table table-bordered">
+    <tbody data-bind="with:Product">
+        <tr>
+            <td data-bind="text:Name"></td>
+            <td><a href="#"><span data-bind="click:$root.ViewProductOperations">Operaciones</span> </a></td>
+            <td></td>
+        </tr>
+    </tbody>
+    <tbody data-bind="foreach:listaOtherProducts">
+        <tr>
+            <td data-bind="text:Name"></td>
+            <td><a href="#"><span data-bind="click:$root.ViewProductOperations">Operaciones</span> </a></td>
+            <td><a href="#"><span data-bind="click:$root.DeleteProduct">Eliminar</span> </a></td>
+        </tr>
+    </tbody>
+</table>

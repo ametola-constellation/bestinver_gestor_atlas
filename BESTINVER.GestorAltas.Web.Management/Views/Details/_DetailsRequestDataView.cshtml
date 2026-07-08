@@ -1,0 +1,65 @@
+﻿@using BestInver.WebPrivada.Shared.Models.Microservices.Tests.Enums
+@model BESTINVER.GestorAltas.Web.Management.Models.ManagementRequestModel
+
+@{
+    var rdcode = Model.Data.BasicData.RdCode > 0 ? Model.Data.BasicData.RdCode.ToString() : "";
+}
+
+<div class="row">
+    <div class="col">
+        <div class="form-inline">
+            <div class="form-group col-md-2">
+                @Html.LabelFor(m => m.Request.IdRequest, new { @class = "" })
+                @Html.TextBoxFor(m => m.Request.IdRequest, new { @class = "form-control col-md-12", disabled = true })
+            </div>
+            <div class="form-group col-md-2">
+                @Html.LabelFor(m => m.Request.RequestStartDate, new { @class = "" })
+                <input type="text" class="form-control col-md-12" id="Request_RequestStartDate" name="Request.RequestStartDate" disabled 
+                    data-datetime="@DateTime.SpecifyKind(Model.Request.RequestStartDate, DateTimeKind.Utc).ToString("o")" />
+            </div>
+            <div class="form-group col-md-2">
+                @Html.LabelFor(m => m.Request.IdCuenta, new { @class = "" })
+                @Html.TextBoxFor(m => m.Request.IdCuenta, new { @class = "form-control col-md-12", disabled = true })
+            </div>
+            <div class="form-group col-md-2">
+                <label asp-for="Request.IsEmployee"></label>
+                <input type="checkbox" asp-for="Request.IsEmployee" class="form-check" disabled />
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col">
+        <div class="form-group col-md-12">
+            <partial name="_StatusResumeView" model="Model" />
+        </div>
+        <div class="form-group col-md-12">
+            <partial name="_AlertsListView" model="Model.Alerts" />
+        </div>
+        <div class="form-group col-md-12">
+            <partial name="_ProductsListView" model="Model" />
+        </div>
+        <div class="form-group col-md-12">
+            <partial name="_DetailsTestView" model="Model" />
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col">
+        <div class="form-inline">
+            <div class="form-group col-md-4">
+                @Html.CheckBoxFor(m => m.IndGestorComercial, new { @class = "checkbox", disabled = true })
+                @Html.DisplayNameFor(x => x.IndGestorComercial)
+            </div>
+            <div class="form-group col-md-4">
+                @Html.LabelFor(x => x.GestorComercialName, new { @class = "" })
+                @Html.TextBoxFor(m => m.GestorComercialName, new { @class = "form-control col-md-12", disabled = true })
+            </div>
+            <div class="form-group col-md-4">
+                @Html.LabelFor(x => x.Data.BasicData.RequestApplicantTypeName, new { @class = "" })
+                @Html.TextBoxFor(m => m.Data.BasicData.RequestApplicantTypeName, new { @class = "form-control col-md-12", disabled = true })
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row"></div>

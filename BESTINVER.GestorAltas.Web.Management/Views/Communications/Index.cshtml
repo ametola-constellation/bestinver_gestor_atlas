@@ -1,0 +1,187 @@
+﻿@using BESTINVER.GestorAltas.Web.Management.ViewModels
+
+@model CommunicationsViewModel
+@Html.AntiForgeryToken()
+
+@{
+	ViewBag.Title = "Index";
+}
+
+@Html.HiddenFor(m => m.MaxClientsToGenerate)
+<div class="card-group" id="accordion" role="tablist" aria-multiselectable="true">
+	<div class="card">
+		<div class="card-header" role="tab" id="headingOne">
+			<h4 class="card-title">
+				<a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+					<span class="mr-2 fas fa-bullhorn"></span>
+					Comunicado
+				</a>
+			</h4>
+		</div>
+		<div id="collapseOne" class="collapse in show" role="tabpanel" aria-labelledby="headingOne">
+			<div class="card-body">
+				<div class="row">
+					<div class="col-3">
+						<div class="row">
+							<div class="form-group col-md-12">
+								<label>Producto </label>
+								@Html.DropDownListFor(m => m.ProductList, Model.Products, "Elegir...", new { @class = "form-control" })
+							</div>
+						</div>
+					</div>
+					<div class="col-6">
+						<div class="row">
+							<div class="form-group col-md-12">
+								<label>Plantilla </label>
+								@Html.DropDownListFor(m => m.TemplateList, Model.Templates, "Elegir...", new { @class = "form-control w-100", Style="max-width:900px !important" })
+							</div>
+						</div>
+					</div>
+					<div class="col-3">
+						<div class="row">
+							<div class="form-group col-md-12">
+								<label>Evento </label>
+								@Html.DropDownListFor(m => m.EventList, Model.Events, "Elegir...", new { @class = "form-control" })
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="card-group" id="accordion" role="tablist" aria-multiselectable="true">
+	<div class="card">
+		<div class="card-header" role="tab" id="headingOne">
+			<h4 class="card-title">
+				<a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+					<span class="mr-2 fas fa-users"></span>
+					Público Objetivo
+				</a>
+			</h4>
+		</div>
+		<div id="collapseOne" class="collapse in show" role="tabpanel" aria-labelledby="headingOne">
+			<div class="card-body">
+				<div class="row">
+					<div class="col-3">
+						<div class="row">
+							<div class="form-group col-md-12">
+								<label>NIF / NIE / PASAPORTE </label>
+								@Html.TextBoxFor(m => m.NifNiePasaporte, string.Empty, new { @class = "form-control", placeholder ="NIF / NIE / PASAPORTE" })
+							</div>
+						</div>
+					</div>
+					<div class="col-3">
+						<div class="row">
+							<div class="form-group col-md-12">
+								<label>Nombre y Apellidos </label>
+								@Html.TextBoxFor(m => m.NameSurname, string.Empty, new { @class = "form-control", placeholder ="Nombre y Apellidos" })
+							</div>
+						</div>
+					</div>
+					<div class="col-3">
+						<div class="row">
+							<div class="form-group col-md-12">
+								<label>Comercializadora</label>
+								@Html.DropDownListFor(m => m.MarketerList, Model.Marketer, "Elegir...", new { @class = "form-control", placeholder = "Comercializadora" })
+							</div>
+						</div>
+					</div>
+					<div class="col-3">
+						<div class="row">
+							<div class="form-group col-md-12">
+								<label>Segmento </label>
+								@Html.TextBoxFor(m => m.Segment, string.Empty, new { @class = "form-control", placeholder ="Segmento" })
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-12">
+						<div class="btn-group m-2" role="group">
+							<button id="btnLoadData" class="btn btn-primary" onclick="loadSearchResultsTable(event)" disabled><span class="mr-2 fas fa-rotate"></span>Cargar datos</button>
+							<button id="btnRemoveFilters" onclick="RemoveFilters()" type="button" class="btn btn-light" disabled><span class="mr-2 fas fa-trash"></span>Quitar filtros</button>
+							<button id="btnClearClients" type="button" class="btn btn-warning" style="display:none">
+								<span class="mr-2 fas fa-recycle"></span>
+								Limpiar selección <span id="client-count" class="badge badge-light"></span>
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="progress" id="searchLoader" style="display:none">
+	<div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+		cargando
+	</div>
+</div>
+<div class="row hide" id="searchResult">
+	<div class="col-md-12">
+		<table id="client-list" class="datatable table striped hovered cell-hovered border bordered" style="width:100%">
+			<thead>
+				<tr>
+					<th><input name="select_all" value="1" style="margin-left:25px" type="checkbox"></th>
+					<th>NIF / NIE / PASAPORTE</th>
+					<th>Nombre y Apellidos</th>
+					<th>Id Cuenta</th>
+					<th>Comercializadora</th>
+					<th>Segmento</th>
+					<th>Previsualizar</th>
+				</tr>
+			</thead>
+			<tbody></tbody>
+		</table>
+	</div>
+</div>
+
+<div class="card-group" id="accordion" role="tablist" aria-multiselectable="true">
+	<div class="card">
+		<div class="card-header" role="tab" id="headingOne">
+			<h4 class="card-title">
+				<a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+					Generación de comunicados
+				</a>
+			</h4>
+		</div>
+		<div id="collapseOne" class="collapse in show" role="tabpanel" aria-labelledby="headingOne">
+			<div class="card-body">
+				<button id="btnGenerateDocuments" class="btn btn-primary" onclick="GenerateDocuments()" disabled><span class="mr-2 fas fa-bullhorn"></span>Generar comunicados de los clientes seleccionados</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Modal / Ventana / Overlay en HTML -->
+<div id="DocumentsGeneratedModal" class="modal fade">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close hide" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4 class="modal-title">Generando comunicados</h4>
+			</div>
+			<div class="modal-body">
+				<p id="DocumentsGeneratedInfo" style="word-wrap: break-word; overflow-wrap: break-word"></p><br />
+				<p id="LinkSharedFolder" class="hide">
+					Para abrir la ubicación de los documentos copie y pegue (en una nueva pestaña) la siguiente url: <br /><br />
+					<span style="word-wrap: break-word; overflow-wrap: break-word">@Model.UrlSharedFolder</span>
+				</p>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default hide" data-dismiss="modal">Cerrar</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+@section Scripts {
+	<environment include="Development">
+		<script src="~/js/Communications.js" asp-append-version="true"></script>
+	</environment>
+
+	<environment exclude="Development">
+		<script src="~/js/Communications.min.js" asp-append-version="true"></script>
+	</environment>
+}

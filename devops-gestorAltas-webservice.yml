@@ -1,0 +1,246 @@
+# ASP.NET
+# Build and test ASP.NET projects.
+# Add steps that publish symbols, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/apps/aspnet/build-aspnet-4
+
+# trigger:
+#  branches:
+#    include:
+#      - develop
+#  paths:
+#    include:
+#      - BESTINVER.Wordpress.WS
+
+# trigger: none
+# pool:
+#   vmImage: 'windows-latest'
+
+# variables:
+# - name: BuildConfiguration
+#   value: 'Release'
+# - name: buildPlatform
+#   value: 'Any CPU' 
+# - name: solution
+#   value: '**/*.sln'
+
+
+parameters:
+- name: solution
+  default: '**/*.sln'
+- name: buildPlatform
+  default: 'Any CPU'
+- name: BuildConfiguration
+  default: 'Release'
+
+steps:
+  - task: Bash@3
+    displayName: Version
+    inputs:
+      targetType: 'inline'
+      script: |
+        # SCRIPT PARA USAR LAST TAG GIT como buildnumber
+        # este script actualiza la variable de azure repos buildnumber por lo tanto solo es util
+        # para lanzarlo desde los pipes de azure devops
+        # se tiene que crear la invocacion al script y seleccionar el script 
+        IFS="-"
+        version=$(git log -n1000 --pretty='format:%d' | sed 's/, /\n/g' | grep 'tag:' | sed -E 's/^[ \t\(]*tag: //g' | sed -E 's/\)[ \t]*$//g' | grep -i '^[0-9\.]\+\(-KO\|-RT\|-RST\)\( \)*$' | head -n 1)
+        set $version
+        newbuildnumber=$1
+        echo $newbuildnumber
+        echo "##vso[build.updatebuildnumber]$newbuildnumber"
+        
+  - task: NuGetToolInstaller@1
+    displayName: 'Install NuGet >=6.3.0-0'
+    inputs:
+      versionSpec: '>=6.3.0-0'
+      checkLatest: true
+
+  # - task: ArtifactoryNuGet@2
+  #   inputs:
+  #     command: 'restore'
+  #     artifactoryService: 'ARTIFACTORY - BESTINVER-bes_GestorAltas'
+  #     targetResolveRepo: 'bestinver-nuget'
+  #     solutionPath: '**/*.sln'
+  #     nugetProtocolVersion: 'v3'
+  - task: JFrogDotnetCore@1
+    inputs:
+      command: 'restore'
+      artifactoryConnection: 'JFROG - BESTINVER-bes_GestorAltas'
+      targetResolveRepo: 'bestinver-nuget'
+      rootPath: '**/BESTINVER.Wordpress.WS/BESTINVER.Wordpress.WS.csproj'
+      verbosityRestore: 'Detailed'
+  # - task: JFrogNuGet@1
+  #   displayName: NuGet dependencies
+  #   inputs:
+  #     command: 'restore'
+  #     artifactoryConnection: 'JFROG_BU'
+  #     targetResolveRepo: 'bestinver-nuget'
+  #     solutionPath: '**/*.sln'
+  - task: DotNetCoreCLI@2
+    displayName: 'dotnet build'
+    inputs:
+      command: 'build'
+      projects: '**/BESTINVER.Wordpress.WS.csproj'
+      arguments: '--no-restore --configuration "$(BuildConfiguration)" --output "$(build.artifactstagingdirectory)" /p:DeployOnBuild=true /p:WebPublishMethod=Package /p:platform="$(BuildPlatform)" /p:PublishProfile="$(BuildConfiguration)" /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactstagingdirectory)\$(BuildConfiguration)"'
+
+  - task: CopyFiles@2
+    displayName: 'copy postman files'
+    inputs:
+      SourceFolder: '$(Build.SourcesDirectory)/BESTINVER.Wordpress.WS/Postman'
+      Contents: '**/*.json'
+      TargetFolder: '$(build.artifactstagingdirectory)'
+
+  - task: PublishSymbols@2
+    inputs:
+      SearchPattern: '**/bin/**/*.pdb'
+      PublishSymbols: false
+  - task: PowerShell@2
+    displayName: Modify XML
+    inputs:
+      targetType: 'inline'
+      script: |
+        Function Get-ModifyXML
+        {
+            [CmdletBinding()]
+            Param
+            (
+            [Parameter(Mandatory)]
+            [ValidateNotNullOrEmpty()]
+                [string]$path,
+            [Parameter(Mandatory)]
+            [ValidateNotNullOrEmpty()]
+                [string]$file
+            )
+        
+            Try
+            {
+                $path_ = $path
+                $file_ = $file        
+                Write-Host "Ruta a leer path $path_" -ForegroundColor Green
+        
+                $value = Get-ChildItem $path_ -recurse | Where-Object {$_.PSIsContainer -eq $true -and ($_.Name -match "PackageTmp" -or $_.Name -match"Out")} | Select-Object FullName
+                $value = $value -replace "@{FullName=", "" -replace "}", ""
+              
+                Write-Host "Ruta donde estan los archivos $value" -ForegroundColor Green
+        
+                return $value
+            }
+            Catch
+            {
+                $ExceptionMessage="Error in Line: " + $_.Exception.Line + ". " + $_.Exception.GetType().FullName + ": " + $_.Exception.Message + " Stacktrace: " + $_.Exception.StackTrace
+                Write-Error -Message $ExceptionMessage
+                Break
+            }
+        }
+        
+        $destPath = "$(Build.ArtifactStagingDirectory)/deploy/bestinver-webservice"
+        
+        New-Item -Path $destPath -ItemType "directory"
+        
+        Get-ChildItem -Path $(Build.ArtifactStagingDirectory)/$(BuildConfiguration) -Filter "*.zip" | foreach { Expand-Archive -Path $_.FullName -DestinationPath $destPath }
+            
+        $fullArtefactPath = Get-ModifyXML -path $destPath -file archive.xml
+        
+        dir
+        Write-Host "----"
+        dir $(Build.ArtifactStagingDirectory) 
+        Write-Host "----"
+        dir $(Build.ArtifactStagingDirectory)/deploy
+        Write-Host "----"
+        dir $(Build.ArtifactStagingDirectory)/deploy/bestinver-webservice
+        Write-Host "----"
+        dir $(Build.ArtifactStagingDirectory)/deploy/bestinver-webservice/Content
+        Write-Host "----"
+        dir $(Build.ArtifactStagingDirectory)/deploy/bestinver-webservice/Content/D_C
+        dir $(Build.ArtifactStagingDirectory)/deploy/bestinver-webservice/Content/D_C/a/1/s/BESTINVER.Wordpress.WS/obj/Release
+        dir $(Build.ArtifactStagingDirectory)/deploy/bestinver-webservice/Content/D_C/a/1/s/BESTINVER.Wordpress.WS/obj/Release/net6.0/PubTmp/Out
+        Write-Host "----"
+        # dir $(Build.ArtifactStagingDirectory)/$(BuildConfiguration)
+        # Write-Host "----"
+        # dir $(Build.ArtifactStagingDirectory)/$(BuildConfiguration)/bestinver-webservice
+        Write-Host "----"
+
+
+  - task: Bash@3
+    displayName: Clean directory
+    inputs:
+      targetType: 'inline'
+      script: |
+        # Write your commands here
+
+        mkdir "$(Build.ArtifactStagingDirectory)"/deploy/temp
+        cp -r "$(Build.ArtifactStagingDirectory)"/deploy/bestinver-webservice/Content/D_C/a/1/s/BESTINVER.Wordpress.WS/obj/Release/*/PubTmp/Out/* "$(Build.ArtifactStagingDirectory)"/deploy/temp
+        rm -rf "$(Build.ArtifactStagingDirectory)"/deploy/bestinver-webservice
+        mv "$(Build.ArtifactStagingDirectory)"/deploy/temp "$(Build.ArtifactStagingDirectory)"/deploy/bestinver-webservice
+        ls -l "$(Build.ArtifactStagingDirectory)"/deploy/bestinver-webservice
+  # - task: PowerShell@2
+  #   displayName: Compress-Arhcive $(Build.ArtifactStagingDirectory)/deploy/bestinver-webservice
+  #   inputs:
+  #     targetType: 'inline'
+  #     script: |      
+  #       Compress-Archive -DestinationPath $(Build.ArtifactStagingDirectory)/BESTINVER.Wordpress.WS.zip -Path $(Build.ArtifactStagingDirectory)/deploy/bestinver-webservice
+  - task: Bash@3
+    displayName: 
+    inputs:
+      targetType: 'inline'
+      script: |
+        # Write your commands here
+        mkdir -p "$(Build.ArtifactStagingDirectory)"/BESTINVER.Wordpress.WS
+        ls -l "$(Build.ArtifactStagingDirectory)"
+        ls -l "$(Build.ArtifactStagingDirectory)"/deploy/bestinver-webservice
+        mv "$(Build.ArtifactStagingDirectory)"/deploy/bestinver-webservice/* "$(Build.ArtifactStagingDirectory)"/BESTINVER.Wordpress.WS
+        ls -l "$(Build.ArtifactStagingDirectory)"
+        ls -l "$(Build.ArtifactStagingDirectory)"/BESTINVER.Wordpress.WS
+    
+  - task: Bash@3
+    displayName: list "$(build.artifactstagingdirectory)"
+    inputs:
+      targetType: 'inline'
+      script: |
+        # Write your commands here
+        
+        ls -al "$(build.artifactstagingdirectory)"
+        ls -al "$(build.artifactstagingdirectory)"/BESTINVER.Wordpress.WS
+  - task: ArchiveFiles@2
+    inputs:
+      rootFolderOrFile: '$(Build.ArtifactStagingDirectory)/BESTINVER.Wordpress.WS'
+      includeRootFolder: false
+      archiveType: 'zip'
+      archiveFile: '$(Build.ArtifactStagingDirectory)/gestorAltas_bestinver-webservice.zip'
+      replaceExistingArchive: true
+      verbose: true
+  - task: ArchiveFiles@2
+    inputs:
+      rootFolderOrFile: '$(Build.ArtifactStagingDirectory)/gestorAltas_bestinver-webservice.zip'
+      includeRootFolder: true
+      archiveType: 'zip'
+      archiveFile: '$(Build.ArtifactStagingDirectory)/bestinver-webservice.zip'
+      replaceExistingArchive: true
+      verbose: true
+  - task: Bash@3
+    inputs:
+      targetType: 'inline'
+      script: |
+        # Write your commands here
+        
+        ls -al "$(build.artifactstagingdirectory)"
+
+  # - task: PublishBuildArtifacts@1
+  #   inputs:
+  #     PathtoPublish: '$(Build.ArtifactStagingDirectory)/bestinver-webservice.zip'
+  #     ArtifactName: 'drop'
+  #     publishLocation: 'Container'
+  - task: ArtifactoryGenericUpload@2
+    inputs:
+      artifactoryService: 'ARTIFACTORY - BESTINVER-bes_GestorAltas'
+      specSource: 'taskConfiguration'
+      fileSpec: |
+        {
+          "files": [
+            {
+              "pattern": "$(Build.ArtifactStagingDirectory)/bestinver-webservice.zip",
+              "target": "bestinver-deploy/$(System.TeamProject)/$(Build.Repository.Name)/$(Build.BuildNumber)/"
+            }
+          ]
+        }
+      failNoOp: true

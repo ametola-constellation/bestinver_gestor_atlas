@@ -1,0 +1,10 @@
+﻿
+<div class="form_block-content big">
+    <div class="infor">
+        <span data-bind="text: 'Documentos para firmar por ' + personalDataModel().userName()"> </span>
+    </div>
+</div>
+
+<div id="signature-box" class="form_block-content big">
+    @{ await Html.RenderPartialAsync("Documents/_SignatureDocumentSubView");}
+</div>

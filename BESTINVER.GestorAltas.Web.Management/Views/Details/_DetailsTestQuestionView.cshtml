@@ -1,0 +1,218 @@
+﻿@model QuestionDetailModel;
+
+<div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title" id="cotitularLabel">Modificar pregunta</h4>
+
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+
+        <form asp-action="SaveQuestionDetail" asp-controller="Details" method="post" id="questionForm">
+
+            <div class="modal-body">
+                @{
+                    @Html.HiddenFor(m => m.RequestId)
+                    @Html.HiddenFor(m => m.IdApplicant)
+                    @Html.HiddenFor(m => m.IdQuestion)
+                    @Html.HiddenFor(m => m.QuestionType)
+                    @Html.HiddenFor(m => m.RequestApplicantType)
+
+                    @Html.HiddenFor(m => m.IsRequired,
+                        new Dictionary<string, object>{
+                            { "id" ,  "questionisrequired"}
+                        })
+
+                    int type = (int)Model.QuestionType;
+                   
+                    <input asp-for="Question" class="form-control"
+                           data-val="true"
+                           data-val-requiredcheck="La selección no es correcta"
+                           data-val-requiredcheck-type="@type"
+                           data-val-requiredcheck-container="div-options-checks" ,
+                           data-val-requiredcheck-multiple="@Html.Raw(Model.AllowMultiple).ToString().ToLower()"
+                           hidden />
+
+                    if (Model.QuestionType == QuestionType.Text)
+                    {
+                        <div class="row">
+                            <div class="col-md-4">
+                                @Html.Label(Model.Question)
+                                @Html.LabelFor(m => m.Question);
+                                @Html.TextBoxFor(m => m.TextAnswer, new { @class = "form-control", maxlength = 50 })
+                            </div>
+                        </div>
+                    }
+
+                    if (Model.QuestionType == QuestionType.Combo)
+                    {
+
+                        @Html.HiddenFor(m => m.IsExtended, new Dictionary<string, object> { { "id", "questionisextended" } })
+
+                        bool visibleextended = !string.IsNullOrEmpty(Model.ComboExtendedAnswer);
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                @Html.Label(Model.Question)
+                                @Html.DropDownListFor(m => m.ComboAnswer, Model.PosibleAnswers.ToSelectListItem(),
+                               new Dictionary<string, object>{
+                                   { "class" ,  "form-control"},
+                                   { "id" ,  "comboquestion" + Model.IdQuestion},
+                                   { "data-posibleextendedanswers" ,  string.Join(",", Model.PosibleExtendedAnswers)  },
+                                   { "data-extendedanswer" ,  Model.IsExtended },
+                                   { "onchange", "manageOtherAnswerCombo.call(this)"}
+                                })
+
+                            </div>
+                        </div>
+
+                        if (visibleextended)
+                        {
+                            <div class="row" id="divextendedanswer">
+                                <div class="col-md-6">
+                                    <label>Introduzca el nombre del cargo y organización</label>
+                                    @Html.TextBoxFor(m => m.ComboExtendedAnswer,
+                                   new Dictionary<string, object>{
+                                       { "class" ,  "form-control"},
+                                       { "id" ,  "txtcomboextendedanswer" },
+                                       { "maxlength" , 50}
+                                   })
+                                    <span asp-validation-for="ComboExtendedAnswer" class="text-danger"></span>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="row hidden" id="divextendedanswer">
+                                <div class="col-md-6">
+                                    <label>Introduzca el nombre del cargo y organización</label>
+                                    @Html.TextBoxFor(m => m.ComboExtendedAnswer,
+                                   new Dictionary<string, object>{
+                                       { "class" ,  "form-control"},
+                                       { "id" ,  "txtcomboextendedanswer" },
+                                   })
+                                    <span asp-validation-for="ComboExtendedAnswer" class="text-danger"></span>
+                                </div>
+                            </div>
+                        }
+
+                    }
+
+                    if (Model.QuestionType == QuestionType.Check)
+                    {
+
+                        <div class="row">
+                            <div class="col" id="div-options-checks">
+
+                                @Html.Label(Model.Question)
+
+                                @for (int i = 0; i < Model.Answers.Count; i++)
+                                {
+                                    @Html.HiddenFor(m => m.Answers[i].IdAnswer)
+                                    @Html.HiddenFor(m => m.Answers[i].Answer)
+                                    if (Model.IdQuestion == 29)
+                                    {
+                                        <div class="input-group mt-2">
+                                            @Html.CheckBoxFor(m => m.Answers[i].Checked, new { @disabled = "disabled" })
+                                            @Html.LabelFor(m => m.Answers[i].Checked, Model.Answers[i].Answer, new { @class = "" })
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="input-group mt-2" style="max-width:750px">
+                                            <div style="max-width:50px">
+                                                @Html.CheckBoxFor(m => m.Answers[i].Checked,
+                                               new Dictionary<string, object>{
+                                                   { "class" ,  "require-one"},
+                                                   { "data-answerid" ,  Model.Answers[i].IdAnswer },
+                                                   { "data-extendedanswer" , Html.Raw(Model.Answers[i].ExtendedAnswer).ToString().ToLower()},
+                                                   { "onchange", "manageOtherAnswerCheck.call(this)"}
+                                               })
+                                            </div>
+                                            <div style="max-width:700px">
+                                                @Html.LabelFor(m => m.Answers[i].Checked, Model.Answers[i].Answer, new { @class = "" })
+                                            </div>
+                                        </div>
+                                    }
+
+                                    if (Model.Answers[i].ExtendedAnswer)
+                                    {
+                                        var divid = "divextendedanswer" + Model.Answers[i].IdAnswer.ToString();
+                                        var extendedid = "checkextendedanswer" + Model.Answers[i].IdAnswer.ToString();
+
+                                        if (Model.Answers[i].Checked)
+                                        {
+
+                                            <div class="col-sm-10" id='@divid'>
+                                                <div class="form-check">
+                                                    @Html.TextBoxFor(m => m.Answers[i].OtherAnswer,
+                                                   new Dictionary<string, object>{
+                                                       { "class" ,  "form-control"},
+                                                       { "id" ,  "checkextendedanswer" +  Model.Answers[i].IdAnswer.ToString()},
+                                                       { "required" , "required"},
+                                                       { "maxlength" , 50}
+                                                   })
+                                                    <span asp-validation-for="Answers[i].OtherAnswer" class="text-danger"></span>
+                                                </div>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="col-sm-10 hidden" id='@divid'>
+                                                <div class="form-check">
+                                                    @Html.TextBoxFor(m => m.Answers[i].OtherAnswer,
+                                                   new Dictionary<string, object>{
+                                                       { "class" ,  "form-control"},
+                                                       { "id" ,  "checkextendedanswer" +  Model.Answers[i].IdAnswer.ToString()},
+                                                   })
+                                                    <span asp-validation-for="Answers[i].OtherAnswer" class="text-danger"></span>
+                                                </div>
+                                            </div>
+                                        }
+                                    }
+                                }
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="form-group col-md-4">
+                                <span asp-validation-for="Question" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                    }
+                }
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn btn-primary" data-save="modal" id="saveButton">Guardar</button>
+            </div>
+        </form>
+    </div>
+</div>
+<partial name="_ValidationScriptsPartial" />
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        var $form = $('#questionForm');
+        var $saveButton = $('#saveButton');
+
+        $form.on('submit', function (event) {
+            if ($form[0].checkValidity()) {
+                $saveButton.prop('disabled', true);
+                $saveButton.text('Guardando...');
+            } else {
+                $saveButton.prop('disabled', false);
+                $saveButton.text('Guardar');
+            }
+        });
+
+        $form.on('reset', function () {
+            $saveButton.prop('disabled', false);
+            $saveButton.text('Guardar');
+        });
+    });
+</script>

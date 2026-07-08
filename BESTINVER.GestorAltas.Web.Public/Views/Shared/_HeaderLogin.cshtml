@@ -1,0 +1,29 @@
+﻿@{
+    var config = AppSettings.Value;
+    var usermane = User.Identity.Name.Split("@")[0];
+}
+
+<header id="header" class="registration" style="transform: translateY(0px) translateZ(0px);">
+    <div class="header_inner registration_inner">
+        <h1 class="header-logo">
+            <i>
+            </i><span>Hazte inversor</span>
+        </h1>
+        <div class="header-link_content">
+            @using (Html.BeginForm("Logout", "Account", FormMethod.Post, new { id = "logoutForm" }))
+            {
+                @Html.AntiForgeryToken()
+                <a href="javascript:document.getElementById('logoutForm').submit()" title="" class="header-link link white opacity logout">
+                    <span>@usermane</span><i class="icon">
+                        <svg width="13" height="13" viewBox="0 0 13 13" xmlns="http://www.w3.org/2000/svg">
+                            <g fill-rule="nonzero" fill="#FFF">
+                                <path d="M6.487 13C2.91 13 0 10.12 0 6.58a6.334 6.334 0 0 1 1.18-3.693c.37-.52.813-.98 1.312-1.367.227-.176.805.472.605.622A5.578 5.578 0 0 0 .864 6.581c0 3.067 2.523 5.564 5.623 5.564 3.101 0 5.624-2.497 5.624-5.565a5.579 5.579 0 0 0-2.178-4.396c-.222-.171.254-.89.495-.706a6.47 6.47 0 0 1 1.37 1.413 6.334 6.334 0 0 1 1.177 3.689c0 3.54-2.91 6.42-6.488 6.42z"></path>
+                                <path d="M6.056 0h.864v7.403h-.864z"></path>
+                            </g>
+                        </svg>
+                    </i>
+                </a>
+            }
+        </div>
+    </div>
+</header>

@@ -1,0 +1,163 @@
+﻿@using Newtonsoft.Json;
+@using System.Web;
+
+@{
+    Layout = "~/Views/Shared/_Layout_Remediacion.cshtml";
+    @model BESTINVER.GestorAltas.Web.Public.Models.Remediacion.RemediacionModel;
+}
+
+@section scripts{
+    <script language="javascript" type="text/javascript">
+
+        $.blockUI.defaults.css.cursor = "dafault";
+        $.blockUI.defaults.css.backgroundColor = "#fff";
+        $.blockUI.defaults.overlayCSS.cursor = "default";
+        $.blockUI.defaults.overlayCSS.backgroundColor = "#fff";
+
+
+        var parser = new UAParser();
+        var vm;
+        var questions;
+        var countries =  @Html.Raw(JsonConvert.SerializeObject(Model.MasterData.Countries));
+        var nationalities =  @Html.Raw(JsonConvert.SerializeObject(Model.MasterData.Nationalities));
+        var viaTypes =  @Html.Raw(JsonConvert.SerializeObject(Model.MasterData.ViaTypes));
+        var provinces = @Html.Raw(JsonConvert.SerializeObject(Model.MasterData.Provinces));
+        var juridicApplicants = @Html.Raw(JsonConvert.SerializeObject(Model.JuridicApplicants));
+
+        $(document).ready(function () {
+            vm = new remediacionViewModel("@Model.RemediacionId",
+                @Model.PersonalData.SendType,
+                @Model.PersonalData.Role,
+                @Model.RemediacionChannel,
+                @Model.IsExpiredKnowledgeTest.ToString().ToLower(),
+                @Model.IsJointSignature.ToString().ToLower(),
+                @Model.IsCompletedProcess.ToString().ToLower(),
+                @Model.RequestType);
+            vm.loadStepCollection(@Model.UpdateDocument.ToString().ToLower(), @Model.UpdateTest.ToString().ToLower(), @Model.PendingSignature.ToString().ToLower());
+
+            questions =  @Html.Raw(JsonConvert.SerializeObject(Model.Questions));
+            questionAnswers = @Html.Raw(JsonConvert.SerializeObject(Model.Test));
+
+            vm.setNationalityList(nationalities);
+            vm.setCountryList(countries);
+            vm.setViaTypesList(viaTypes);
+            vm.setProvincesList(provinces);
+            vm.setJuridicApplicants(juridicApplicants);
+            vm.setJuridicSigners(juridicApplicants);
+
+            var nationalityValue = vm.nacionalityCollection().find(function (item) { return item.id  == @Model.PersonalData.Nacionality; });
+            var countryValue = vm.countryCollection().find(function (item) { return item.id  == @Model.PersonalData.Country; });
+
+            var pdm = new PersonalDataModel(
+                @(Model.PersonalData.Birthday.HasValue ? Model.PersonalData.Birthday.Value.Year.ToString() : "null"),
+                @(Model.PersonalData.Birthday.HasValue ? Model.PersonalData.Birthday.Value.Month.ToString() : "null"),
+                @(Model.PersonalData.Birthday.HasValue ? Model.PersonalData.Birthday.Value.Day.ToString() : "null"),
+                nationalityValue,
+                countryValue,
+                '@Html.Raw(HttpUtility.JavaScriptStringEncode(Model.PersonalData.BornPlace))',
+                '@Html.Raw(HttpUtility.JavaScriptStringEncode(Model.PersonalData.Name))',
+                '@Html.Raw(HttpUtility.JavaScriptStringEncode(Model.PersonalData.FirstSurname))',
+                '@Html.Raw(HttpUtility.JavaScriptStringEncode(Model.PersonalData.SecondSurname))',
+                '@Model.PersonalData.Dni',
+                '@Model.PersonalData.Email',
+                '@Html.Raw(Model.PersonalData.PhoneNumber)',
+                '@Model.PersonalData.Role',
+                '@Model.PersonalData.IsForeignDni',
+                '@Model.PersonalData.FiscalCountry'
+            );
+
+            pdm.checkEmail();
+            vm.setPersonalDataModel(pdm);
+            vm.setCurrentTitles();
+
+            var uvm = new userValidationModel("@Model.ClientId", "@Model.ClientCode");
+            vm.setUserValidationModel(uvm);
+            vm.setKnowledgeTestModel(questionAnswers);
+
+            vm.showCurrentStep();
+            ko.applyBindings(vm);
+        });
+
+    </script>
+}
+
+@Html.AntiForgeryToken()
+
+@{ await Html.RenderPartialAsync("_RemediacionHeader"); }
+
+<div class="registration_form">
+    <div class="registration_inner hidden" id="user-validation-content" data-step="userValidation">
+        <!-- ko if:(RequestApplicantType() == '4' && ShowJuridicUserValidation() == true && ShowJuridicGenericError() == false) || RequestApplicantType() != '4' -->
+        @{ await Html.RenderPartialAsync("_UserValidation"); }
+        <!-- /ko -->
+        <!-- ko if:(RequestApplicantType() == '4' && ShowJuridicGenericError()) -->
+        @{ await Html.RenderPartialAsync("_ErrorNoSigners"); }
+        <!-- /ko -->
+    </div>
+
+    <div class="registration_inner hidden" id="personal-data-content">
+        <h2 id="basic-data-head" class="form_title"
+            data-bind="text: personalDataTitle()"></h2>
+        <ul id="personal-data-content-steps" class="form_steps-list">
+            <li id="personaldata-content-head" class="form_steps-list_element" data-circle="1" data-progress="0" data-step="personalData">
+                <h3 class="form_steps-title">
+                    Datos personales del titular
+                </h3>
+                <div id="personaldata-content" class="form_block" @*data-bind="with: vm" *@>
+                    @{ await Html.RenderPartialAsync("_PersonalDataView"); }
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <div id="documents-content" class="registration_inner hidden">
+        <h2 id="documents-head" class="form_title" data-bind="text: documentDataTitle()"></h2>
+        <ul class="form_steps-list">
+            <li id="applicant-document-content-head" class="form_steps-list_element" data-circle="2" data-progress="0" data-step="documentData">
+                <h3 class="form_steps-title">
+                    Envío de DNI en vigor
+                </h3>
+                <div id="applicant-document-content" class="form_block">
+                    @{ await Html.RenderPartialAsync("Documents/_DocumentView"); }
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <div class="registration_inner hidden" id="test-content" data-circle="3" data-progress="0" data-step="testData">
+        <h2 class="form_title" data-bind="visible: testClientVisible, text: testDataClienteTitle()"></h2>
+        <h2 class="form_title" data-bind="visible: testAgentVisible, text: testDataRepresentanteTitle()"></h2>
+        @{ await Html.RenderPartialAsync("_TestView"); }
+    </div>
+
+    <div id="signature-documents-content" class="registration_inner hidden">
+        <h2 id="signature-head" class="form_title" data-bind="text: signatureDataTitle()"></h2>
+        <ul class="form_steps-list">
+            <li id="signature-content-head" class="form_steps-list_element hidden">
+                <h3 class="form_steps-title">
+                    Firma de la documentación
+                </h3>
+                <div id="signature-content" class="form_block hidden" data-circle="4" data-progress="0" data-step="signatureData">
+                    @{ await Html.RenderPartialAsync("Documents/_SignatureView"); }
+                </div>
+            </li>
+            <li id="signature-document-content-head" class="form_steps-list_element hidden" data-circle="4" data-progress="75" data-step="signatureDocumentData">
+                <h3 class="form_steps-title">
+                    Envío de documentación
+                </h3>
+                <div id="signature-document-content" class="form_block">
+                    <!-- ko if:RequestApplicantType() != '4' -->
+                    @{ await Html.RenderPartialAsync("Documents/_SignatureDocumentView"); }
+                    <!-- /ko -->
+                    <!-- ko if:RequestApplicantType() == '4' -->
+                    @{ await Html.RenderPartialAsync("Documents/_SignatureDocumentViewJuridic"); }
+                    <!-- /ko -->
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <div class="registration_inner hidden" id="end-content" data-circle="4" data-progress="99" data-step="endView">
+        @{ await Html.RenderPartialAsync("_EndView"); }
+    </div>
+</div>

@@ -1,0 +1,345 @@
+﻿@using BestInver.WebPrivada.Shared.Models.Microservices.AdviceProduct
+@using BESTINVER.GestorAltas.Web.Management.Models.AdviceProduct
+@model AdviceProductDocumentsModel
+
+<div class="modal-dialog" role="document" style="max-width: 950px;">
+    <div class="modal-content" style="position: relative;">
+        <div class="modal-header">
+            <h5 class="modal-title">Adjuntar documentos de asesoramiento</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+
+        <div class="modal-info px-3 pt-2 pb-0">
+            <div class="d-flex justify-content-start align-items-center flex-wrap">
+                <div class="mr-4">
+                    <strong>Nombre:</strong> @Model.CustomerFullName
+                </div>
+                <div>
+                    <strong>Cuenta:</strong> @(@Model.IdAccount ?? "-")
+                </div>
+            </div>
+        </div>
+
+
+        <div class="modal-body">
+            <form id="adviceAttachmentForm">
+                <input type="hidden" name="RequestID" value="@Model.RequestID" />
+                <input type="hidden" name="DocumentNumber" value="@Model.DocumentNumber" />
+                <input type="hidden" name="IdAccount" value="@Model.IdAccount" />
+                <input type="hidden" name="Username" value="@Model.Username" />
+                <input type="hidden" id="CanGenerate" name="CanGenerate" value="@Model.CanGenerate.ToString().ToLower()" />
+
+                <div class="form-group">
+                    <label><input type="checkbox" name="IsSuitable" id="IsSuitable" /> Cliente Idóneo</label>
+                </div>
+
+                <div class="form-group">
+                    <input type="file" name="Contract" class="d-none" id="contractInput" />
+                    <button type="button" class="btn btn-primary" onclick="document.getElementById('contractInput').click()">Contrato de asesoramiento</button>
+                    <span id="contractFileName" class="ml-2 text-muted">Ningún archivo seleccionado</span>
+                </div>
+
+                <div class="form-group">
+                    <input type="file" name="Suitability" class="d-none" id="suitabilityInput" />
+                    <button type="button" class="btn btn-primary" onclick="document.getElementById('suitabilityInput').click()">Test de idoneidad</button>
+                    <span id="suitabilityFileName" class="ml-2 text-muted">Ningún archivo seleccionado</span>
+                </div>
+
+                <div class="form-group">
+                    <input type="file" name="Proposal" class="d-none" id="proposalInput" />
+                    <button type="button" class="btn btn-primary" onclick="document.getElementById('proposalInput').click()">Recomendación personalizada</button>
+                    <span id="proposalFileName" class="ml-2 text-muted">Ningún archivo seleccionado</span>
+                </div>
+
+                <div class="form-group">
+                    <input type="file" id="otherInput" class="d-none" />
+                    <button type="button" class="btn btn-primary" onclick="document.getElementById('otherInput').click()">Otros</button>
+                    <span class="ml-2 text-muted">Puedes añadir múltiples archivos</span>
+                    <div id="otherList" class="mt-2"></div>
+                </div>
+            </form>
+        </div>
+
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            <button type="button" class="btn btn-primary" id="saveButton" onclick="saveDocuments()">Enviar</button>
+        </div>
+
+        <div id="customAlertOverlay" class="custom-alert-overlay" style="display: none;">
+            <div class="alert alert-danger custom-alert-box">
+                <button type="button" class="close" onclick="closeErrorAlert()" aria-label="Cerrar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="alert-heading">Error</h4>
+                <ul class="d-flex flex-column align-items-start" id="errorList"></ul>
+            </div>
+        </div>
+
+    </div>
+
+    <div id="file-names"
+         data-contract="@FilenameDocumentsAdviceProduct.Contract"
+         data-proposal="@FilenameDocumentsAdviceProduct.Proposal"
+         data-suitability="@FilenameDocumentsAdviceProduct.Suitability"
+         style="display:none">
+    </div>
+
+</div>
+
+<script>
+    (function () {
+            // DOM Elements
+            const fileNamesEl = document.getElementById("file-names");
+            const inputs = {
+                contract: document.getElementById("contractInput"),
+                proposal: document.getElementById("proposalInput"),
+                suitability: document.getElementById("suitabilityInput"),
+                other: document.getElementById("otherInput")
+            };
+            const labels = {
+                contract: document.getElementById("contractFileName"),
+                proposal: document.getElementById("proposalFileName"),
+                suitability: document.getElementById("suitabilityFileName")
+            };
+            const saveButton = document.getElementById("saveButton");
+            const otherListContainer = document.getElementById("otherList");
+            const isSuitableCheckbox = document.getElementById("IsSuitable");
+
+            const FILE_NAMES = {
+                contract: fileNamesEl.dataset.contract,
+                proposal: fileNamesEl.dataset.proposal,
+                suitability: fileNamesEl.dataset.suitability
+            };
+
+            const canGenerate = document.getElementById("CanGenerate").value === "true";
+
+             if (!canGenerate) {
+               showErrorAlert(["No puedes adjuntar nuevos documentos porque no existen documentos previos asociados a la solicitud."]);
+
+               if (saveButton) {
+                    saveButton.style.display = "none";
+               }
+            }
+
+
+            const otherFiles = new Map();
+
+            validateForm();
+            handleSuitabilityToggle();
+
+            inputs.contract.addEventListener("change", () => handleFileChange("contract"));
+            inputs.proposal.addEventListener("change", () => handleFileChange("proposal"));
+            inputs.suitability.addEventListener("change", () => handleFileChange("suitability"));
+            inputs.other.addEventListener("change", handleOtherFileAdd);
+            isSuitableCheckbox.addEventListener("change", handleSuitabilityToggle);
+
+            function handleSuitabilityToggle() {
+                const isSuitable = isSuitableCheckbox.checked;
+
+                // Mostrar u ocultar campos según idoneidad
+                toggleElementVisibility("contractInput", isSuitable);
+                toggleElementVisibility("proposalInput", isSuitable);
+                toggleElementVisibility("otherInput", isSuitable);
+                toggleElementVisibility("contractFileName", isSuitable);
+                toggleElementVisibility("proposalFileName", isSuitable);
+                toggleElementVisibility("otherList", isSuitable);
+
+                // Mostrar u ocultar botones
+                toggleElementVisibility("contractInput", isSuitable, true);
+                toggleElementVisibility("proposalInput", isSuitable, true);
+                toggleElementVisibility("otherInput", isSuitable, true);
+
+                // Validar formulario en base al estado
+                validateForm();
+            }
+
+            function handleFileChange(type) {
+                const file = inputs[type].files[0];
+                if (!file) return;
+
+                if (!isPDF(file)) {
+                    showErrorAlert([`El archivo seleccionado debe ser un PDF.`]);
+                    inputs[type].value = "";
+                    labels[type].textContent = "Ningún archivo seleccionado";
+                    return;
+                }
+
+                labels[type].textContent = file.name || "Ningún archivo seleccionado";
+                validateForm();
+            }
+
+            function handleOtherFileAdd(event) {
+                const file = event.target.files[0];
+                if (!file) return;
+
+                if (otherFiles.has(file.name)) {
+                    showErrorAlert([`Ya has añadido un archivo con el nombre "${file.name}". Por favor, selecciona otro archivo.`]);
+                    event.target.value = "";
+                    return;
+                }
+
+                otherFiles.set(file.name, file);
+                renderOtherList();
+                event.target.value = "";
+            }
+
+            function renderOtherList() {
+                validateForm();
+                otherListContainer.innerHTML = "";
+
+                otherFiles.forEach((file, name) => {
+                    const item = document.createElement("div");
+                    item.className = "d-flex align-items-center justify-content-between border p-1 mb-1 bg-light";
+                    item.innerHTML = `
+                        <span>${name}</span>
+                        <button type="button" class="btn btn-sm btn-danger" onclick="removeFile('${name}')">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    `;
+                    otherListContainer.appendChild(item);
+                });
+            }
+
+            window.removeFile = function (name) {
+                otherFiles.delete(name);
+                renderOtherList();
+            };
+
+            window.saveDocuments = function () {
+                const formData = new FormData(document.getElementById("adviceAttachmentForm"));
+
+                saveButton.disabled = true;
+                const originalText = saveButton.textContent;
+                saveButton.textContent = "Guardando...";
+
+                appendNamedFile("contract", "Contract", formData);
+                appendNamedFile("proposal", "Proposal", formData);
+                appendNamedFile("suitability", "Suitability", formData);
+
+                otherFiles.forEach((file) => {
+                    const sanitizedName = sanitizeFileName(file.name);
+                    const cleanFile = new File([file], sanitizedName, { type: file.type });
+                    formData.append("OtherFiles", cleanFile);
+                });
+
+                formData.set("IsSuitable", isSuitableCheckbox.checked);
+
+                fetch("/AdviceProduct/SaveDocuments", {
+                    method: "POST",
+                    body: formData
+                })
+                .then(response => {
+                    if (!response.ok) throw new Error("No se ha podido generar la solicitud de asesoramiento.");
+                    return response.json();
+                })
+                .then(data => {
+                    if (data) {
+                        toastr.success('Se ha realizado la operación con éxito', { timeOut: 3000 });
+                        setTimeout(function () { location.reload(); }, 3000);
+                    }
+                    else {
+                        toastr.warning('La solicitud de asesoramiento bloqueada por alertas, revisela y regenere la documentación', '', { timeOut: 6000 });
+                        setTimeout(function () { location.reload(); }, 6000);
+                    }
+
+                })
+                .catch(err => {
+                    toastr.error('Hubo un error al guardar los archivos. Por favor, intente nuevamente.');
+                    console.error(err);
+                })
+                .finally(() => {
+                    saveButton.disabled = false;
+                    saveButton.textContent = originalText;
+                });
+            };
+
+            function toggleElementVisibility(id, show, isButton = false) {
+                const input = document.getElementById(id);
+                if (!input) return;
+
+                if (isButton) {
+                    const btn = Array.from(document.querySelectorAll("button")).find(b => b.onclick?.toString().includes(id));
+                    if (btn) btn.style.display = show ? "inline-block" : "none";
+                }
+
+                input.closest(".form-group").style.display = show ? "block" : "none";
+            }
+
+            function isPDF(file) {
+                return file.type === "application/pdf";
+            }
+
+            function appendNamedFile(inputKey, formKey, formData) {
+                const file = inputs[inputKey].files[0];
+                if (!file) return;
+
+                const newFileName = FILE_NAMES[inputKey] + getFileExtension(file.name);
+                const renamedFile = new File([file], newFileName, { type: file.type });
+                formData.set(formKey, renamedFile);
+            }
+
+            function getFileExtension(filename) {
+                return filename.substring(filename.lastIndexOf(".")) || "";
+            }
+
+            function sanitizeFileName(name) {
+                return name.replace(/[^0-9a-zA-ZÑñ _.\-ÁÉÍÓÚÜáéíóúü]/g, "");
+            }
+
+            function showErrorAlert(errors) {
+                const errorList = document.getElementById("errorList");
+                errorList.innerHTML = "";
+
+                errors.forEach(msg => {
+                    const li = document.createElement("li");
+                    li.textContent = msg;
+                    errorList.appendChild(li);
+                });
+
+                document.getElementById("customAlertOverlay").style.display = "flex";
+            }
+
+            window.closeErrorAlert = function () {
+                document.getElementById("customAlertOverlay").style.display = "none";
+            };
+
+            function validateForm() {
+                const isSuitable = isSuitableCheckbox.checked;
+
+                const contractOk = isSuitable ? inputs.contract.files.length > 0 : true;
+                const proposalOk = isSuitable ? inputs.proposal.files.length > 0 : true;
+                const suitabilityOk = inputs.suitability.files.length > 0;
+
+                const isValid = contractOk && proposalOk && suitabilityOk;
+
+                saveButton.disabled = !isValid || !canGenerate;
+            }
+        })();
+</script>
+
+<style>
+    .custom-alert-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.4);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1051;
+    }
+
+    .custom-alert-box {
+        background-color: #f8d7da;
+        color: #721c24;
+        padding: 1.5rem 2rem;
+        border-radius: 8px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+        max-width: 500px;
+        width: 100%;
+    }
+</style>

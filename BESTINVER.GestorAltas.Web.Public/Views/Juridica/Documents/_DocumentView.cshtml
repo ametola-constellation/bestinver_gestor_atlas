@@ -1,0 +1,55 @@
+﻿<p class="form_inlet">A continuación, te indicamos los documentos que necesitamos para completar el proceso.</p>
+
+<div class="form_block-content big">
+    <div class="infor">
+        <span>Documentos de la Sociedad:</span>
+        <ul class="form_list">
+            <li class="form_list-element">
+                <span>Copia CIF de la Sociedad</span>
+            </li>
+            <li class="form_list-element">
+                <span>Copia escritura de constitución inscrita en el Registro Mercantil</span>
+            </li>
+            <li class="form_list-element">
+                <span>Copia escritura de nombramiento administrador / otorgamiento de poder</span>
+            </li>
+            <li class="form_list-element">
+                <span>Copia de los DNI / NIE de los apoderados y titulares reales</span>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<div class="form_block boxes">
+    @*@{
+            if (Request.Browser.Browser == "InternetExplorer")
+            {
+                await Html.RenderPartialAsync("Documents/_IEDocumentSubView");
+            }
+            else
+            {
+                await Html.RenderPartialAsync("Documents/_DocumentSubView");
+            }
+        }*@
+
+    <!-- ko if: parser.getBrowser().name == "IE" -->
+        @{await Html.RenderPartialAsync("Documents/_IEDocumentSubView"); }
+    <!-- /ko -->
+    <!-- ko if: parser.getBrowser().name != "IE" -->
+         @{await Html.RenderPartialAsync("Documents/_DocumentSubView");}
+    <!-- /ko -->
+
+
+
+
+
+
+</div>
+
+<div class="form_block buttons">
+    <div class="form_block-content buttons big">
+        <div class="button_next">
+            <a href="" title="Continuar" class="button brown toWhite" id="save-applicant-document-data" data-bind="click:function () { CreateDocumentsData($root); }"><span>Continuar</span></a>
+        </div>
+    </div>
+</div>

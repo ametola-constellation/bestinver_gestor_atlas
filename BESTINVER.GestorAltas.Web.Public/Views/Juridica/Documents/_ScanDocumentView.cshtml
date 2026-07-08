@@ -1,0 +1,33 @@
+﻿<div id="documentationdelivery-scan-content" class="form_block-content" style="display: block;">
+    <span class="help_steps-title">Pasos</span>
+    <ul class="help_steps-list">
+        <li class="help_steps-list_element">
+            <span class="help_steps-list_title">
+                A continuación se activará la cámara de tu ordenador. Sigue las instrucciones de la ventana que se muestra a continuación, te pedirá que muestres la parte delantera de tu DNI /NIE y una vez identificado, te pedirá que muestres la parte trasera. Si tu cámara no se conecta, puedes utilizar otras opciones, haciendo click en "OTRAS OPCIONES"
+            </span>
+        </li>
+        <li class="help_steps-list_element">
+            <span class="error_message" data-bind="validationMessage: DNIAnversoBase64"></span>
+        </li>
+        <li class="help_steps-list_element">
+            <span class="error_message" data-bind="validationMessage: DNIReversoBase64"></span>
+        </li>
+        @*<li id="scan-document-step-1" class="help_steps-list_element">
+                <span class="help_steps-list_title">1. Escaneo DNI / NIE parte delantera</span>
+                <span class="help_steps-list_info">Sitúe la parte delantera del DNI frente a la cámara</span>
+                <span class="error_message" data-bind="validationMessage: DNIAnversoBase64"></span>
+            </li>
+            <li id="scan-document-step-2" class="help_steps-list_element">
+                <span class="help_steps-list_title">2. Escaneo DNI / NIE parte trasera</span>
+                <span class="help_steps-list_info">Sitúe la parte trasera del DNI frente a la cámara</span>
+                <span class="error_message" data-bind="validationMessage: DNIReversoBase64"></span>
+            </li>*@
+    </ul>
+    <div class="form_block-content-big">
+        <div id="scanFrame"></div>
+        <div id="scanMessages">Conectando...</div>
+        <div id="scanStatus" class="scanControl hide"></div>
+        <div id="scanContainer" class="scanControl"></div>
+        <div id="scanSuccess" class="scanControl hide">El escaneo se ha realizado correctamente. Por favor, pulsa el botón de continuar para seguir con el proceso</div>
+    </div>
+</div>

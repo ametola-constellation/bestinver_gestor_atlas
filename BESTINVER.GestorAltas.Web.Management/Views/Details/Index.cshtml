@@ -1,0 +1,263 @@
+﻿@model ManagementRequestModel
+@using BESTINVER.GestorAltas.Web.Models.Requests
+@using BestInver.WebPrivada.Shared.Models.Microservices.Products.Enums
+@using Newtonsoft.Json;
+
+@{
+    ViewBag.Title = "Index";
+
+}
+
+@Html.HiddenFor(m => m.Request.IdRequestSignature,
+        new Dictionary<string, object>{
+    { "id" ,  "IdRequestSignatureHidden"}
+        })
+
+@Html.HiddenFor(m => m.Request.ProductTypeId,
+                new Dictionary<string, object>{
+    { "id" ,  "ProductTypeIdHidden"}
+        })
+
+@Html.HiddenFor(m => m.Status.OrderByDescending(rs => rs.StartDate).FirstOrDefault().IDStatus,
+    new Dictionary<string, object>{
+{ "id" ,  "IdRequestStatusHidden"}
+    })
+
+@Html.HiddenFor(m => m.Id, new Dictionary<string, object> { { "id", "Id" } })
+
+@{
+    var hasProductFCR = Model.ProductOperations.Any(p => p.IdProduct == (int)ProductNames.BESTINVER_INFRA);
+    @Html.Hidden("RequestProductCheckFCRHidden", hasProductFCR)
+}
+
+@Html.Hidden("ProductFamilyRequiereCommitment", Model.ProductFamilyRequiereCommitment)
+
+<partial name="_DetailsLockView" model="Model" />
+@using BestInver.WebPrivada.Shared.Models.Microservices.Tests.Enums
+@section Style {
+
+    <environment include="Development">
+        <link href="~/css/details.css" asp-append-version="true" rel="stylesheet" />
+    </environment>
+
+    <environment exclude="Development">
+        <link href="~/css/details.min.css" asp-append-version="true" rel="stylesheet" />
+    </environment>
+}
+<div class="row">
+    <ul class="nav nav-tabs nav-justified w-100" role="tablist">
+        <li role="presentation" class="nav-item">
+            <a class="nav-link active" href="#requestData" aria-controls="requestData" role="tab" data-toggle="tab">Datos de la solicitud</a>
+        </li>
+        <li class="nav-item" role="presentation">
+            <a class="nav-link" href="#titularData" aria-controls="titularData" role="tab" data-toggle="tab">Datos del titular</a>
+        </li>
+        <li class="nav-item" role="presentation">
+            <a class="nav-link" href="#contactData" aria-controls="contactData" role="tab" data-toggle="tab">Datos de contacto</a>
+        </li>
+        <li class="nav-item" role="presentation">
+            <a class="nav-link" href="#fiscalAddressData" aria-controls="fiscalAddressData" role="tab" data-toggle="tab">Dirección Fiscal</a>
+        </li>
+        <li role="presentation" class="nav-item rowPostalAddress">
+            <a class="nav-link" href="#postalAddressData" aria-controls="postalAddressData" role="tab" data-toggle="tab">Dirección Postal</a>
+        </li>
+        <li class="nav-item" role="presentation">
+            <a class="nav-link" href="#cotitularesData" aria-controls="cotitularesData" role="tab" data-toggle="tab">Cotitulares asociados</a>
+        </li>
+        <li class="nav-item" role="presentation">
+            <a class="nav-link" href="#documentosData" aria-controls="documentosData" role="tab" data-toggle="tab">Documentos asociados</a>
+        </li>
+    </ul>
+
+    <div class="tab-content w-100">
+        @{
+            var readOnlyModel = Model;
+            readOnlyModel.IsReadonly = false;
+
+            var titularData = new BESTINVER.GestorAltas.Web.Management.ViewModels.TitularDataModelBuilder(Context)
+            .WithRequestId(Model.Request.Id)
+            .WithRequestApplicant(Model.Data)
+            .WithCountries(Model.Countries)
+            .WithGenders(Model.Genders)
+            .WithLockedItem(Model)
+            .WithNationalities(Model.Nationalities)
+            .WithPermissions(AuthorizationService)
+            .WithShowOperationChange(Model.ShowOperationChange)
+            .WithStatus(Model.Status)
+            .Build();
+
+            var titularContactData = new BESTINVER.GestorAltas.Web.Management.ViewModels.TitularContactDataModelBuilder(Context)
+            .WithRequestId(Model.Request.Id)
+            .WithRequestApplicant(Model.Data)
+            .WithLockedItem(Model)
+            .WithPermissions(AuthorizationService)
+            .WithOtherApplicants(Model.Applicants.Select(a => a.Applicant))
+            .WithShowOperationChange(Model.ShowOperationChange)
+            .WithStatus(Model.Status)
+            .Build();
+
+            var titularFiscalAddress = new BESTINVER.GestorAltas.Web.Management.ViewModels.AddressDataModelBuilder(Context)
+            .WithAddress(Model.FiscalAddress)
+            .WithCountries(Model.Countries)
+            .WithDifferentPostalAddress(Model.DifferentPostalAddress)
+            .WithLockedItem(Model)
+            .WithPermissions(AuthorizationService)
+            .WithRequestId(Model.Request.Id)
+            .WithViaTypes(Model.ViaTypes)
+            .WithAddressType(AddressType.Fiscal)
+            .WithDNI(Model.Data.BasicData.DNI)
+            .WithShowOperationChange(Model.ShowOperationChange)
+            .WithStatus(Model.Status)
+            .Build();
+
+            var titularPostalAddress = new BESTINVER.GestorAltas.Web.Management.ViewModels.AddressDataModelBuilder(Context)
+            .WithAddress(Model.PostalAddress)
+            .WithCountries(Model.Countries)
+            .WithDifferentPostalAddress(Model.DifferentPostalAddress)
+            .WithLockedItem(Model)
+            .WithPermissions(AuthorizationService)
+            .WithRequestId(Model.Request.Id)
+            .WithViaTypes(Model.ViaTypes)
+            .WithAddressType(AddressType.Postal)
+            .WithDNI(Model.Data.BasicData.DNI)
+            .WithShowOperationChange(Model.ShowOperationChange)
+            .WithStatus(Model.Status)
+            .Build();
+
+            <div role="tabpanel" class="tab-pane active" id="requestData">
+                <partial name="_DetailsRequestDataView" model="Model" />
+            </div>
+            <div role="tabpanel" class="tab-pane" id="titularData">
+                <partial name="_DetailsTitularDataView" model="titularData" />
+            </div>
+            <div role="tabpanel" class="tab-pane" id="contactData">
+                <partial name="_DetailsContactDataView" model="titularContactData" />
+            </div>
+            <div role="tabpanel" class="tab-pane" id="fiscalAddressData">
+                <partial name="_DetailsFiscalAddressDataView" model="titularFiscalAddress" />
+            </div>
+            <div role="tabpanel" class="tab-pane" id="postalAddressData">
+                <partial name="_DetailsPostalAddressDataView" model="titularPostalAddress" />
+            </div>
+            <div role="tabpanel" class="tab-pane" id="cotitularesData">
+                <partial name="_CotitularesListView" model="readOnlyModel" />
+            </div>
+            <div role="tabpanel" class="tab-pane" id="documentosData">
+                <partial name="_DetailsDocumentsView" model="readOnlyModel" />
+            </div>
+        }
+    </div>
+</div>
+@{
+    List<ApplicantMobile> applicants = new List<ApplicantMobile>();
+    List<ApplicantMobile> applicantsToSign = applicants.Where(
+            a => a.RequestApplicantType != (int)ApplicantRoleType.TitularReal
+            && a.RequestApplicantType != (int)ApplicantRoleType.Administrador
+            && a.RequestApplicantType != (int)ApplicantRoleType.Patrono
+            && a.RequestApplicantType != (int)ApplicantRoleType.OrganoRep
+            ).ToList();
+
+    if (Model.Data.BasicData.ApplicantType == (int)ApplicantType.Fisica)
+    {
+        applicants.Add(new ApplicantMobile()
+                {
+                    ApplicantId = Model.Data.BasicData.DNI,
+                    IsMobilePhoneOk = true,
+                    MobilePhone = Model.Data.BasicData.MobilePhoneNumber,
+                    RequestApplicantType = Model.Data.BasicData.RequestApplicantType,
+                    Mail = Model.Data.BasicData.Email,
+                    RequestApplicantTypeName = Model.Data.BasicData.RequestApplicantTypeName
+                });
+    }
+    applicants.AddRange(Model.Cotitulares.Select(c => new ApplicantMobile()
+            {
+                ApplicantId = c.NIF,
+                IsMobilePhoneOk = true,
+                MobilePhone = c.MobilePhoneNumber,
+                RequestApplicantType = c.RequestApplicantType,
+                RequestApplicantTypeName = c.TipoCotitularidad,
+                Mail = c.Mail
+            }));
+    <partial name="_GenerateDocumentation" model="new BESTINVER.GestorAltas.Web.Management.Models.DocumentGroupData()
+    {
+        IdDocumentSignatureType = Model.Request.IdRequestSignature.HasValue && (Model.Request.IdProducto != (int)ProductNames.BESTINVER_INFRA || !Model.ProductOperations.Any(p => p.IdProduct != (int)ProductNames.BESTINVER_INFRA))
+            ? (DocumentSignatureType)Model.Request.IdRequestSignature
+            : Model.Request.IdSendingWay.HasValue && (Model.Request.IdProducto == (int)ProductNames.BESTINVER_INFRA || Model.ProductOperations.Any(p => p.IdProduct == (int)ProductNames.BESTINVER_INFRA))
+                ? DocumentSignatureType.Manuscrita
+                : DocumentSignatureType.Manuscrita,
+        IdSendingWay = Model.Request.IdSendingWay.HasValue
+            ? (SendingWayType)Model.Request.IdSendingWay
+            : Model.Request.IdSendingWay.HasValue && (Model.Request.IdProducto == (int)ProductNames.BESTINVER_INFRA || Model.ProductOperations.Any(p => p.IdProduct == (int)ProductNames.BESTINVER_INFRA))
+                ? SendingWayType.Adjuntar_Doc
+                : SendingWayType.Adjuntar_Doc,
+        RequestId = Model.Request.Id,
+        MobilePhoneByApplicant = applicantsToSign,
+        DocAction = GenerateDocAction.Generar,
+        AllowDigitalSignature =
+          (Model.Request.ProductTypeId == (int)ProductTypeMOEnum.Asesoramiento  && Model.Request.IdRequestAdviceProduct is not null) ? true :
+           (Model.Request.ProductTypeId == (int)ProductTypeMOEnum.Asesoramiento  && Model.Request.IdRequestAdviceProduct is null) ? false :
+          (Model.ProductOperations.Any(o => o.IdProduct == (int)ProductNames.BESTINVER_INFRA)) ? false :
+          !applicantsToSign.Any(p => (string.IsNullOrEmpty(p.MobilePhone) || string.IsNullOrEmpty(p.Mail))),
+                AllowManualSignature = (Model.Request.IdRequestChannel == (int)RequestChannelType.Publica) || (Model.Request.IdRequestChannel == (int)RequestChannelType.MasProductos)
+    }" />
+
+    <partial name="_UploadSubscriptionDeal" model="new BESTINVER.GestorAltas.Web.Management.Models.Details.UploadSubscriptionDealModel()
+    {
+        RequestId = Model.Request.Id,
+        DNI = Model.DocumentToSignDNI,
+        SignDate = DateTime.UtcNow,
+        FileName = Model.FileNameToSign,
+    }" />
+
+    <partial name="_RegenerateDocumentation" model="new BESTINVER.GestorAltas.Web.Management.Models.DocumentGroupData()
+    {
+        IdDocumentSignatureType = Model.Request.IdRequestSignature.HasValue && (Model.Request.IdProducto != (int)ProductNames.BESTINVER_INFRA || !Model.ProductOperations.Any(p => p.IdProduct != (int)ProductNames.BESTINVER_INFRA))
+            ? (DocumentSignatureType)Model.Request.IdRequestSignature
+              : Model.Request.IdSendingWay.HasValue && (Model.Request.IdProducto == (int)ProductNames.BESTINVER_INFRA || Model.ProductOperations.Any(p => p.IdProduct == (int)ProductNames.BESTINVER_INFRA))
+                ? DocumentSignatureType.Manuscrita
+                : DocumentSignatureType.Manuscrita,
+        IdSendingWay = Model.Request.IdSendingWay.HasValue
+            ? (SendingWayType)Model.Request.IdSendingWay
+            : Model.Request.IdSendingWay.HasValue && (Model.Request.IdProducto == (int)ProductNames.BESTINVER_INFRA || Model.ProductOperations.Any(p => p.IdProduct == (int)ProductNames.BESTINVER_INFRA))
+                ? SendingWayType.Adjuntar_Doc
+                : SendingWayType.Adjuntar_Doc,
+        RequestId = Model.Request.Id,
+        MobilePhoneByApplicant = applicantsToSign,
+        DocAction = GenerateDocAction.Regenerar,
+        AllowDigitalSignature =
+            (Model.Request.ProductTypeId == (int)ProductTypeMOEnum.Asesoramiento && Model.Request.IdRequestAdviceProduct is not null) ? true :
+            (Model.Request.ProductTypeId == (int)ProductTypeMOEnum.Asesoramiento && Model.Request.IdRequestAdviceProduct is null) ? false :
+            (Model.ProductOperations.Any(o => o.IdProduct == (int)ProductNames.BESTINVER_INFRA)) ? false :
+            !applicantsToSign.Any(p => (string.IsNullOrEmpty(p.MobilePhone) || string.IsNullOrEmpty(p.Mail))),        AllowManualSignature = (Model.Request.IdRequestChannel == (int)RequestChannelType.Publica)
+}" />
+}
+
+@section Scripts {
+    <script>
+        var userName = '@User.Identity.Name';
+        var managementRequestModel = @Html.Raw(JsonConvert.SerializeObject(Model));
+    </script>
+
+    <environment include="Development">
+        <script src="~/js/documents.js" asp-append-version="true"></script>
+        <script src="~/js/alerts-list.js" asp-append-version="true"></script>
+        <script src="~/js/applicant-test.js" asp-append-version="true"></script>
+        <script src="~/js/cotitulares-list.js" asp-append-version="true"></script>
+        <script src="~/js/products-list.js" asp-append-version="true"></script>
+        <script src="~/js/details.js" asp-append-version="true"></script>
+        <script src="~/js/periodicsOperations.js" asp-append-version="true"></script>
+    </environment>
+
+    <environment exclude="Development">
+        <script src="~/js/documents.min.js" asp-append-version="true"></script>
+        <script src="~/js/alerts-list.min.js" asp-append-version="true"></script>
+        <script src="~/js/applicant-test.min.js" asp-append-version="true"></script>
+        <script src="~/js/cotitulares-list.min.js" asp-append-version="true"></script>
+        <script src="~/js/products-list.min.js" asp-append-version="true"></script>
+        <script src="~/js/details.min.js" asp-append-version="true"></script>
+        <script src="~/js/periodicsOperations.min.js" asp-append-version="true"></script>
+    </environment>
+}
+
+<partial name="_ValidationScriptsPartial" />
+

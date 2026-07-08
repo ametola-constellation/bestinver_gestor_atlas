@@ -1,0 +1,38 @@
+﻿@import "site.scss";
+
+$theme-colors: ( "primary" : $primary-color,"secondary" : $seconday-color);
+
+@import "../../node_modules/bootstrap/scss/bootstrap";
+
+.modal-header h4 {
+    order: 0;
+}
+
+.modal-header button {
+    order: 1;
+}
+
+.bootbox .modal-header button {
+    order: 1;
+}
+
+.bootbox .modal-header h5 {
+    order: 0;
+}
+
+.btn-default {
+    @extend .btn-outline-secondary;
+}
+
+.field-validation-error {
+    @extend .invalid-feedback;
+    display: inherit;
+}
+
+.input-validation-error {
+    @extend .is-invalid;
+}
+
+.valid {
+    @extend .is-valid;
+}

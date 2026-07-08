@@ -1,0 +1,30 @@
+﻿[
+  {
+    "outputFile": "wwwroot/lib/toastr/toastr.css",
+    "inputFile": "node_modules/toastr/toastr.scss"
+  },
+  {
+    "outputFile": "wwwroot/css/bootstrap.css",
+    "inputFile": "wwwroot/css/bootstrap-theme.scss"
+  },
+  {
+    "outputFile": "wwwroot/css/dashboard.css",
+    "inputFile": "wwwroot/css/dashboard.scss"
+  },
+  {
+    "outputFile": "wwwroot/css/details.css",
+    "inputFile": "wwwroot/css/details.scss"
+  },
+  {
+    "outputFile": "wwwroot/css/search.css",
+    "inputFile": "wwwroot/css/search.scss"
+  },
+  {
+    "outputFile": "wwwroot/css/security.css",
+    "inputFile": "wwwroot/css/security.scss"
+  },
+  {
+    "outputFile": "wwwroot/css/site.css",
+    "inputFile": "wwwroot/css/site.scss"
+  }
+]

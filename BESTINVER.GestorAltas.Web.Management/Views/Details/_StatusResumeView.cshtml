@@ -1,0 +1,80 @@
+﻿@model BESTINVER.GestorAltas.Web.Management.Models.ManagementRequestModel
+@using BestInver.WebPrivada.Shared.Models.Backend.Operations.Enums
+@using BestInver.WebPrivada.Shared.Models.Microservices.Requests.Enums
+
+<div class="alert alert-primary ">
+    <input type="hidden" id="IDRequest" value="@Model.Id" />
+    <input type="hidden" id="Request_IdCuenta" value="@Model.Request.IdCuenta" />
+    <input type="hidden" id="RequestDocumentNumber" value="@Model.Data.BasicData.DNI" />
+    <input type="hidden" id="CustomerFullName" value="@Model.Data.BasicData.FullName" />
+    <div class="row">
+        <div class="col">
+            <ul class="status d-flex flex-row flex-wrap align-items-center">
+                @if (Model != null && Model.Status != null && Model.Status.Count > 0)
+                {
+                    foreach (var status in Model.Status)
+                    {
+                        var isLast = Model.Status.IndexOf(status) == Model.Status.Count - 1;
+                        var colorClass = (isLast) ? "info" : "success";
+                        if (status.IDStatus == (int)RequestStatusEnum.Canceled ||
+                        status.IDStatus == (int)RequestStatusEnum.Locked)
+                        {
+                            colorClass = "danger";
+                        }
+
+                        <li class="m-3">
+                            <div class="card alert-@colorClass statusModalTrigger" data-toggle="tooltip" data-placement="top" title="Abrir detalles de Estado" data-statusmodaltrigger="statusInfoModal-@status.Id">
+                                <div class="card-header">
+                                    <span class="mr-2 fas fa-info mr-2"></span>
+                                    <span>Status: @status.IDStatus</span>
+                                </div>
+                                <div class="card-body bg-white">
+                                    <p class="card-text text-info" data-datetime="@DateTime.SpecifyKind(status.StartDate, DateTimeKind.Utc).ToString("O")"></p>
+                                    <p class="badge badge-@colorClass">@status.StatusName</p>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            @if (!isLast)
+                            {
+                                <span class="mr-2 fas fa-chevron-right fa-2x"></span>
+                            }
+                            <partial name="_StatusResumeInfoView" model="status" />
+                        </li>
+                    }
+                }
+            </ul>
+        </div>
+    </div>
+</div>
+@if (Model.Status.OrderByDescending(s => s.StartDate).FirstOrDefault().IDStatus != (int)RequestStatusType.Unsuitable_Advice)
+{
+    <div class="col-md-12">
+        @{
+            var solicitudActionModel = new BESTINVER.GestorAltas.Web.Management.ViewModels.SolicitudActionModelBuilder(Context)
+                    .WithPermissions(AuthorizationService)
+                    .WithRequestId(Model.Id)
+                    .WithLockedItem(Model)
+                    .WithStatus(Model.Status)
+                    .WithProductOperations(Model.ProductOperations)
+                    .WithAlerts(Model.Alerts)
+                    .WithApplicantTypeItem(Model.Data.BasicData.ApplicantType)
+                    .WithSignatureTypeItem(Model.Request.IdRequestSignature)
+                    .WithSendingWayItem(Model.Request.IdSendingWay)
+                    .WithRequestChannelItem(Model.Request.IdRequestChannel)
+                    .WithSalesChannelItem(Model.Request.IdSalesChannel)
+                    .WithIdAccount(Model.Request.IdCuenta)
+                    .WithSuitableTest((bool)Model.Request.HasSuitableTest)
+                    .WithProductRequireSignature(Model.ShowUploadSubscriptionDealButton, Model.ShowRepresentativeSignButton, Model.ShowRetryRepresentativeSignButton)
+                    .Build();
+            <partial name="_SolicitudActionButtons" model="solicitudActionModel" />
+        }
+    </div>
+
+    <script>
+        $('[data-datetime]').each(function() {
+            var utcDate = new Date($(this).data('datetime'));
+            $(this).text(utcDate.toLocaleString());
+        });
+    </script>
+}

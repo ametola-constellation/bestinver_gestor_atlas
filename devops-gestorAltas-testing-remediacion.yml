@@ -1,0 +1,51 @@
+# ASP.NET
+# Build and test ASP.NET projects.
+# Add steps that publish symbols, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/apps/aspnet/build-aspnet-4
+
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+  solution: '**/*.sln'
+  buildPlatform: 'Any CPU'
+  buildConfiguration: 'Release'
+  build_revision: $[counter(variables['version'], 1)]
+  app_version: '$(major).$(version).$(build_revision)'
+
+steps:
+- task: Bash@3
+  inputs:
+    targetType: 'inline'
+    script: |
+      # SCRIPT PARA USAR LAST TAG GIT como buildnumber
+      # este script actualiza la variable de azure repos buildnumber por lo tanto solo es util
+      # para lanzarlo desde los pipes de azure devops
+      # se tiene que crear la invocacion al script y seleccionar el script 
+      IFS="-"
+      version=$(git describe --abbrev=0 --tags)
+      set $version
+      newbuildnumber=$1
+      echo $newbuildnumber
+      echo "##vso[build.updatebuildnumber]$newbuildnumber"
+  displayName: 'Bash Script'
+
+- task: Bash@3
+  displayName: 'Set RemediacionEnabled to true'
+  inputs:
+    targetType: 'inline'
+    script: |
+      # Write your commands here
+      
+      echo 'Hello world'
+      pwd && ls -l
+      
+      cd BESTINVER.GestorAltas.Web.Public/
+      echo "----------"
+      cat appsettings.json
+      echo "----------"
+      
+      sed -i 's/"RemediacionEnabled": false/"RemediacionEnabled": true/g' appsettings.json
+      echo "----------"
+      cat appsettings.json
+      echo "----------"

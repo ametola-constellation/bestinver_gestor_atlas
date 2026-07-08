@@ -1,0 +1,6 @@
+﻿<!-- ko if:MainApplicant().ApplicantBasicData().RequestApplicantType() == '8' || MainApplicant().ApplicantBasicData().RequestApplicantType() == '9'-->
+@{ await Html.RenderPartialAsync("Operation/_CriiProductNoOperationView"); }
+<!-- /ko -->
+<!-- ko if:MainApplicant().ApplicantBasicData().RequestApplicantType() != '8' && MainApplicant().ApplicantBasicData().RequestApplicantType() != '9'-->
+@{ await Html.RenderPartialAsync("Operation/_CriiOperationView"); }
+<!-- /ko -->

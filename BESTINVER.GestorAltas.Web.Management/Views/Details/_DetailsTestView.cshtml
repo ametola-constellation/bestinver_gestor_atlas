@@ -1,0 +1,25 @@
+﻿@model BESTINVER.GestorAltas.Web.Management.Models.ManagementRequestModel
+
+@{
+    var currentStatus = Model.Status.OrderBy(s => s.StartDate).FirstOrDefault()?.IDStatus;
+}
+
+<label class="col-form-label">Test de cliente</label>
+<div class="alert alert-primary">
+    <div class="row">
+        @Html.HiddenFor(m => m.Id)
+        @Html.HiddenFor(m => m.Status.OrderBy(s => s.StartDate).FirstOrDefault().IDStatus)
+        <div class="col-md-12">
+            <ul id="question-list"></ul>
+        </div>
+    </div>
+</div>
+
+<div id='questionModal'
+     class='modal fade'
+     role="dialog"
+     aria-labelledby="questionLabel"
+     data-url='@Url.Action("GetQuestionDetail")'>
+</div>
+
+@*<script src="~/Content/js/applicant-test.js?v=@versionNumber"></script>*@

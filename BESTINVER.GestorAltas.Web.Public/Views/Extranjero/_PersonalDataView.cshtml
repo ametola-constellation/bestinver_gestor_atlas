@@ -1,0 +1,82 @@
+﻿<div class="form_block-content date" data-bind="with: MainApplicant().ApplicantPersonalData">
+    <label for="personaldata-birthday-day">
+        <span>Fecha de nacimiento</span><span class="optional">(dd/mm/aaaa)</span>
+    </label>
+    <input type="text" class="input-integer-2 numonly" placeholder="dd" max="31" min="1" name="personaldata-birthday-day" id="personaldata-birthday-day"
+           data-bind="value: Birthday().Day">
+    <input type="text" class="input-integer-2 numonly" placeholder="mm" max="12" min="1" name="personaldata-birthday-month" id="personaldata-birthday-month"
+           data-bind="value: Birthday().Month">
+    <input type="text" class="input-integer-4 numonly birthyear" placeholder="aaaa" max="9999" min="1900" name="personaldata-birthday-year" id="personaldata-birthday-year"
+           data-bind="value: Birthday().Year">
+    <span class="error_message" data-bind="validationMessage: Birthday"></span>
+</div>
+
+<div class="form_block-content" data-bind="with: MainApplicant().ApplicantPersonalData">
+    <label for="personaldata-genre">
+        <span>Sexo</span>
+    </label>
+    <select id="personaldata-genre"
+            data-bind="options: MasterData.GenderList,  optionsText: 'valor', value: Gender,
+            optionsCaption: 'Seleccionar sexo'"></select>
+    <span class="error_message" data-bind="validationMessage: Gender"></span>
+</div>
+
+<div class="form_block-content" data-bind="with: MainApplicant().ApplicantPersonalData">
+    <label for="personaldata-nationality"><span>Nacionalidad</span></label>
+    <select id="personaldata-nationality"
+            data-bind="options: MasterData.NationalityList,  optionsText: 'valor', value: Nationality,
+            optionsCaption: 'Seleccionar nacionalidad'"></select>
+    <span class="error_message" data-bind="validationMessage: Nationality"></span>
+</div>
+
+<div class="form_block-content" data-bind="with: MainApplicant().ApplicantPersonalData">
+    <label for="personaldata-country"><span>País de nacimiento</span></label>
+    <select id="personaldata-country"
+            data-bind="options: MasterData.CountryList, optionsText: 'valor' , value: Country,
+            optionsCaption: 'Seleccionar país'"></select>
+    <span class="error_message" data-bind="validationMessage: Country"></span>
+</div>
+
+<div class="form_block-content" data-bind="with: MainApplicant().ApplicantPersonalData">
+    <label for="personaldata-birthday-place"><span>Lugar de nacimiento</span></label>
+    <input type="text" name="personaldata-birthday-place" id="personaldata-birthday-place" data-bind="value: BornPlace" maxlength="40">
+    <span class="error_message" data-bind="validationMessage: BornPlace"></span>
+</div>
+
+<div class="form_block-content date" data-bind="with: MainApplicant().ApplicantPersonalData">
+    <label for="personaldata-expiration-day"><span>Fecha de caducidad pasaporte</span></label>
+    <input type="text" class="input-integer-2 numonly" placeholder="dd" max="31" min="1" name="personaldata-expiration-day" id="personaldata-expiration-day"
+           data-bind="value: IDDocumentExpirationDate().Day">
+    <input type="text" class="input-integer-2 numonly" placeholder="mm" max="12" min="1" name="personaldata-expiration-month" id="personaldata-expiration-month"
+           data-bind="value: IDDocumentExpirationDate().Month">
+    <input type="text" class="input-integer-4 numonly" placeholder="aaaa" max="9999" min="1" name="personaldata-expiration-year" id="personaldata-expiration-year"
+           data-bind="value: IDDocumentExpirationDate().Year">
+    <span class="error_message" data-bind="validationMessage: IDDocumentExpirationDate"></span>
+</div>
+
+<div class="form_block-content phone" data-bind="with: MainApplicant().ApplicantPersonalData">
+    <label for="personadata-phone"><span>Teléfono fijo</span><span class="optional">(Opcional)</span></label>
+    <input class="input-tel-prefix" type="text" name="personadata-phone-prefix" id="personadata-phone-prefix"
+           data-bind="value:PhonePrefix , attr:{ readonly: IsResident() == 'true'} ">
+    <input type="tel" class="inputphone numonly" maxlength="9" name="personadata-phone" id="personadata-phone"
+           data-bind="value:PhoneNumber" data-hj-masked>
+    <span class="error_message" data-bind="validationMessage: PhoneNumber"></span>
+    <span class="error_message" data-bind="validationMessage: PhonePrefix"></span>
+</div>
+
+<div class="form_block-content buttons big">
+    <div class="button_back">
+        <a href="" title="Datos básicos" class="link brown darken back" data-bind="click: $root.goToPrevioustStep">
+            <i class="arrow">
+                <svg width="5" height="8" viewBox="0 0 5 8" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M1.143 0L0 1.25 2.514 4 0 6.75 1.143 8 4.8 4z" fill="#B59971" fill-rule="evenodd" />
+                </svg>
+            </i><span>Atrás</span>
+        </a>
+    </div>
+    <div class="button_next" data-bind="with: MainApplicant().ApplicantPersonalData">
+        <a href="" title="Continuar" class="button brown toWhite" data-bind="click:function () { CreatePersonalData($root); }">
+            <span>Continuar</span>
+        </a>
+    </div>
+</div>

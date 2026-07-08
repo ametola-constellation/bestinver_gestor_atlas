@@ -1,0 +1,38 @@
+﻿<div id="iban_section" data-selecttitle="Número de cuenta asociado a futuros reembolsos">
+    <p class="header_iban-extended" data-bind="text: Product().IbanExtendedHeader"></p>
+</div>
+
+<div id="operation-type-content-1" class="form_block">
+    <div id="periodic-refund-iban-container" class="form_block-content big" data-bind="visible: vm.CurrentEditOperation().MonthlyAmount">
+        <input type="checkbox" name="" id="periodic-refund-iban-check" data-bind="checked: ApplicantRefundAccountNumberData().checkUseOperationIBAN">
+        <label for="periodic-refund-iban-check">
+            <i class="icon"></i>
+            <div class="text">
+                Si deseas utilizar la misma cuenta facilitada en el paso anterior para las aportaciones periódicas, marca esta casilla
+            </div>
+        </label>
+    </div>
+
+    <div class="form_block-content" data-bind="with: ApplicantRefundAccountNumberData">
+        <label for="refund-iban-input"><span>IBAN asociado</span></label>
+        <input type="text" name="refund-iban-input" id="refund-iban-input"
+               data-bind="value: AccountNumber, validationElement: AccountNumber" class="input-iban" data-private />
+        <span class="error_message" data-bind="validationMessage: AccountNumber"></span>
+    </div>
+
+    <div id="accept-refund-iban-container" class="form_block-content big" data-bind="with: ApplicantRefundAccountNumberData">
+        <input type="checkbox" name="" id="accept-refund-iban-check" data-bind="checked: acceptRefundIban">
+        <label for="accept-refund-iban-check">
+            <i class="icon"></i>
+            <div class="text text-valign-top" style="vertical-align: top">
+                <span data-bind="text: $root.AcceptRefundIbanText"></span>
+            </div>
+        </label>
+        <!-- Por si se quiere un mensaje de error estandar:
+        <span class="error_message" data-bind="validationMessage: aceptRefundIban"></span>
+        -->
+        <span class="mini_text">Debe marcar esta casilla para poder continuar</span>
+    </div>
+</div>
+
+

@@ -1,0 +1,20 @@
+variables:
+  azSubscription: ""
+  azResourceGroup: ""
+  buildConfiguration: "Release"
+  buildPlatform: "Any CPU"
+  ContainerRegistry: bestinver-docker-deploy
+  ContainerApp: ""
+  PoolName: "ubuntu-latest"
+  ingressPort: '8080'
+  probePort: '8080'  
+  acr: 'articloudpro-bestinver-docker-deploy.jfrog.io'
+  acrImage: 'poc.web'
+
+  templateYaml: |
+    '.properties.template.containers[0].image = \"$(acr)/$(acrImage):$(Build.BuildNumber)\"'
+    '.properties.configuration.ingress.targetPort = $(ingressPort)'
+    '.properties.template.containers[0].probes[].httpGet.port = $(probePort)'
+    '.properties.template.revisionSuffix = \"$newRev\"'
+    '(.properties | select(.template).template.containers[].env[] | select(.name == \"rollbackRevision\").value) = \"$rollbackRev\"'
+    '(.properties | select(.template).template.containers[].env[] | select(.name == \"productionRevision\").value) = \"$(ContainerApp)--${newRev}\"'

@@ -1,0 +1,114 @@
+﻿@model BESTINVER.GestorAltas.Web.Management.Models.TitularDataModel
+
+@using BestInver.WebPrivada.Shared.Models.Microservices.Tests.Enums
+
+@{
+    DateTime zeroTime = new DateTime(1, 1, 1);
+}
+<div class="row">
+    <div class="col m-3">
+        <form asp-action="UpdateTitularData">
+            <input type="hidden" asp-for="RequestId" />
+            <input type="hidden" asp-for="DNI" />
+
+            <div class="row">
+
+
+                @if (Model.IsJuridic)
+                {
+                    <div class="form-group col-md-4">
+                        <label asp-for="DNI"></label>
+                        <input asp-for="DNI" class="form-control col-md-12" disabled />
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label asp-for="Name"></label>
+                        <input asp-for="Name" class="form-control col-md-12" data-val-maxlength-max="60" 
+                            data-val-maxlength="El campo Nombre debe ser una cadena o tipo de matriz con una longitud máxima de '60'." />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                }
+                else
+                {
+                    <div class="form-group col-md-4">
+                        <label asp-for="Name"></label>
+                        <input asp-for="Name" class="form-control col-md-12" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label asp-for="FirstSurname" class=""></label>
+                        <input asp-for="FirstSurname" class="form-control col-md-12" />
+                        <span asp-validation-for="FirstSurname" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label asp-for="SecondSurname" class=""></label>
+                        <input asp-for="SecondSurname" class="form-control col-md-12" />
+                        <span asp-validation-for="SecondSurname" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label asp-for="DNI"></label>
+                        <input asp-for="DNI" class="form-control col-md-12" disabled />
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label asp-for="IDDocumentIsPermanent"></label>
+                        <input type="checkbox" asp-for="IDDocumentIsPermanent" class="form-check" />
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label asp-for="IDDocumentExpirationDate"></label>
+                        <input asp-for="IDDocumentExpirationDate" class="form-control col-md-12" type="date"
+                               data-val="true" data-val-requiredexpirationdate="la fecha de caducidad del DNI es obligatoria" />
+                        <span asp-validation-for="IDDocumentExpirationDate" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label asp-for="Gender"></label>
+                        <select asp-for="Gender" asp-items="@Model.Genders.ToSelectListItem()" class="form-control col-md-12">
+                            <option value="" hidden disabled selected>Seleccione una opción</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label asp-for="Birthday"></label>
+                        <input asp-for="Birthday" class="form-control col-md-12" type="date"
+                               data-val="true" data-val-validage="La fecha de nacimiento no es correcta" data-val-validage-minor="@Model.IsMinor" />
+                        <span asp-validation-for="Birthday" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label asp-for="IsResident"></label>
+                        <input type="checkbox" asp-for="IsResident" class="form-check" />
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label asp-for="Country"></label>
+                        <select asp-for="Country" asp-items="@Model.Countries.ToSelectListItem()" class="form-control col-md-12">
+                            <option value="" hidden disabled selected>Seleccione una opción</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label asp-for="Nacionality"></label>
+                        <select asp-for="Nacionality" asp-items="@Model.Nationalities.ToSelectListItem()" class="form-control col-md-12">
+                            <option value="" hidden disabled selected>Seleccione una opción</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label>RGPD Acepta Consentimiento 1 (Comunicaciones comerciales)</label>
+                        <input type="checkbox" asp-for="gdpr" class="form-check" disabled />
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label asp-for="RdClientCode"></label>
+                        <input asp-for="RdClientCode" class="form-control col-md-12" disabled />
+                    </div>
+                    <div class="form-group col-md-8">
+                        <label>RGPD Acepta Consentimiento 2 (Eventos promocionales)</label>
+                        <input type="checkbox" asp-for="gdprEvents" class="form-check" disabled />
+                    </div>
+                }
+
+                @if (Model.ShowOperationChange) {
+                    <div class="form-group col-md-12">
+                        <button type="submit" class="btn btn-primary mb-2" @Model.DisabledSaveButton>Guardar</button>
+                    </div>
+                }
+
+
+            </div>
+
+        </form>
+    </div>
+</div>

@@ -1,0 +1,78 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+	<PropertyGroup>
+		<TargetFramework>$(NetVersion)</TargetFramework>
+		<PublishWithAspNetCoreTargetManifest>false</PublishWithAspNetCoreTargetManifest>
+		<DockerTargetOS>Windows</DockerTargetOS>
+		<DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
+		<Configurations>Debug;Release;Development</Configurations>
+		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+		<UserSecretsId>2663270C-7610-4137-99BF-AE0D02075BC1</UserSecretsId>
+		<CodeAnalysisRuleSet>..\.sonarlint\bes_gestoraltas__bes_gestoraltascsharp.ruleset</CodeAnalysisRuleSet>
+	</PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="AspNetCore.HealthChecks.Redis" />
+		<PackageReference Include="AspNetCore.HealthChecks.SqlServer" />
+		<PackageReference Include="Autofac" />
+		<PackageReference Include="Autofac.Extensions.DependencyInjection" />
+		<PackageReference Include="AutoMapper" />
+		<PackageReference Include="Azure.Monitor.OpenTelemetry.AspNetCore" />
+		<PackageReference Include="BestInver.Core.Cache" VersionOverride="8.1.*" />
+		<PackageReference Include="BestInver.Core.Otel" VersionOverride="8.1.*" />
+		<PackageReference Include="BestInver.Core.Http" VersionOverride="8.1.*" />
+		<PackageReference Include="BestInver.Core.Utils" VersionOverride="8.1.*" />
+		<PackageReference Include="BestInver.Shared.Models" VersionOverride="8.1.*" />
+		<PackageReference Include="EPPlus" />
+		<PackageReference Include="Humanizer" />
+		<PackageReference Include="iTextSharp.LGPLv2.Core" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" />
+		<PackageReference Include="Microsoft.Azure.AppConfiguration.AspNetCore" />
+		<PackageReference Include="Microsoft.CodeAnalysis.Analyzers">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" />
+		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" />
+		<PackageReference Include="Serilog" />
+		<PackageReference Include="Serilog.AspNetCore" />
+		<PackageReference Include="Serilog.Sinks.ApplicationInsights" />
+		<PackageReference Include="SimpleInjector.Integration.AspNetCore.Mvc" />
+		<PackageReference Include="Azure.Extensions.AspNetCore.DataProtection.Blobs" />
+		<PackageReference Include="Azure.Extensions.AspNetCore.DataProtection.Keys" />
+
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\BESTINVER.GestorAltas.Domain.Interfaces\BESTINVER.GestorAltas.Domain.Interfaces.csproj">
+			<Project>{014052e1-5131-484c-b845-ed4884f1d99c}</Project>
+			<Name>BESTINVER.GestorAltas.Domain.Interfaces</Name>
+		</ProjectReference>
+		<ProjectReference Include="..\BESTINVER.GestorAltas.Domain\BESTINVER.GestorAltas.Domain.csproj">
+			<Project>{CA5164FB-C898-4BE9-A6EA-FBD80261985D}</Project>
+			<Name>BESTINVER.GestorAltas.Domain</Name>
+		</ProjectReference>
+		<ProjectReference Include="..\BESTINVER.GestorAltas.MicroservicesProxy\BESTINVER.GestorAltas.MicroservicesProxy.csproj">
+			<Project>{e8565c6d-dab2-44d5-b7b0-e379cbebcea3}</Project>
+			<Name>BESTINVER.GestorAltas.MicroservicesProxy</Name>
+		</ProjectReference>
+		<ProjectReference Include="..\BESTINVER.GestorAltas.Resource\BESTINVER.GestorAltas.Resource.csproj" />
+		<ProjectReference Include="..\BESTINVER.GestorAltas.Utilities\BESTINVER.GestorAltas.Utilities.csproj">
+			<Project>{092CE845-A430-447F-9084-D66EFBD5230E}</Project>
+			<Name>BESTINVER.GestorAltas.Utilities</Name>
+		</ProjectReference>
+		<ProjectReference Include="..\BESTINVER.GestorAltas.Web.Common\BESTINVER.GestorAltas.Web.Common\BESTINVER.GestorAltas.Web.Common.csproj" />
+		<ProjectReference Include="..\BESTINVER.GestorAltas.Web.Models\BESTINVER.GestorAltas.Web.Models.csproj" />
+	</ItemGroup>
+	<!--<ItemGroup>
+   <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.4" PrivateAssets="All" />
+    <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.1.0" PrivateAssets="All" />
+    <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.4" />
+  </ItemGroup>-->
+	<ItemGroup>
+		<None Remove="**\LogFiles\*.*" />
+		<AdditionalFiles Include="..\.sonarlint\bes_gestoraltas__bes_gestoraltas\CSharp\SonarLint.xml" Link="SonarLint.xml" />
+		<Content Update="**\*.map;**\*.less;**\*.scss" CopyToPublishDirectory="Never" />
+		<Content Update="**\lib\**\*.*;**\*.min.*;**\*.css" CopyToPublishDirectory="PreserveNewest" />
+	</ItemGroup>
+	<ItemGroup>
+		<Folder Include="Views\Account\" />
+	</ItemGroup>
+</Project>

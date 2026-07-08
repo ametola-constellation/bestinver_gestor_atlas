@@ -1,0 +1,79 @@
+﻿<ul class="form_text-questions_list">
+
+    <li class="form_text-questions_list_element">
+        <!-- ko if: $root.Product().ProductTypeId() == 5 -->
+        <h4 class="form_text-questions_title">
+            Esta documentación ya ha sido firmada. A continuación, puedes visualizar o descargar los documentos que ya has firmado.
+        </h4>
+        <!-- /ko -->
+        <!-- ko if: $root.Product().ProductTypeId() != 5 -->
+        <h4 class="form_text-questions_title">
+            Esta documentación ya ha sido firmada. A continuación, puedes visualizar o descargar los documentos que ya has firmado.
+            </h4>
+        <!-- /ko -->
+        <div class="form_block-content big">
+            <ul class="documentation-list" data-bind="foreach: DocumentList">
+                <li class="documentation-list_element">
+                    <i>
+                        <svg width="30" height="38" viewBox="0 0 30 38" xmlns="http://www.w3.org/2000/svg">
+                            <g stroke="#000" fill="none" fill-rule="evenodd">
+                                <path stroke-width="2.188" d="M28.399 32.406h-21.9V2h16.228l5.672 5.928z"></path>
+                                <path stroke-width="2.188" d="M23.899 33.175v3.734h-21.9V6.504h3.993"></path>
+                                <path stroke-width="1.094" d="M22.305 2.776v6.192h5.625"></path>
+                            </g>
+                        </svg>
+                    </i>
+                    <h5 class="document_title" data-bind="text: name"></h5>
+                    <p data-bind="html: linkhtml, click: EventPdf"></p>
+                </li>
+            </ul>
+        </div>
+        <div class="form_block-content big">
+            <h4 class="form_text-questions_title">
+                Para cualquier consulta, puedes ponerte en contacto con BESTINVER en el teléfono <a class="customBrown" href="tel:900878280" title="900878280"><span>900 878 280</span></a> o en el email <a href="mailto:bestinver@bestinver.es" class="customBrown">bestinver@bestinver.es</a>
+            </h4>
+        </div>
+    </li>
+
+    <li style="display:none">
+        <h4 class="form_text-questions_title">
+            
+        </h4>
+        <div class="form_block-content big" id="validarOTP-form">
+        </div>
+
+        <div id="validarRubricaeOTP-form">
+        </div>
+
+        <div id="validarBestinverOTP-form" style="font-size: 1rem; display:none">            
+        </div>
+
+        <div class="form_block-content big hidden" id="success-signature">            
+        </div>
+
+        <div class="form_block-content big hidden" id="failure-signature">           
+        </div>
+    </li>
+
+</ul>
+
+<script type="text/javascript">
+function isMobileApp() {
+    var MobileData = Utils.GetMobileAppData();
+    var isBstapp = MobileData.AppVersion && (MobileData.AppVersion.indexOf("bstapp") != -1 || MobileData.AppVersion.indexOf("bestinver") != -1);
+    if (isBstapp) {
+            $("#bstInfoResourcesSignatureView").attr('href', "https://www.bestinver.es/grupo-bestinver/#bstapp");
+            $("#bstInfoResourcesSignatureView").removeAttr('target');
+
+            $("#bstPromosSignatureView").attr('href', "https://www.bestinver.es/grupo-bestinver/#bstapp");
+            $("#bstPromosSignatureView").removeAttr('target');
+
+            $("#accionaComercialInfoSignatureView").attr('href', "https://www.bestinver.es/grupo-acciona/#bstapp");
+            $("#accionaComercialInfoSignatureView").removeAttr('target');
+    }
+}
+
+    $(document).ready(function () {
+        isMobileApp();
+    });
+</script>

@@ -1,0 +1,22 @@
+﻿<h2 id="investment-head" class="form_title">2. realiza tu inversión</h2>
+
+<div class="form_block" data-bind="with: CurrentEditOperation">
+    @{ await Html.RenderPartialAsync("Operation/_OperationSubView"); }
+</div>
+
+<div id="operation-buttons-content" class="form_block buttons">
+    <div class="form_block-content buttons big">
+        <div class="button_back">
+            <a href="" title="Datos básicos" class="link brown darken back" data-bind="click: $root.goToPrevioustStep">
+                <i class="arrow">
+                    <svg width="5" height="8" viewBox="0 0 5 8" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M1.143 0L0 1.25 2.514 4 0 6.75 1.143 8 4.8 4z" fill="#B59971" fill-rule="evenodd" />
+                    </svg>
+                </i><span>Atrás</span>
+            </a>
+        </div>
+        <div class="button_next">
+            <a href="" title="Continuar" class="button brown toWhite" data-bind="click: CreateOperationData"><span>Continuar</span></a>
+        </div>
+    </div>
+</div>

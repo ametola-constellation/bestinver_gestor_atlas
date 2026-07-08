@@ -1,0 +1,38 @@
+﻿@using Microsoft.Extensions.Hosting;
+@model ErrorViewModel
+@{
+    ViewData["Title"] = "Error";
+}
+
+@if (hostingEnv.IsDevelopment())
+{
+    <h1 class="text-danger">Error.</h1>
+    <h2 class="text-danger">An error occurred while processing your request.</h2>
+
+    @if (Model.ShowRequestId)
+    {
+        <p>
+            <strong>Request ID:</strong> <code>@Model.RequestId</code>
+        </p>
+    }
+
+    <h3>Development Mode</h3>
+    <p>
+        Swapping to <strong>Development</strong> environment will display more detailed information about the error that occurred.
+    </p>
+    <p>
+        <strong>Development environment should not be enabled in deployed applications</strong>, as it can result in sensitive information from exceptions being displayed to end users. For local debugging, development environment can be enabled by setting the <strong>ASPNETCORE_ENVIRONMENT</strong> environment variable to <strong>Development</strong>, and restarting the application.
+    </p>
+}
+else
+{
+    <section class="bg01 module module-404-error">
+        <div class="module_inner">
+            <div class="col6-xd col6-ld col6-md col6-sd col6-lt col6-st col4-sm module-content">
+                <h1 class="module-title">Error</h1>
+                <h2 class="module-subtitle">Se ha producido un error</h2>
+                <p class="module-text">El equipo de Relación con el Inversor de Bestinver contactará contigo para continuar con el proceso de alta.<br /><br />Si lo prefieres, puedes ponerte en contacto con nosotros a través del teléfono 900 878 280 o del correo electrónico bestinver@bestinver.es<br /><br />Muchas gracias.</p>
+            </div>
+        </div>
+    </section>
+}

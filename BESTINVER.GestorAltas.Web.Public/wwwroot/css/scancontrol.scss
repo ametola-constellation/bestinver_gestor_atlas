@@ -1,0 +1,52 @@
+﻿
+div.scanControl {
+    width:640px;
+    height:480px;
+}
+
+
+.form_block-content #scanFrame {
+    color: #ffffff;
+    margin-top: 90px;
+}
+
+
+div#scanFrame {
+    border: solid 10px;
+    width: 580px;
+    height: 350px;
+    border-radius: 45px;
+    opacity: 0.65;
+    color: #00CEEA;
+    z-index: 2;
+    position: absolute;
+    margin: 20px;
+    margin-top: 80px;
+}
+
+div#scanStatus {
+    width: 640px;
+    height: 480px;
+    background-image: url(../img/Check.png);
+    background-position: center;
+    background-size: 25%;
+    position: absolute;
+    background-repeat: no-repeat;
+    z-index: 2;
+    opacity: 0.8;
+}
+
+div#scanMessages {
+    width:640px;
+    height:50px;
+    position:absolute;
+    background-color:#000;
+    z-index:2; 
+    color:lime;
+    font-size:20px;
+    text-align:center; padding:10px;
+}
+
+div#scanContainer {
+    border:1px solid #000;
+}

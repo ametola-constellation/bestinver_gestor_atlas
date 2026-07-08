@@ -1,0 +1,213 @@
+﻿@{
+    ViewBag.Title = "Index";
+    var config = AppSettings.Value;
+
+}
+
+@section Style {
+
+    <environment include="Development">
+        <link href="~/css/dashboard.css" rel="stylesheet" asp-append-version="true" />
+    </environment>
+
+    <environment exclude="Development">
+        <link href="~/css/dashboard.min.css" rel="stylesheet" asp-append-version="true" />
+    </environment>
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="alert alert-primary">
+            <span>
+                Hola @User.Identity.Name, desde este panel puedes consultar las peticiones que tienes bloqueadas,
+                y el listado de peticiones que necesitan ser atendidas. Además puedes realizar una búsqueda avanzada haciendo <a href='@Url.Action("Index", "Search")'>clic aquí</a>.
+            </span>
+        </div>
+    </div>
+    
+    <div class="col-md-12">
+        <h4><span class="mr-2 fas fa-star"></span>Solicitudes bloqueadas para atención</h4>
+        <div class="alert alert-primary">
+            <table id="locked-list" class="table table-striped table-bordered dt-responsive wrap" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Id Solicitud</th>
+                        <th>Fecha Solicitud</th>
+                        <th>Nombre completo</th>
+                        <th>NIF/NIE/CIF</th>
+                        <th>Estado</th>
+                        <th>Alertas</th>
+                        <th>Asistida por</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            @{await Html.RenderPartialAsync("_TableLeyend"); }
+        </div>
+    </div>
+    @if ((await AuthorizationService.AuthorizeAsync(User, MiddleOfficeClaimNames.DashboardPBCConsulta)).Succeeded)
+    {
+
+        <div class="col-md-12">
+            <h4><span class="mr-2 fas fa-th-list"></span>Solicitudes con alerta de prevención de blanqueo de capitales</h4>
+            <div class="alert alert-primary">
+                <table id="pbc-alerts-list" class="table table-striped table-bordered dt-responsive wrap" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Id Solicitud</th>
+                            <th>Fecha Solicitud</th>
+                            <th>Nombre completo</th>
+                            <th>NIF/NIE/CIF</th>
+                            <th>Estado</th>
+                            <th>Alertas</th>
+                            <th>Asistida por</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+                @{await Html.RenderPartialAsync("_TableLeyend");}
+            </div>
+        </div>
+    }
+    @if ((await AuthorizationService.AuthorizeAsync(User, MiddleOfficeClaimNames.DashboardFirmaManuscritaConsulta)).Succeeded)
+    {
+        <div class="col-md-12">
+            <h4><span class="mr-2 fas fa-th-list"></span>Solicitudes con alerta de firma manuscrita</h4>
+            <div class="alert alert-primary">
+                <table id="sign-alerts-list" class="table table-striped table-bordered dt-responsive wrap" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Id Solicitud</th>
+                            <th>Fecha Solicitud</th>
+                            <th>Nombre completo</th>
+                            <th>NIF/NIE/CIF</th>
+                            <th>Estado</th>
+                            <th>Alertas</th>
+                            <th>Asistida por</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+                @{await Html.RenderPartialAsync("_TableLeyend"); }
+            </div>
+        </div>
+    }
+    @if ((await AuthorizationService.AuthorizeAsync(User, MiddleOfficeClaimNames.DashboardIncidenciaConsulta)).Succeeded)
+    {
+        <div class="col-md-12">
+            <h4><span class="mr-2 fas fa-th-list"></span>Solicitudes con alerta de incidencia</h4>
+            <div class="alert alert-primary">
+                <table id="incidence-alerts-list" class="table table-striped table-bordered dt-responsive wrap" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Id Solicitud</th>
+                            <th>Fecha Solicitud</th>
+                            <th>Nombre completo</th>
+                            <th>NIF/NIE/CIF</th>
+                            <th>Estado</th>
+                            <th>Alertas</th>
+                            <th>Asistida por</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+                @{await Html.RenderPartialAsync("_TableLeyend"); }
+            </div>
+        </div>
+    }
+    @if ((await AuthorizationService.AuthorizeAsync(User, MiddleOfficeClaimNames.DashboardPendientesAtendidasConsulta)).Succeeded)
+    {
+        <div class="col-md-12">
+            <h4><span class="mr-2 fas fa-th-list"></span>Solicitudes pendientes de ser atendidas</h4>
+            <div class="alert alert-primary">
+                <table id="pending-list" class="table table-striped table-bordered dt-responsive wrap" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Id Solicitud</th>
+                            <th>Fecha Solicitud</th>
+                            <th>Nombre completo</th>
+                            <th>NIF/NIE/CIF</th>
+                            <th>Estado</th>
+                            <th>Alertas</th>
+                            <th>Asistida por</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+                @{await Html.RenderPartialAsync("_TableLeyend"); }
+            </div>
+        </div>
+    }
+    @if ((await AuthorizationService.AuthorizeAsync(User, MiddleOfficeClaimNames.DashboardPendientesDNIConDNISubidoConsulta)).Succeeded)
+    {
+        <div class="col-md-12">
+            <h4><span class="mr-2 fas fa-th-list"></span>Solicitudes pendientes de dni con el dni subido</h4>
+            <div class="alert alert-primary">
+                <table id="pending-document-list" class="table table-striped table-bordered dt-responsive wrap" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Id Solicitud</th>
+                            <th>Fecha Solicitud</th>
+                            <th>Nombre completo</th>
+                            <th>NIF/NIE/CIF</th>
+                            <th>Estado</th>
+                            <th>Alertas</th>
+                            <th>Asistida por</th>
+                            <th>Producto</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+                @{await Html.RenderPartialAsync("_TableLeyend"); }
+            </div>
+        </div>
+    }
+    @if ((await AuthorizationService.AuthorizeAsync(User, MiddleOfficeClaimNames.DashboardEnvioPostalConsulta)).Succeeded)
+    {
+        <div class="col-md-12">
+            <h4><span class="mr-2 fas fa-th-list"></span>Solicitudes envío postal</h4>
+            <div class="alert alert-primary">
+                <table id="postal-document-list" class="table table-striped table-bordered dt-responsive wrap" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Id Solicitud</th>
+                            <th>Fecha Solicitud</th>
+                            <th>Nombre completo</th>
+                            <th>NIF/NIE/CIF</th>
+                            <th>Estado</th>
+                            <th>Alertas</th>
+                            <th>Asistida por</th>
+                            <th>Producto</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+                @{await Html.RenderPartialAsync("_TableLeyend"); }
+            </div>
+        </div>
+    }
+</div>
+@section Scripts {
+
+    <environment include="Development">
+        <script src="~/js/dashboard.js" asp-append-version="true"></script>
+    </environment>
+
+    <environment exclude="Development">
+        <script src="~/js/dashboard.min.js" asp-append-version="true"></script>
+    </environment>
+}

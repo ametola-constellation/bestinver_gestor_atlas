@@ -1,0 +1,51 @@
+﻿@model BESTINVER.GestorAltas.Web.Management.Models.Remediacion.RemediationStatusModel
+
+@if (Model == null)
+{
+    <div class="row">
+        <div class="col-md-12">
+            No se han encontrado peticiones de remediación para el código cliente introducido
+        </div>
+    </div>
+}
+else
+{
+    bool allowVisualizarEstadosCotitulares = (await AuthorizationService.AuthorizeAsync(User, MiddleOfficeClaimNames.RemediacionVisualizarEstadoCotitulares)).Succeeded; 
+    
+    <div id="remediacionDetail" data-id="@Model.RequestId">
+
+        @if (allowVisualizarEstadosCotitulares)
+        {
+            <div class="row">
+                <div class="col-md-12" id="cotitular-remediations">
+                </div>
+            </div>
+        }
+    </div>
+
+    if (allowVisualizarEstadosCotitulares)
+    {
+        <script>
+            $(function () {
+                var button = $('#btnFilter');
+                buttonInactive(button);
+                $.ajax({
+                url: routeConfig.Remediacion_CotitularNotRemediatedByDNIClienteCod + '?rdTitular=' + '@Model.DNI',
+                dataType: 'html',
+                cache: false,
+                success: function(data) {
+                    if (data == undefined) {
+                        toastr.info('No se ha encontrado al cliente buscado');
+                    }
+                    $('#cotitular-remediations').html(data);
+                    buttonActive(button);
+                },
+                error: function (error) {
+                    toastr.info('No se ha encontrado al cliente buscado');
+                    buttonActive(button);
+                },
+            })
+        })
+        </script>        
+    }
+}

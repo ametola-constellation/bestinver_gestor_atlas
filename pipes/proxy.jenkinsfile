@@ -1,0 +1,3 @@
+@Library('AccionaProxyFwDevOps3') _
+
+entryPoint.go()

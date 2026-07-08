@@ -1,0 +1,55 @@
+﻿<h2 class="form_title">Resumen datos</h2>
+<p class="product_resume-title" data-bind="text: ProductName"></p>
+<div class="product_resume-content" data-bind="with: MainApplicant">
+    <span class="product_resume-header">Datos titular</span>
+    <ul class="product_resume-list">
+        <li class="product_resume-list_element"><span class="product_resume-info_title">Nombre</span><span class="product_resume-info_value" data-bind="text: ApplicantBasicData().FullName"></span></li>
+        <li class="product_resume-list_element"><span class="product_resume-info_title">DNI / NIE</span><span class="product_resume-info_value" data-bind="text: ApplicantBasicData().DNI"></span></li>
+        <li class="product_resume-list_element"><span class="product_resume-info_title">Teléfono</span><span class="product_resume-info_value" data-bind="text: ApplicantBasicData().MobilePhoneNumber"></span></li>
+        <li class="product_resume-list_element"><span class="product_resume-info_title">Dirección</span><span class="product_resume-info_value"data-bind="text: ApplicantContactData().FiscalAddress().FullAddressString"></span></li>
+        <li class="product_resume-list_element"><span class="product_resume-info_title">Fecha de nacimiento</span><span class="product_resume-info_value" data-bind="text: ApplicantPersonalData().Birthday().ParseString"></span></li>
+        <li class="product_resume-list_element"><span class="product_resume-info_title">Sexo</span><span class="product_resume-info_value" data-bind="text: ApplicantPersonalData().GenderName"></span></li>
+        <li class="product_resume-list_element"><span class="product_resume-info_title">Email</span><span class="product_resume-info_value" data-bind="text: ApplicantBasicData().Email"></span></li>
+    </ul>
+</div>
+
+<div class="product_resume-content" data-bind="foreach: listaOtherApplicants">
+    <span class="product_resume-header" data-bind="text: 'Datos ' + ApplicantType() "></span>
+    <ul class="product_resume-list">
+        <li class="product_resume-list_element"><span class="product_resume-info_title">Nombre</span><span class="product_resume-info_value" data-bind="text: ApplicantBasicData().FullName"></span></li>
+        <li class="product_resume-list_element"><span class="product_resume-info_title">DNI / NIE</span><span class="product_resume-info_value" data-bind="text: ApplicantBasicData().DNI"></span></li>
+        <li class="product_resume-list_element"><span class="product_resume-info_title">Teléfono</span><span class="product_resume-info_value" data-bind="text: ApplicantBasicData().MobilePhoneNumber"></span></li>
+        <li class="product_resume-list_element"><span class="product_resume-info_title">Dirección</span><span class="product_resume-info_value" data-bind="text: ApplicantContactData().FiscalAddress().FullAddressString"></span></li>
+        <li class="product_resume-list_element"><span class="product_resume-info_title">Fecha de nacimiento</span><span class="product_resume-info_value" data-bind="text: ApplicantPersonalData().Birthday().ParseString"></span></li>
+        <li class="product_resume-list_element"><span class="product_resume-info_title">Sexo</span><span class="product_resume-info_value" data-bind="text: ApplicantPersonalData().GenderName"></span></li>
+        <li class="product_resume-list_element"><span class="product_resume-info_title">Email</span><span class="product_resume-info_value" data-bind="text: ApplicantBasicData().Email"></span></li>
+    </ul>
+</div>
+
+<div class="form_block-content big">
+    <input type="checkbox" name="check-resume-legal" id="check-resume-legal" onclick="$('#corfirm-data').toggleClass('disabled')">
+    <label for="check-resume-legal">
+        <div class="text">
+            <i class="icon"></i> He leído y acepto las <a href="" data-bind="click:function () { window.launchAjax('../../popup/popup-legal.html');} ">condiciones legales</a> y la pólítica de privacidad
+        </div>
+    </label>
+</div>
+
+<div id="personaldata-address-buttons-content" class="form_block-content buttons big">
+    <div class="form_block-content buttons big">
+        <div class="button_back">
+            <a href="" title="Datos personales" class="link brown darken back" data-bind="click: $root.goToPrevioustStep">
+                <i class="arrow">
+                    <svg width="5" height="8" viewBox="0 0 5 8" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M1.143 0L0 1.25 2.514 4 0 6.75 1.143 8 4.8 4z" fill="#B59971" fill-rule="evenodd" />
+                    </svg>
+                </i><span>Modificar datos</span>
+            </a>
+        </div>
+        <div class="button_next">
+            <a href="" id="corfirm-data" title="Continuar" class="button brown toWhite disabled" data-bind="click: $root.goToNextStep">
+                <span>Confirmar datos</span>
+            </a>
+        </div>
+    </div>
+</div>

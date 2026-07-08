@@ -1,0 +1,103 @@
+﻿@model ResolveAlertModel
+@using BestInver.WebPrivada.Shared.Models.Microservices.Tests.Enums
+
+<div id='alertModal' class='modal fade' role="dialog" aria-labelledby="alertLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="cotitularLabel">Resolver alerta</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body modal-lg">
+                <form asp-action="ResolveAlert" asp-controller="Details" asp-antiforgery="true" method="post" data-ajax="true" data-ajax-method="POST">
+
+                    <input asp-for="Id" hidden />
+                    <input asp-for="RequestId" hidden />
+                    <input asp-for="AlertTypeId" hidden />
+                    <input asp-for="StartDate" hidden />
+
+                    <div class="row">
+
+                        <div class="form-group col-md-4">
+                            <label asp-for="AlertType"></label>
+                            <input asp-for="AlertType" class="form-control" disabled />
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label asp-for="StartDate"></label>
+
+                            @if (Model.StartDate.HasValue)
+                            {
+                                <input type="text"
+                                       id="alertStartDate"
+                                       class="form-control"
+                                       data-datetime="@DateTime.SpecifyKind(Model.StartDate.Value, DateTimeKind.Utc).ToString("O")"
+                                       disabled />
+                            }
+                            else
+                            {
+                                <input type="text"
+                                       id="alertStartDate"
+                                       class="form-control"
+                                       value=""
+                                       disabled />
+                            }
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label asp-for="Responsbile"></label>
+                            <input asp-for="Responsbile" class="form-control" disabled />
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-12">
+                            <label asp-for="Details"></label>
+                            <textarea asp-for="Details" class="form-control  col-md-12" rows="2" cols="5" disabled></textarea>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-12">
+                            <label asp-for="Comments"></label>
+                            <textarea asp-for="Comments" class="form-control  col-md-12" rows="2" cols="5"></textarea>
+                            <span asp-validation-for="Comments" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    @if (Model.AlertTypeId == (int)AlertTypes.AlertaPBC
+            || Model.AlertTypeId == (int)AlertTypes.AlertaTerrorismo
+            || Model.AlertTypeId == (int)AlertTypes.AlertaPersonaPublica)
+                    {
+                        <div class="row">
+                            <div class="form-group col-md-4">
+                                <label asp-for="AlertStatus"></label>
+                                <select asp-for="AlertStatus" asp-items="@Model.AlertStatuses" class="form-control">
+                                    <option value="" hidden disabled selected>Seleccione una opción</option>
+                                </select>
+                                <span asp-validation-for="AlertStatus" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                    }
+                    else
+                    {
+                        <input asp-for="AlertStatus" value="@((int)AlertStatus.Accepted)" hidden />
+                    }
+
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" data-save="modal">Confirmar resolución</button>
+            </div>
+        </div>
+    </div>
+</div>
+<partial name="_ValidationScriptsPartial" />
+
+<script>
+    $('[data-datetime]').each(function () {
+        var utcDate = new Date($(this).data('datetime'));
+        $(this).val(utcDate.toLocaleString());
+    });
+</script>

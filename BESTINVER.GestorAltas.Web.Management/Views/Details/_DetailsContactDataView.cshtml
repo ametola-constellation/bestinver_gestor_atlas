@@ -1,0 +1,40 @@
+﻿@model BESTINVER.GestorAltas.Web.Management.Models.TitularContactDataModel
+
+<div class="row">
+    <div class="col m-3">
+        <form asp-action="UpdateTitularContactData">
+            <input type="hidden" asp-for="RequestId" />
+            <input type="hidden" asp-for="DNI" />
+            <input id="invalidPhonesArray" type="hidden" asp-for="InvalidPhones" />
+
+            <div class="row">
+                <div asp-validation-summary="All" class="text-danger"></div>
+            </div>
+
+            <div class="row">
+                <div class="form-group col-md-4">
+                    <label asp-for="PhoneNumber"></label>
+                    <input asp-for="PhoneNumber" class="form-control col-md-12" />
+                </div>
+
+                <div class="form-group col-md-4">
+                    <label asp-for="MobilePhoneNumber"></label>
+                    <input asp-for="MobilePhoneNumber" class="form-control col-md-12" />
+                    <span asp-validation-for="MobilePhoneNumber" class="text-danger"></span>
+                </div>
+
+                <div class="form-group col-md-4">
+                    <label asp-for="Email"></label>
+                    <input type="email" asp-for="Email" class="form-control col-md-12" />
+                </div>
+
+                @if (Model.ShowOperationChange)
+                {
+                    <div class="form-group col-md-12">
+                        <button type="submit" class="btn btn-primary mb-2" @Model.DisabledSaveButton>Guardar</button>
+                    </div>
+                }
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,10 @@
+﻿table {
+    background-color: #fff;
+    border-radius: 4px;
+
+    span {
+        &.label {
+            margin: 0 2px;
+        }
+    }
+}

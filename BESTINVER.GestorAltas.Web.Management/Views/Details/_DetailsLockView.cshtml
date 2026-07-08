@@ -1,0 +1,64 @@
+﻿@model BESTINVER.GestorAltas.Web.Management.Models.ManagementRequestModel
+
+@{
+    var canEdit = false;
+    if ((await AuthorizationService.AuthorizeAsync(User, MiddleOfficeClaimNames.SolicitudConsulta)).Succeeded)
+    {
+        canEdit = true;
+    }
+    if ((await AuthorizationService.AuthorizeAsync(User, MiddleOfficeClaimNames.EstadosModificacion)).Succeeded)
+    {
+        canEdit = true;
+    }
+}
+
+<div class="alert alert-warning" role="alert">
+    @if (Model.LockedIsLocked)
+    {
+        if (User.Identity.Name != Model.LockedUserName)
+        {
+            <p>La solicitud se encuentra bloqueada por otro usuario y no se puede realizar cambios.</p>
+            <p>El usuario "@Model.LockedUserName" bloqueó esta solicitud el <span data-datetime="@DateTime.SpecifyKind(Model.LockedStartDate, DateTimeKind.Utc).ToString("O")"></span>.</p>
+            if (User.IsInRole(DefaultRoles.Admin))
+            {
+                using (Html.BeginForm("AdminUnlockRequest", "Details"))
+                {
+                    @Html.HiddenFor(m => m.Id)
+                    <p>Como administrador, puede desbloquar esta solicitud haciendo clic en el siguiente botón: <button type="submit" class="btn btn-warning">Desbloquear solicitud</button></p>
+                }
+            }
+        }
+        else
+        {
+            using (Html.BeginForm("UnlockRequest", "Details"))
+            {
+                @Html.HiddenFor(m => m.Id)
+                <p>La solicitud se encuentra bloqueada por usted desde el <span data-datetime="@DateTime.SpecifyKind(Model.LockedStartDate, DateTimeKind.Utc).ToString("O")"></span>. Ningún usuario podrá realizar cambios.</p>
+                <p>Para desbloquear la solicitud, haga clic en el siguiente botón: <button type="submit" class="btn btn-warning">Desbloquear solicitud</button></p>
+            }
+        }
+    }
+    else
+    {
+        using (Html.BeginForm("LockRequest", "Details"))
+        {
+            @Html.HiddenFor(m => m.Id)
+            <p>Esta solicitud esta libre para poder modificarla. Se debe bloquear para realizar cambios</p>
+            if (canEdit)
+            {
+                <p>Para bloquear esta solicitud, haga clic en el siguiente botón: <button type="submit" class="btn btn-warning">Bloquear para edición</button></p>
+            }
+            else
+            {
+                <p>No tienes suficientes permisos para modificar la solicitud</p>
+            }
+        }
+    }
+</div>
+
+<script>
+    $('[data-datetime]').each(function() {
+        var utcDate = new Date($(this).data('datetime'));
+        $(this).text(utcDate.toLocaleString());
+    });
+</script>

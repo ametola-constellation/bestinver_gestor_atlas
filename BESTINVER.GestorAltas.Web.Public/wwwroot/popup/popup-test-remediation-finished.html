@@ -1,0 +1,19 @@
+﻿<section class="popup popup-help">
+    <div class="popup_inner">
+        <div class="module-wysiwyg">
+            <div class="module_inner">
+                <p class="module-subtitle">Gracias por actualizar su Test de conocimiento</p>
+                <p class="module-text">A continuación necesitamos que revise que sus datos de contacto están actualizados, puede hacerlo llamando al teléfono de atención al cliente en el <a class="customBrown" href="tel:900878280" title="900878280"><span>900 878 280</span></a> o accediendo a su Área de cliente en el siguiente enlace: <a target="_blank" title='Area personal'>Area personal</a></p>
+            </div>
+        </div>
+    </div>
+</section>
+<script type="text/javascript">
+    $(document).ready(function () {
+        const areaPersonalLink = document.querySelector("a[title='Area personal']");
+
+        if (areaPersonalLink) {
+            areaPersonalLink.href = urlWebPrivada + 'area-cliente?s=cnt';
+        }
+    });
+</script>

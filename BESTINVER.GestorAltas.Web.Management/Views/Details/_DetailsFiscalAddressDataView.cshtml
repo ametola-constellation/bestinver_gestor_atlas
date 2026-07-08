@@ -1,0 +1,91 @@
+﻿@model BESTINVER.GestorAltas.Web.Management.Models.Details.AddressDataModel
+
+<div class="row">
+    <div class="col m-3">
+        <form asp-action="UpdateTitularAddress">
+            <input type="hidden" asp-for="RequestId" />
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="AddressType" />
+            <input type="hidden" asp-for="DNI" />
+
+            <div class="row">
+
+                <input type="hidden" asp-for="Id" />
+                <div class="form-group col-md-3">
+                    <label asp-for="ViaType"></label>
+                    <select asp-for="ViaType" asp-items="@Model.ViaTypes.ToSelectListItem()" class="form-control col-md-12">
+                        <option value="" hidden disabled selected>Seleccione una opción</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-9">
+                    <label asp-for="Name"></label>
+                    <input asp-for="Name" class="form-control col-md-12" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+
+                <div class="form-group col-md-3">
+                    <label asp-for="Number"></label>
+                    <input asp-for="Number" class="form-control col-md-12" />
+                    <span asp-validation-for="Number" class="text-danger"></span>
+                </div>
+
+                <div class="form- col-md-3">
+                    <label asp-for="Stairs"></label>
+                    <input asp-for="Stairs" class="form-control col-md-12" />
+                </div>
+
+                <div class="form-group col-md-3">
+                    <label asp-for="Floor"></label>
+                    <input asp-for="Floor" class="form-control col-md-12" />
+                </div>
+
+                <div class="form-group col-md-3">
+                    <label asp-for="Door"></label>
+                    <input asp-for="Door" class="form-control col-md-12" />
+                </div>
+
+                <div class="form-group col-md-12">
+                    <label asp-for="AddressExtension"></label>
+                    <input asp-for="AddressExtension" class="form-control col-md-12" />
+                </div>
+
+                <div class="form-group col-md-3">
+                    <label asp-for="PostalCode"></label>
+                    <input asp-for="PostalCode" class="form-control col-md-12" />
+                    <span asp-validation-for="PostalCode" class="text-danger"></span>
+                </div>
+
+                <div class="form-group col-md-3">
+                    <label asp-for="City"></label>
+                    <input asp-for="City" class="form-control col-md-12" />
+                    <span asp-validation-for="City" class="text-danger"></span>
+                </div>
+                <div class="form-group col-md-3">
+                    <label asp-for="Province"></label>
+                    <input asp-for="Province" class="form-control col-md-12" />
+                    <span asp-validation-for="Province" class="text-danger"></span>
+                </div>
+                <div class="form-group col-md-3">
+                    <label asp-for="IdCountry"></label>
+                    <select asp-for="IdCountry" asp-items="@Model.Countries.ToSelectListItem()" class="form-control col-md-12">
+                        <option value="" hidden disabled selected>Seleccione una opción</option>
+                    </select>
+                </div>
+
+                @if (Model.ShowDifferentPostalAddressCheck)
+                {
+                    <div class="form-group col-md-3">
+                        <input type="checkbox" asp-for="DifferentPostalAddress" class="form-check" />
+                        <label asp-for="DifferentPostalAddress"></label>
+                    </div>
+                }
+                @if (Model.ShowOperationChange)
+                {
+                    <div class="form-group col-md-12">
+                        <button type="submit" class="btn btn-primary mb-2" @Model.DisabledSaveButton>Guardar</button>
+                    </div>
+                 }
+                </div>
+        </form>
+    </div>
+</div>

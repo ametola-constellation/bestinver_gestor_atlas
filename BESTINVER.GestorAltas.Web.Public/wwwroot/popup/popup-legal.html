@@ -1,0 +1,34 @@
+﻿<section class="popup-legal">
+    <div id="modalLegalContactWrap" class="tl_modalLegalWrap tl_modalLegalWrapNoBk">
+        <div class="tl_modalLegal">
+            <p class="tl_modalLegal_title">
+            </p>
+            <br>
+            <div class="tl_modalLegal_p">
+            </div>
+            <button title="Close (Esc)" class="mfp-close"><span></span></button>
+        </div>
+    </div>
+</section>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        document.getElementById("modalLegalContactWrap").style.display = "none";
+        $("#popup-legal .mfp-close").css("display", "block");
+
+        $("#modalLegalContactWrap").animate({
+            opacity: 0,
+        }, 500);
+
+        Utils.LoadLegalModalContent().then(function (result) {
+            if (result) {
+                $('.tl_modalLegal_title').append(result.modal_legal.titulo);
+                $('.tl_modalLegal_p').append(result.modal_legal.legal);
+                document.getElementById("modalLegalContactWrap").style.display = "block";
+                $("#modalLegalContactWrap").animate({
+                    opacity: 1,
+                }, 500);
+            }
+        });
+    });
+</script>

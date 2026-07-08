@@ -1,0 +1,124 @@
+﻿@using Newtonsoft.Json;
+
+@model SignatureRestoreDataViewModel;
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@Html.AntiForgeryToken()
+
+@{
+    int milliseconds = (int)Model.SessionTimeout * 60 * 1000;
+}
+
+@section scripts{
+    <script language="javascript" type="text/javascript">
+
+        $.blockUI.defaults.css.cursor = "dafault";
+        $.blockUI.defaults.css.backgroundColor = "#fff";
+        $.blockUI.defaults.overlayCSS.cursor = "default";
+        $.blockUI.defaults.overlayCSS.backgroundColor = "#fff";
+
+        var timeoutfnc;
+        var timeouturl = '@(Url.Action("SessionExpiredError", "Error", null))';
+        var internalerrorurl = '@(Url.Action("InternalError", "Error", null))';
+        var error404url = '@(Url.Action("NotFoundError", "Error", null))';
+        var timeoutcheck = false;
+        var parser = new UAParser();
+
+        function InitTimeoutFnc() {
+            timeoutfnc = setTimeout(function () {
+                timeoutcheck = true;
+            },
+                @milliseconds.ToString()
+            );
+        }
+        function ResetTimeoutFnc() {
+            clearTimeout(timeoutfnc);
+            timeoutfnc = setTimeout(function () {
+                timeoutcheck = true;
+            },
+                @milliseconds.ToString()
+            );
+        }
+
+        var GMT;
+        var vm = new SendDocumentViewModel();
+        var MasterData = new MasterDataModel(1, 1, 1);
+        var documentsendingways = @Html.Raw(JsonConvert.SerializeObject(Model.MasterData.DocumentSendingWays));
+        MasterData.setDocumentSendingWay(documentsendingways);
+
+        $(document).ready(function () {
+
+            var data = {
+                RequestId: '@Model.RequestId' ,
+                Dni: '@Model.Dni'
+            };
+
+            $.ajax({
+                url: apiConfig.API_Register_SendDocumentProcess,
+                context: this,
+                type: "POST",
+                crossDomain: false,
+                data: JSON.stringify(data),
+                dataType: "json",
+                contentType: 'application/json; charset=utf-8',
+                headers: { 'RequestVerificationToken': $("input[name='__RequestVerificationToken']").val() }
+            }).done(function (data) {
+
+                var isMinor = @Html.Raw(Model.IsMinor).ToString().ToLower();
+                var birth = @Html.Raw(Model.Birthday.ToString("yyyy-MM-dd"));
+                var deliveryOptionsHidden = @(Context.Request.IsMobile() ? "false" : "true");
+                vm.Init('@Model.RequestId', '@Model.Dni', '@Html.Raw(Model.CompleteName)', ' @Html.Raw(Model.IsMinor).ToString().ToLower()', '@Html.Raw(Model.Birthday.ToString("yyyy-MM-dd"))', data.Minors, data.RequestApplicantType, deliveryOptionsHidden);
+                ko.applyBindings(vm);
+
+            }).fail(function (data, textStatus, xhr) {
+                    switch (data.status) {
+                        case 302:
+                            customError('@Model.RequestId' + ": Timeout", apiConfig.API_Register_SendDocumentProcess);
+                            location.href = timeouturl;
+                            break;
+                        default:
+                            customError('@Model.RequestId' + ": Timeout", apiConfig.API_Register_SendDocumentProcess);
+                            location.href = internalerrorurl;
+                    }
+            });
+        });
+    </script>
+}
+
+<div class="registration_form">
+
+    <div id="documents-content" class="registration_inner">
+        <h2 class="form_title">Envío de documentación</h2>
+
+        <ul class="form_steps-list">
+            <li id="applicant-document-content-head" class="form_steps-list_element" data-bind="with: vm">
+                <h3 class="form_steps-title">
+                    Envío de documentación del titular
+                </h3>
+                <div id="applicant-document-content" class="form_block" data-bind="with: DniDataView">
+                    @{ await Html.RenderPartialAsync("Documents/_DocumentView"); }
+                </div>
+            </li>
+        </ul>
+
+    </div>
+
+    <div id="success-content" class="registration_inner hidden">
+        <ul class="form_steps-list">
+            <li id="success-content-head" class="form_steps-list_element hidden">
+                <h3 class="form_steps-title" data-bind="text: SuccessMessage"></h3>
+                <div id="success-content-view" class="form_block hidden">
+                    @{ await Html.RenderPartialAsync("_RecoverySuccessView"); }
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <div id="error-content" class="registration_inner hidden" data-bind="with: vm">
+        @{ await Html.RenderPartialAsync("_ErrorView"); }
+    </div>
+
+</div>

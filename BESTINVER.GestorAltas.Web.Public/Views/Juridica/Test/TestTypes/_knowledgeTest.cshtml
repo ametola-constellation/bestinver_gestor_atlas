@@ -1,0 +1,471 @@
+﻿<ul id="applicant-test-questions" class="form_text-questions_list" data-bind="with: $root.CurrentKnowledgeTest">
+
+    <li class="form_text-questions_list_element" data-bind="with: companyTypeQuestion">
+        <h4 class="form_text-questions_title" data-bind="text: questionText"></h4>
+        <div class="form_block-content big">
+            <label><span data-bind="html: questionLabel"></span></label>
+            <select id="entity-type"
+                    data-bind="options: answers,  optionsText: 'label', value: value, optionsCaption: 'Seleccionar tipo'"></select>
+        </div>
+        <div class="form_block-content big">
+            <span class="error_message" data-bind="validationMessage: questionOK"></span>
+        </div>
+    </li>
+
+    <!-- ko if: allowContinue()  -->
+
+    <li class="form_text-questions_list_element" data-bind="with: investmentOwnerQuestion">
+        <h4 class="form_text-questions_title" data-bind="text: questionText"></h4>
+
+        <div class="form_block-content big">
+            <label><span data-bind="html: questionLabel"></span></label>
+        </div>
+
+        <div class="form_block-content big checkRadio_size">
+            <!-- ko foreach: answers -->
+            <input type="checkbox" data-bind="attr:{id: 'investment-owner' + id()  , name: 'investment-owner' + id() } ,
+                           checked: checked, click: $parent.manageCheck" />
+            <label data-bind="attr: {for: 'investment-owner' + id() }">
+                <i class="icon"></i>
+                <span class="text" data-bind="text: label"></span>
+            </label>
+            <!-- /ko -->
+        </div>
+        <div class="form_block-content big">
+            <span class="error_message" data-bind="validationMessage: questionOK"></span>
+        </div>
+    </li>
+
+    <li class="form_text-questions_list_element" data-bind="with: percentageCountryQuestion">
+        <h4 class="form_text-questions_title" data-bind="text: questionText"></h4>
+        <div class="form_block-content big">
+            <label><span data-bind="html: questionLabel"></span></label>
+            <select id="percentage-country"
+                    data-bind="options: MasterData.CountryList,  optionsText: 'valor', value: value, optionsCaption: 'Seleccionar país'"></select>
+        </div>
+        <div class="form_block-content big">
+            <span class="error_message" data-bind="validationMessage: questionOK"></span>
+        </div>
+    </li>
+
+    <li class="form_text-questions_list_element" data-bind="with: ssnQuestion">
+        <h4 class="form_text-questions_title" data-bind="text: questionText"></h4>
+        <div class="form_block-content big">
+            <label><span data-bind="html: questionLabel"></span></label>
+            <input type="text" name="ssn-number" id="ssn-number" data-bind="value: value" maxlength="9" data-private>
+        </div>
+    </li>
+
+    <li class="form_text-questions_list_element tl-anidate-checks" data-bind="with: fatcaCrsQuestion">
+        <h4 class="form_text-questions_title" data-bind="text: questionText"></h4>
+        <div class="form_block-content big">
+            <label><span data-bind="html: questionLabel"></span></label>
+        </div>
+        <!-- ko foreach: answers -->
+        <div class="form_block-content big">
+            <input type="checkbox" data-bind="attr:{id: 'fatca-answer' + id()  , name: 'fatca-answer' + id() } ,
+                       checked: checked , click: $parent.manageCheck" />
+            <label data-bind="attr: {for: 'fatca-answer' + id() }">
+                <i class="icon"></i>
+                <span class="text" data-bind="text: label"></span>
+            </label>
+        </div>
+
+        <!-- ko if: showSubanswersfatca()  -->
+        <!-- ko foreach: subanswersfatca -->
+        <div class="form_block-content big tl-check-children">
+            <input type="checkbox" data-bind="attr:{id: 'fatca-subanswer' + id()  , name: 'fatca-subanswer' + id(), disabled: $parent.checked() == false } ,
+                       checked: checked, click: $parent.manageSubCheck" />
+            <label data-bind="attr: {for: 'fatca-subanswer' + id() }">
+                <i class="icon"></i>
+                <span class="text" data-bind="text: label"></span>
+            </label>
+            <!-- ko if: showExtended()  -->
+            <input type="text" class="form-control"
+                   data-bind="value: extendedanswer, attr:{id: 'extended-fatca' + id() }" />
+            <!-- /ko -->
+            <!-- ko if: showSubTextanswersfatca()  -->
+            <!-- ko foreach: textsubanswers -->
+            <div class="form_block-content big">
+                <label><span data-bind="text: label"></span></label>
+                <input type="text" data-bind="value: value, attr:{id: 'fatca-text-subanswer' + id()  , name: 'fatca-text-subanswer' + id() }" maxlength="40">
+            </div>
+            <!-- /ko -->
+            <!-- /ko -->
+        </div>
+        <!-- /ko -->
+        <!-- /ko -->
+        <!-- /ko -->
+        <div class="form_block-content big">
+            <span class="error_message" data-bind="validationMessage: questionOK"></span>
+        </div>
+    </li>
+
+    <!-- ko with: isFinantialCompany() ? sectorFinantialQuestion : sectorQuestion -->
+    <li class="form_text-questions_list_element tl-anidate-checks">
+        <h4 class="form_text-questions_title" data-bind="text: questionText"></h4>
+        <div class="form_block-content big">
+            <label><span data-bind="html: questionLabel"></span></label>
+        </div>
+        <!-- ko foreach: answers -->
+        <div class="form_block-content big">
+            <input type="checkbox" data-bind="attr:{id: 'sector-answer' + id()  , name: 'sector-answer' + id() } ,
+                       checked: checked , click: $parent.manageCheck" />
+            <label data-bind="attr: {for: 'sector-answer' + id() }">
+                <i class="icon"></i>
+                <span class="text" data-bind="text: label, attr:{'data-tltooltip': tooltip }"></span>
+                <sup data-bind="text: sup"></sup>
+            </label>
+            <!-- ko if: showExtended()  -->
+            <input type="text" class="form-control"
+                   data-bind="value: extendedanswer, attr:{id: 'extended-sector' + id() }" />
+            <!-- /ko -->
+        </div>
+
+        <!-- ko if: showSubSectors()  -->
+        <!-- ko foreach: subSectors -->
+        <div class="form_block-content big tl-check-children" style="margin-left: 40px">
+            <input type="checkbox" data-bind="attr:{id: 'sector-subanswer' + id()  , name: 'sector-subanswer' + id(), disabled: $parent.checked() == false } ,
+                       checked: checked, click: $parent.manageSubCheck" />
+            <label data-bind="attr: {for: 'sector-subanswer' + id() }">
+                <i class="icon"></i>
+                <span class="text" data-bind="text: label, attr:{'data-tltooltip': tooltip }"></span>
+                <sup data-bind="text: sup"></sup>
+            </label>
+            <!-- ko if: showExtended()  -->
+            <input type="text" class="form-control"
+                   data-bind="value: extendedanswer, attr:{id: 'extended-sector' + id() }" />
+            <!-- /ko -->
+        </div>
+        <!-- /ko -->
+        <!-- /ko -->
+        <!-- /ko -->
+        <div class="form_block-content big">
+            <span class="error_message" data-bind="validationMessage: questionOK"></span>
+        </div>
+    </li>
+    <!-- /ko -->
+    <!-- ko if: visibleOwnerSociety() && !isFinantialCompany() -->
+    <li class="form_text-questions_list_element" data-bind="with: realOwnerQuestion">
+        <h4 class="form_text-questions_title" data-bind="text: questionText"></h4>
+        <div class="form_block-content big" id="real-owner">
+
+            <label><span data-bind="html: questionLabel"></span></label>
+
+
+            <div data-bind="visible: HasOwners()">
+                <div class="infor" data-bind="foreach: owners">
+                    <table class="complete">
+                        <tbody>
+                            <tr>
+                                <td data-bind="text: DNI(), visible: DNI()" data-private></td>
+                                <td data-bind="visible: !DNI()">N/D</td>
+                                <td data-bind="text: Name(), visible: Name()" data-private></td>
+                                <td data-bind="visible: !Name()">N/D</td>
+                                <td data-bind="text: Percentage()+' %'"></td>
+                                <td>
+                                    <button class="link brown darken" data-bind="click: $parent.RemoveOwner"><span>Eliminar</span></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="infor" data-bind="visible: IsExcluded()">
+                <span>Ya has contestado con otra pregunta</span>
+            </div>
+
+            <button data-bind="visible: !IsAddingOwner() && CanAddOwner() && !IsExcluded(), click: BeginAddOwner.bind($data, $root)"
+                    data-hide="true" class="link brown darken plus">
+                <i class="icon_plus"></i><span>Añadir titular real</span>
+            </button>
+
+            <div class="form_block" style="display: block;" data-bind="with:OwnerToAdd, visible: IsAddingOwner()" id="add-real-owner">
+                @{
+                    var realownerModel = new OtherApplicantModel
+                    {
+                        ApplicantRequestName = "realowner"
+                    };
+                }
+                <partial name="Test/TestTypes/_OwnerView" model="realownerModel" />
+            </div>
+
+            <div class="form_block" style="display: block;" data-bind="visible: IsAddingOwner()">
+                <div class="form_block-content buttons big">
+                    <div class="button_back"><a href="#" title="Cancelar" class="link brown darken" data-bind="click: CancelAddOwner"><span>Cancelar</span></a></div>
+                    <div class="button_next"><a href="#" title="Continuar" class="button brown toWhite" data-bind="click: AddOwner"><span>Guardar titular real</span></a></div>
+                </div>
+            </div>
+        </div>
+        <div class="form_block-content big">
+            <span class="error_message" data-bind="validationMessage: questionOK"></span>
+        </div>
+    </li>
+
+    <li class="form_text-questions_list_element" data-bind="with: adminOwnerQuestion">
+        <h4 class="form_text-questions_title" data-bind="text: questionText"></h4>
+        <div class="form_block-content big" id="admin-owner">
+
+            <label><span data-bind="html: questionLabel"></span></label>
+
+            <div data-bind="visible: HasOwners()">
+                <div class="infor" data-bind="foreach: owners">
+                    <table class="complete">
+                        <tbody>
+                            <tr>
+                                <td data-bind="text: DNI(), visible: DNI()" data-private></td>
+                                <td data-bind="visible: !DNI()">N/D</td>
+                                <td data-bind="text: Name(), visible: Name()" data-private></td>
+                                <td data-bind="visible: !Name()">N/D</td>
+                                <td>
+                                    <button class="link brown darken" data-bind="click: $parent.RemoveOwner"><span>Eliminar</span></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="infor" data-bind="visible: IsExcluded()">
+                <span>Ya has contestado con otra pregunta</span>
+            </div>
+
+            <button data-bind="visible: !IsAddingOwner() && CanAddOwner() && !IsExcluded(), click: BeginAddOwner.bind($data, $root)"
+                    data-hide="true" class="link brown darken plus">
+                <i class="icon_plus"></i><span>Añadir administrador</span>
+            </button>
+
+            <div class="form_block" style="display: block;" data-bind="with:OwnerToAdd, visible: IsAddingOwner()" id="add-admin-owner">
+                @{
+                    var adminModel = new OtherApplicantModel
+                    {
+                        ApplicantRequestName = "admin"
+                    };
+                }
+                <partial name="Test/TestTypes/_OwnerView" model="adminModel" />
+            </div>
+
+            <div class="form_block" style="display: block;" data-bind="visible: IsAddingOwner()">
+                <div class="form_block-content buttons big">
+                    <div class="button_back"><a href="#" title="Cancelar" class="link brown darken" data-bind="click: CancelAddOwner"><span>Cancelar</span></a></div>
+                    <div class="button_next"><a href="#" title="Continuar" class="button brown toWhite" data-bind="click: AddOwner"><span>Guardar administrador</span></a></div>
+                </div>
+            </div>
+        </div>
+        <div class="form_block-content big">
+            <span class="error_message" data-bind="validationMessage: questionOK"></span>
+        </div>
+    </li>
+    <!-- /ko -->
+    <!-- ko if: visibleOwnerFundation() && !isFinantialCompany()  -->
+    <li class="form_text-questions_list_element" data-bind="with: patronOwnerQuestion">
+        <h4 class="form_text-questions_title" data-bind="text: questionText"></h4>
+        <div class="form_block-content big" id="patron-owner">
+            <label><span data-bind="html: questionLabel"></span></label>
+            <div data-bind="visible: HasOwners()">
+                <div class="infor" data-bind="foreach: owners">
+                    <table class="complete">
+                        <tbody>
+                            <tr>
+                                <td data-bind="text: DNI(), visible: DNI()" data-private></td>
+                                <td data-bind="visible: !DNI()">N/D</td>
+                                <td data-bind="text: Name(), visible: Name()" data-private></td>
+                                <td data-bind="visible: !Name()">N/D</td>
+                                <td data-bind="text: Percentage()+' %'"></td>
+                                <td>
+                                    <button class="link brown darken" data-bind="click: $parent.RemoveOwner"><span>Eliminar</span></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="infor" data-bind="visible: IsExcluded()">
+                <span>Ya has contestado con otra pregunta</span>
+            </div>
+
+            <button data-bind="visible: !IsAddingOwner() && CanAddOwner() && !IsExcluded(), click: BeginAddOwner.bind($data, $root)"
+                    data-hide="true" class="link brown darken plus">
+                <i class="icon_plus"></i><span>Añadir patrono</span>
+            </button>
+
+            <div class="form_block" style="display: block;" data-bind="with:OwnerToAdd, visible: IsAddingOwner()" id="add-patron-owner">
+                @{
+                    var patronModel = new OtherApplicantModel
+                    {
+                        ApplicantRequestName = "patron"
+                    };
+                }
+                <partial name="Test/TestTypes/_OwnerView" model="patronModel" />
+            </div>
+
+            <div class="form_block" style="display: block;" data-bind="visible: IsAddingOwner()">
+                <div class="form_block-content buttons big">
+                    <div class="button_back"><a href="#" title="Cancelar" class="link brown darken" data-bind="click: CancelAddOwner"><span>Cancelar</span></a></div>
+                    <div class="button_next"><a href="#" title="Continuar" class="button brown toWhite" data-bind="click: AddOwner"><span>Guardar patrono</span></a></div>
+                </div>
+            </div>
+        </div>
+        <div class="form_block-content big">
+            <span class="error_message" data-bind="validationMessage: questionOK"></span>
+        </div>
+    </li>
+
+    <li class="form_text-questions_list_element" data-bind="with: representationOwnerQuestion">
+        <h4 class="form_text-questions_title" data-bind="text: questionText"></h4>
+        <div class="form_block-content big" id="representative-owner">
+            <label><span data-bind="html: questionLabel"></span></label>
+            <div data-bind="visible: HasOwners()">
+                <div class="infor" data-bind="foreach: owners">
+                    <table class="complete">
+                        <tbody>
+                            <tr>
+                                <td data-bind="text: DNI(), visible: DNI()" data-private></td>
+                                <td data-bind="visible: !DNI()">N/D</td>
+                                <td data-bind="text: Name(), visible: Name()" data-private></td>
+                                <td data-bind="visible: !Name()">N/D</td>
+                                <td>
+                                    <button class="link brown darken" data-bind="click: $parent.RemoveOwner"><span>Eliminar</span></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="infor" data-bind="visible: IsExcluded()">
+                <span>Ya has contestado con otra pregunta</span>
+            </div>
+
+            <button data-bind="visible: !IsAddingOwner() && CanAddOwner() && !IsExcluded(), click: BeginAddOwner.bind($data, $root)"
+                    data-hide="true" class="link brown darken plus">
+                <i class="icon_plus"></i><span>Añadir órgano de representación</span>
+            </button>
+
+            <div class="form_block" style="display: block;" data-bind="with:OwnerToAdd, visible: IsAddingOwner()" id="add-representative-owner">
+                @{
+                    var representativeModel = new OtherApplicantModel
+                    {
+                        ApplicantRequestName = "representative"
+                    };
+                }
+                <partial name="Test/TestTypes/_OwnerView" model="representativeModel" />
+            </div>
+
+            <div class="form_block" style="display: block;" data-bind="visible: IsAddingOwner()">
+                <div class="form_block-content buttons big">
+                    <div class="button_back"><a href="#" title="Cancelar" class="link brown darken" data-bind="click: CancelAddOwner"><span>Cancelar</span></a></div>
+                    <div class="button_next"><a href="#" title="Continuar" class="button brown toWhite" data-bind="click: AddOwner"><span>Guardar órgano de representación</span></a></div>
+                </div>
+            </div>
+        </div>
+        <div class="form_block-content big">
+            <span class="error_message" data-bind="validationMessage: questionOK"></span>
+        </div>
+    </li>
+    <!-- /ko -->
+    <!-- ko if: !isFinantialCompany()  -->
+    <li class="form_text-questions_list_element" data-bind="with: annualAmountQuestion">
+        <h4 class="form_text-questions_title" data-bind="text: questionText"></h4>
+        <div class="form_block-content big">
+            <label><span data-bind="html: questionLabel"></span></label>
+        </div>
+        <div class="form_block-content big checkRadio_size">
+            <!-- ko foreach: answers -->
+            <input type="checkbox" data-bind="attr:{id: 'annual-answer' + id()  , name: 'annual-answer' + id() } ,
+                           checked: checked, click: $parent.ManageCheck" />
+            <label data-bind="attr: {for: 'annual-answer' + id() }">
+                <i class="icon"></i>
+                <span class="text" data-bind="text: label"></span>
+            </label>
+            <!-- /ko -->
+        </div>
+        <div class="form_block-content big">
+            <span class="error_message" data-bind="validationMessage: questionOK"></span>
+        </div>
+    </li>
+
+    <li class="form_text-questions_list_element" data-bind="with: annualBenefitQuestion">
+        <h4 class="form_text-questions_title" data-bind="text: questionText"></h4>
+        <div class="form_block-content big">
+            <label><span data-bind="html: questionLabel"></span></label>
+        </div>
+        <div class="form_block-content big checkRadio_size">
+            <!-- ko foreach: answers -->
+            <input type="checkbox" data-bind="attr:{id: 'annual-answer' + id()  , name: 'annual-answer' + id() } ,
+                           checked: checked, click: $parent.ManageCheck" />
+            <label data-bind="attr: {for: 'annual-answer' + id() }">
+                <i class="icon"></i>
+                <span class="text" data-bind="text: label"></span>
+            </label>
+            <!-- /ko -->
+        </div>
+        <div class="form_block-content big">
+            <span class="error_message" data-bind="validationMessage: questionOK"></span>
+        </div>
+    </li>
+
+    <li class="form_text-questions_list_element" data-bind="with: fundsVolumeQuestion">
+        <h4 class="form_text-questions_title" data-bind="text: questionText"></h4>
+        <div class="form_block-content big">
+            <label><span data-bind="html: questionLabel"></span></label>
+        </div>
+        <div class="form_block-content big checkRadio_size">
+            <!-- ko foreach: answers -->
+            <input type="checkbox" data-bind="attr:{id: 'annual-answer' + id()  , name: 'annual-answer' + id() } ,
+                           checked: checked, click: $parent.ManageCheck" />
+            <label data-bind="attr: {for: 'annual-answer' + id() }">
+                <i class="icon"></i>
+                <span class="text" data-bind="text: label"></span>
+            </label>
+            <!-- /ko -->
+        </div>
+        <div class="form_block-content big">
+            <span class="error_message" data-bind="validationMessage: questionOK"></span>
+        </div>
+    </li>
+
+    <li class="form_text-questions_list_element" data-bind="with: activeQuestion">
+        <h4 class="form_text-questions_title" data-bind="text: questionText"></h4>
+        <div class="form_block-content big">
+            <label><span data-bind="html: questionLabel"></span></label>
+        </div>
+        <div class="form_block-content big checkRadio_size">
+            <!-- ko foreach: answers -->
+            <input type="checkbox" data-bind="attr:{id: 'annual-answer' + id()  , name: 'annual-answer' + id() } ,
+                           checked: checked, click: $parent.ManageCheck" />
+            <label data-bind="attr: {for: 'annual-answer' + id() }">
+                <i class="icon"></i>
+                <span class="text" data-bind="text: label"></span>
+            </label>
+            <!-- /ko -->
+        </div>
+        <div class="form_block-content big">
+            <span class="error_message" data-bind="validationMessage: questionOK"></span>
+        </div>
+    </li>
+
+    <li class="form_text-questions_list_element" data-bind="with: employeesQuestion">
+        <h4 class="form_text-questions_title" data-bind="text: questionText"></h4>
+        <div class="form_block-content big">
+            <label><span data-bind="html: questionLabel"></span></label>
+        </div>
+        <div class="form_block-content big checkRadio_size">
+            <!-- ko foreach: answers -->
+            <input type="checkbox" data-bind="attr:{id: 'annual-answer' + id()  , name: 'annual-answer' + id() } ,
+                           checked: checked, click: $parent.ManageCheck" />
+            <label data-bind="attr: {for: 'annual-answer' + id() }">
+                <i class="icon"></i>
+                <span class="text" data-bind="text: label"></span>
+            </label>
+            <!-- /ko -->
+        </div>
+        <div class="form_block-content big">
+            <span class="error_message" data-bind="validationMessage: questionOK"></span>
+        </div>
+    </li>
+    <!-- /ko -->
+    <!-- /ko -->
+</ul>

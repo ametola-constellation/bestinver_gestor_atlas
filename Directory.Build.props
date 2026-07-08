@@ -1,0 +1,14 @@
+﻿<Project>
+
+	<PropertyGroup>
+		<NetVersion>net8.0</NetVersion>
+		<ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+	</PropertyGroup>
+	<PropertyGroup>
+		<!--SYSLIB0039: SslProtocols.Tls y SslProtocols.Tls11 están obsoletos-->
+		<!--CS1591 Falta el comentario XML para el tipo o miembro visible de forma pública 'Type_or_Member'-->
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<NoWarn>$(NoWarn);SYSLIB0039;1591;CS0618</NoWarn>
+	</PropertyGroup>
+
+</Project>

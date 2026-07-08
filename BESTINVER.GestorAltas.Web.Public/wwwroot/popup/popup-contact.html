@@ -1,0 +1,147 @@
+﻿
+<section>
+    <div class="popup popup-contact" id="tl_modalContact">
+        <div id="popup-call" class="popup_inner">
+            <button title="Close (Esc)" class="mfp-close"><span></span></button>
+            <h1 class="popup-title">¿Quieres que te llamemos?</h1>
+            <p class="popup-text">Introduce tu número de teléfono y nosotros te llamamos para resolver cualquier duda que tengas.</p>
+            <div class="form_block-content phone">
+                <input type="text" name="popupcontact-phoneprefix" value="+34" id="popupcontact-phoneprefix" readonly />
+                <input type="number" maxlength="9" name="popupcontact-phone" id="popupcontact-phone" />
+                <span id="msg-error" class="error_message"></span>
+            </div>
+
+            <div class="form_block-content legal">
+                <input type="checkbox" name="basicdata-legal" id="data-legal">
+                <label for="data-legal">
+                    <i class="icon"></i>
+                    <div class="text" id="legalTxtContactModal">
+                        <!--He leído y acepto la <a href="#" id="legal-data">“Información básica sobre Protección de Datos”</a>-->
+                    </div>
+                </label>
+                <span id="msg-error-legal" class="error_message hidden"></span>
+            </div>
+
+            <div class="form_block-content buttons big">
+                <div class="button_next">
+                    <a id="send-mail" href="#" title="Enviar" class="button brown toWhite"><span>Enviar</span></a>
+                </div>
+            </div>
+            <span class="popup-text" id="contact_popup_message"></span>
+        </div>
+    </div>
+    <div id="modalLegalContactWrap" class="tl_modalLegalWrap tl_modalLegalWrapNoBk">
+        <div class="tl_modalLegal">
+            <div onclick="cerrarModalLegal();" class="tl_ipd-volver">
+                <span class="icon-arrow-left"></span><span>VOLVER</span>
+            </div>
+            <p class="tl_modalLegal_title">
+            </p>
+            <br>
+            <div class="tl_modalLegal_p">
+            </div>
+        </div>
+    </div>
+</section>
+
+<script type="text/javascript">
+    function abrirModalLegal(e) {
+        e.preventDefault();
+        document.getElementById("modalLegalContactWrap").style.display = "block";
+        $("#tl_modalContact").animate({
+            opacity: 0
+        }, 500, function () {
+            $("#modalLegalContactWrap").animate({
+                opacity: 1
+            }, 500);
+        });
+    }
+
+    function cerrarModalLegal(e) {
+        $("#modalLegalContactWrap").animate({
+            opacity: 0
+        }, 500, function () {
+            $("#modalLegalContactWrap").hide();
+            $("#tl_modalContact").animate({
+                opacity: 1
+            }, 500);
+        });
+    }
+
+    $(document).ready(function () {
+        Utils.LoadLegalModalContent().then(function (result) {
+            if (result) {
+                $('#legalTxtContactModal').append(result.texto);
+                $('#msg-error-legal').text(result.warning);
+                $('.tl_modalLegal_title').append(result.modal_legal.titulo);
+                $('.tl_modalLegal_p').append(result.modal_legal.legal);
+                $('#legalTxtContactModal a').attr('href', '#');
+                $('#legalTxtContactModal a').attr('id','legal-data');
+                document.getElementById("tl_modalContact").style.display = "block";
+                $("#tl_modalContact").animate({
+                    opacity: 1,
+                }, 500);
+            }
+
+            $(document).on('click', '#tl_modalContact', function (e) {
+                e.stopPropagation();
+            });
+
+            $(document).on('click', '#modalLegalContactWrap', function (e) {
+                e.stopPropagation();
+            });
+
+            var legalTxtContactModal = document.getElementById('legalTxtContactModal');
+            if (legalTxtContactModal) {
+                var TxtContactModal = legalTxtContactModal.getElementsByTagName("a");
+                for (var i = 0; i < TxtContactModal.length; i++) {
+                    var link = TxtContactModal[i];
+
+                    if (link.getAttribute("id").includes("legal-data")) {
+                        link.addEventListener('click', abrirModalLegal);
+                    }
+                }
+
+            }
+
+            $("#send-mail").click(function () {
+                var phone = $('#popupcontact-phone').val();
+
+                if (isNaN(phone) || phone.length == 0) {
+                    var msgerr = 'Por favor introduzca un número de teléfono válido';
+                    $('#msg-error').text(msgerr);
+                    if (GMT != undefined) GMT.PushEvent('', 'menu superior', phone, 'ko');
+                } else {
+                    $('#msg-error').text(" ");
+
+                    if ($("#data-legal").is(":checked")) {
+                        $('label[for="data-legal"] i.icon').css('border-color', "inherit");
+                        $('#msg-error-legal').text(" ");
+
+                        $('#send-mail').addClass('disabled');
+                        Request.SendHelpMail(phone).then(function (result) {
+                            if (result) {
+                                $('#msg-error').css('color', '#000000');
+                                var msgerr = '¡Muchas gracias! En breve nos pondremos en contacto contigo.';
+                                $('#contact_popup_message').text(msgerr);
+                                $('.popup.popup-contact .button_next').css('display', 'none');
+                                $('#send-mail').removeClass('disabled');
+                                if (GMT != undefined) GMT.PushEvent('', 'menu superior', phone, 'ok');
+                            } else {
+                                var msgerr = 'Se ha producido un error en el envío del teléfono, por favor inténtelo más tarde';
+                                $('#msg-error').text(msgerr);
+                                $('#send-mail').removeClass('disabled');
+                                if (GMT != undefined) GMT.PushEvent('', 'menu superior', phone, 'ko');
+                            }
+                        });
+                    } else {
+                        $('#msg-error-legal').removeClass('hidden');
+                        $('label[for="data-legal"] i.icon').css('border-color', "#ff0000");
+                    }
+                }
+
+                return false;
+            });
+        });
+    });
+</script>

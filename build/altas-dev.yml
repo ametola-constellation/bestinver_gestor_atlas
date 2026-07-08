@@ -1,0 +1,63 @@
+# ASP.NET
+# Build and test ASP.NET projects.
+# Add steps that publish symbols, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/apps/aspnet/build-aspnet-4
+
+trigger: none
+
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+  solution: '**/*.sln'
+  buildPlatform: 'Any CPU'
+  buildConfiguration: 'Release'
+
+steps:
+- task: YarnInstaller@3
+  inputs:
+    versionSpec: '1.x'
+
+- task: CmdLine@2
+  inputs:
+    script: 'npm install -g node@8.12.0'
+
+- task: Yarn@3
+  inputs:
+    projectDirectory: '$(System.DefaultWorkingDirectory)/BESTINVER.GestorAltas.Web.Public'
+
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'restore'
+    projects: '**/BESTINVER.GestorAltas.Web.Public.csproj'
+    feedsToUse: 'select'
+    vstsFeed: '39298fd1-2803-4eda-bd67-c1537b6db1dc/32f4b40d-794c-4488-ac18-29e1870d67d2'
+
+- task: gulp@1
+  inputs:
+    gulpFile: 'BESTINVER.GestorAltas.Web.Public/gulpfile.js'
+    targets: 'sass'
+    enableCodeCoverage: false
+
+- task: gulp@1
+  inputs:
+    gulpFile: 'BESTINVER.GestorAltas.Web.Public/gulpfile.js'
+    targets: 'min'
+    enableCodeCoverage: false
+
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'build'
+    projects: '**/BESTINVER.GestorAltas.Web.Public.csproj'
+    arguments: '--no-restore  /p:platform="$(BuildPlatform)" /p:PublishProfile="$(BuildConfiguration)" /p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactstagingdirectory)\$(BuildConfiguration)"'
+
+- task: PublishSymbols@2
+  inputs:
+    SearchPattern: '**/bin/**/*.pdb'
+    PublishSymbols: false
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'

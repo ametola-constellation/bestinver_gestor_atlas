@@ -1,0 +1,177 @@
+﻿<ul id="applicant-test-questions" class="form_text-questions_list" data-bind="foreach: { data: CurrentTest }">
+    <!-- ko if:QuestionVisible -->
+    <li class="form_text-questions_list_element" data-bind="attr: { 'id': 'question-'+ IdQuestion()} , visible: CustomQuestionBehabiors.Question4Visible(IdQuestion()) && IsVisibleSociedadONG() && IsVisibleByTipoEntidad()">
+        <h4 class="form_text-questions_title" data-bind="text:Question"></h4>
+        <div class="form_block-content big" data-bind="visible: TypeSelect() && !TypeOwners() && !TypeAdmins()">
+            <label><span data-bind="html:QuestionLabel"></span></label>
+            <select name="Answer" class="form-control"
+                    data-bind="options: Answers,  optionsText: 'Answer' , value: SelectedAnswer ,
+                    optionsCaption: 'Seleccionar una respuesta' , visible: !NoAnswers(), attr: { 'id': 'Answer-'+ IdQuestion(), 'disabled' : IsDisabledByTipoEntidad()}, css: {'disabled' : IsDisabledByTipoEntidad()}"></select>
+            <input name="ExtendedAnswer" type="text" class="form-control"
+                   data-bind="value: AnswerText , visible: NoAnswers(), attr: {'disabled':IsDisabledByTipoEntidad()}" maxlength="255" />
+        </div>
+        <div class="form_block-content big" data-bind="visible: SelectedAnswer() && SelectedAnswer().ExtendedAnswer()">
+            <label class="ExtendedAnswerLabel">Introduce una respuesta: </label>
+            <input name="ExtendedAnswer" type="text" class="form-control"
+                   data-bind="value: AnswerText" maxlength="255" />
+        </div>
+        <!-- ko if: TypeCheck() && !TypeOwners() && !TypeAdmins() -->
+        <div class="form_block-content big checkRadio_size" data-bind="foreach: { data: Answers }, css: { fullwidth: $root.CurrentTypeTest() == 3 }">
+            <input type="checkbox" data-bind="attr:{id: 'answer' + IdAnswer() + '-' + IdQuestion() , name: 'answer' + IdAnswer() + '-' + IdQuestion(), 'disabled' : $parent.IsDisabledByTipoEntidad() } ,
+                   checked: Checked , click: $root.CheckAnswer" />
+            <label data-bind="attr: {for: 'answer' + IdAnswer() + '-' + IdQuestion()}">
+                <i class="icon"></i>
+                <span class="text" data-bind="text: Answer"></span>
+            </label>
+            <input name="ExtendedAnswer" type="text" class="form-control" style="min-width: 100%"
+                   data-bind="value: TextExtendedAnswer , visible: VisibleExtendedAnswer, attr: {'disabled' : $parent.IsDisabledByTipoEntidad()}" maxlength="255" />
+        </div>
+        <!-- /ko -->
+        <!-- ko if: (TypeOwners() || TypeAdmins()) -->
+        <div class="form_block-content big" data-bind="attr: { 'id': 'owner-'+ IdQuestion()}">
+            <div data-bind="visible: HasOwners()">
+                <span class="label">Persona física</span>
+                <div class="infor" data-bind="foreach: Owners">
+                    <table class="complete">
+                        <tbody>
+                            <tr>
+                                <td data-bind="text: DNI(), visible: DNI()"></td>
+                                <td data-bind="visible: !DNI()">N/D</td>
+                                <td data-bind="text: Name(), visible: Name()"></td>
+                                <td data-bind="visible: !Name()">N/D</td>
+                                <td data-bind="text: MobilePhone(), visible: MobilePhone()"></td>
+                                <td data-bind="visible: !MobilePhone()">N/D</td>
+                                <td data-bind="text: Email(), visible: Email()"></td>
+                                <td data-bind="visible: !Email()">N/D</td>
+                                <td data-bind="text: Percentage()+' %', visible: $parent.TypeOwners()"></td>
+                                <td>
+                                    <button class="link brown darken" data-bind="click: $parent.RemoveOwner"><span>Eliminar</span></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="infor" data-bind="visible: IsExcluded()">
+                <span>Ya has contestado con otra pregunta</span>
+            </div>
+            <button data-relative="addcoowner-content addcoowner-sign addcoowner-buttons" data-bind="visible: !IsAddingOwner() && CanAddOwner() && !IsExcluded(), click: BeginAddOwner.bind($data, $root), attr: {'disabled' : IsDisabledByTipoEntidad()}"
+                    data-hide="true" class="link brown darken plus">
+                <i class="icon_plus"></i><span>Añadir titular real</span>
+            </button>
+            <div class="form_block" style="display: block;" data-bind="visible: IsAddingOwner(), attr: { 'id': 'ownerToAdd-'+ IdQuestion()}">
+                <div class="form_block-content big title"><span class="form_block-title"></span></div>
+                <div class="form_block-content big subtitle"><span class="form_block-subtitle">Datos personales titular real</span></div>
+                <div class="form_block-content">
+                    <label for="personaldata-coowner-nif"><span>NIF</span></label>
+                    <input type="text" name="personaldata-coowner-nif" id="personaldata-coowner-nif" data-bind="value:OwnerToAdd().DNI, valueUpdate: 'afterkeydown', event:{focusout:OwnerToAdd().CheckDNI}" data-private required>
+                    <span class="error_message" data-bind="validationMessage: OwnerToAdd().DNI"></span>
+                </div>
+                <div class="form_block-content">
+                    <label for="personaldata-coowner-name"><span>Nombre</span></label>
+                    <input type="text" name="personaldata-coowner-name" data-bind="value:OwnerToAdd().Name, valueUpdate: 'afterkeydown'">
+                    <span class="error_message" data-bind="validationMessage: OwnerToAdd().Name"></span>
+                </div>  
+                <div class="form_block-content">
+                    <label for="personaldata-coowner-name"><span>Primer Apellido</span></label>
+                    <input type="text" name="personaldata-coowner-surname"  data-bind="value:OwnerToAdd().FirstSurname, valueUpdate: 'afterkeydown'">
+                    <span class="error_message" data-bind="validationMessage: OwnerToAdd().FirstSurname"></span>
+                </div>  
+                <div class="form_block-content">
+                    <label for="personaldata-coowner-name"><span>Segundo Apellido</span></label>
+                    <input type="text" name="personaldata-coowner-secondsurname"  data-bind="value:OwnerToAdd().SecondSurname, valueUpdate: 'afterkeydown'" >
+                    <span class="error_message" data-bind="validationMessage: OwnerToAdd().SecondSurname"></span>
+                </div>   
+                
+                <div class="form_block-content date" style="max-width:380px">
+                    <label for="personaldata-coowner-birthday-day"><span>Fecha de nacimiento</span><span class="optional">(dd/mm/aaaa)</span></label>
+                    <input type="text" class="input-integer-2 numonly" placeholder="dd" max="31" min="1" name="personaldata-coowner-birthday-day" id="personaldata-coowner-birthday-day" data-bind="value: OwnerToAdd().Birthday().Day">
+                    <input type="text" class="input-integer-2 numonly" placeholder="mm" max="12" min="1" name="personaldata-coowner-birthday-month" id="personaldata-coowner-birthday-month" data-bind="value: OwnerToAdd().Birthday().Month">
+                    <input type="text" class="input-integer-4 numonly birthyear" placeholder="aaaa" max="9999" min="1900" name="personaldata-coowner-birthday-year" id="personaldata-coowner-birthday-year" data-bind="value: OwnerToAdd().Birthday().Year">
+                    <span class="error_message" data-bind="validationMessage: OwnerToAdd().Birthday" @*style="display: none;"*@></span>
+                </div>
+
+                <div class="form_block-content date" data-bind="visible: OwnerToAdd().ShowDocumentExpirationDate" style="max-width:380px">
+                    <label for="personaldata-coownner-expiration-day"><span>Fecha caducidad NIF / NIE</span></label>
+                    <input type="text" class="input-integer-2 numonly" placeholder="dd" max="31" min="1" name="personaldata-coownner-expiration-day" id="personaldata-coownner-expiration-day" data-bind="value: OwnerToAdd().IDDocumentExpirationDate().Day">
+                    <input type="text" class="input-integer-2 numonly" placeholder="mm" max="12" min="1" name="personaldata-coownner-expiration-month" id="personaldata-coownner-expiration-month" data-bind="value: OwnerToAdd().IDDocumentExpirationDate().Month">
+                    <input type="text" class="input-integer-4 numonly" placeholder="aaaa" max="9999" min="1" name="personaldata-coownner-expiration-year" id="personaldata-coownner-expiration-year" data-bind="value: OwnerToAdd().IDDocumentExpirationDate().Year">
+                    <span class="error_message" data-bind="validationMessage: OwnerToAdd().IDDocumentExpirationDate" @*style="display: none;"*@></span>
+                </div>
+
+                <div class="form_block-content big" data-bind="visible: OwnerToAdd().ShowPermanentValidity">
+                    <input type="checkbox" data-bind="checked: OwnerToAdd().IDDocumentIsPermanent, attr: { 'id': 'personaldata-permanent-expiration-'+ IdQuestion()}">
+                    <label data-bind="attr: { 'for': 'personaldata-permanent-expiration-'+ IdQuestion()}">
+                        <i class="icon"></i>
+                        <div class="text">Validez permanente del DNI / NIE</div>
+                    </label>
+                </div>
+
+                <div class="form_block-content">
+                    <label for="personaldata-nationality"><span>Nacionalidad</span></label>
+                    <select id="personaldata-nationality"
+                            data-bind="options: MasterData.NationalityList,  optionsText: 'valor', value: OwnerToAdd().Nationality,
+                            optionsCaption: 'Seleccionar nacionalidad'"></select>
+                    <span class="error_message" data-bind="validationMessage: OwnerToAdd().Nationality"></span>
+                </div>
+
+                <div class="form_block-content">
+                    <label for="personaldata-country"><span>País de nacimiento</span></label>
+                    <select id="personaldata-country"
+                            data-bind="options: MasterData.CountryList, optionsText: 'valor' , value: OwnerToAdd().Country,
+                            optionsCaption: 'Seleccionar país'"></select>
+                    <span class="error_message" data-bind="validationMessage: OwnerToAdd().Country"></span>
+                </div>
+
+                <div class="form_block-content">
+                    <label for="personaldata-birthday-place"><span>Lugar de nacimiento</span></label>
+                    <input type="text" name="personaldata-birthday-place" id="personaldata-birthday-place" data-bind="value:OwnerToAdd().BornPlace" maxlength="40">
+                    <span class="error_message" data-bind="validationMessage: OwnerToAdd().BornPlace"></span>
+                </div>
+
+                <div class="form_block-content phone">
+                    <label for="personadata-coowner-mobilephone">
+                        <span>Teléfono móvil</span>
+                        <span class="optional" data-bind="visible: OwnerToAdd().Assisted()">(Opcional)</span>
+                    </label>
+                    <input class="input-tel-prefix numonly" type="text" name="personadata-coowner-mobilephone-prefix" id="personadata-coowner-mobilephone-prefix"
+                           data-bind="value:OwnerToAdd().MobilePhonePrefix"/>
+                    <input type="tel" class="inputphone numonly" maxlength="9" name="personadata-coowner-mobilephone" id="personadata-coowner-mobilephone"
+                           data-bind="value:OwnerToAdd().MobilePhone, valueUpdate: 'afterkeydown'" data-private style="max-width:320px" required>
+                    <span class="error_message" data-bind="validationMessage: OwnerToAdd().MobilePhone"></span>
+                    <span class="error_message" data-bind="validationMessage: OwnerToAdd().MobilePhonePrefix"></span>
+                </div>
+
+                <div class="form_block-content">
+                    <label for="personaldata-coowner-email">
+                        <span>Correo electrónico</span>
+                        <span class="optional" data-bind="visible: OwnerToAdd().Assisted()">(Opcional)</span>
+                    </label>
+                    <input type="text" name="personaldata-coowner-email" id="personaldata-coowner-email" data-bind="value:OwnerToAdd().Email, valueUpdate: 'afterkeydown'" >
+                    <span class="error_message" data-bind="validationMessage: OwnerToAdd().Email"></span>
+                </div>
+                <div class="form_block-content" data-bind="visible: TypeOwners()">
+                    <label for="personaldata-coowner-percentage"><span>Porcentaje</span></label>                   
+                    <input name="input-save" id="input-save" maxlength="5" min="25" max="100" required="" 
+                           data-bind="value:OwnerToAdd().Percentage, valueUpdate: 'afterkeydown'"
+                           type="text" class="input-decimal-2">
+                    <span class="error_message" data-bind="validationMessage: OwnerToAdd().Percentage"></span>
+                </div>
+            </div>
+            <div class="form_block" style="display: block;" data-bind="visible: IsAddingOwner()">
+                <div class="form_block-content buttons big">
+                    <div class="button_back"><a href="#" title="Cancelar" class="link brown darken" data-bind="click: CancelAddOwner"><span>Cancelar</span></a></div>
+                    <div class="button_next"><a href="#" title="Continuar" class="button brown toWhite" data-bind="click: AddOwner, @*css: {disabled: OwnerToAdd().IsOk() == false}*@"><span>Guardar titular real</span></a></div>
+                </div>
+            </div>
+        </div>
+        <!-- /ko -->
+        <div class="form_block-content big">
+            <span class="error_message" data-bind="validationMessage: QuestionOK"></span>
+        </div>
+    </li>
+    <!-- /ko -->
+</ul>
+
+
+

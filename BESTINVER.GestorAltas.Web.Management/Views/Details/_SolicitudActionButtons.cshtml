@@ -1,0 +1,273 @@
+﻿@model BESTINVER.GestorAltas.Web.Management.ViewModels.SolicitudActionModel
+@using BESTINVER.GestorAltas.Web.Management.ViewModels
+
+<div class="col-md-12">
+    @if (Model.ShowPeriodicOperationPanel)
+    {
+        <ul class="status-buttons">
+            <li>
+                <button @Model.DisabledManualStart id="btnConfirmationModal" name="btnConfirmationModal" type="button" class="btn btn-success"
+                data-requestid="@Model.RequestId" data-confirmationtype="Start" data-url="@Url.Action("ShowConfirmationModal", "Details")">
+                    <span class="mr-2 fas fa-check-circle"></span>
+                    Iniciar operación periódica
+                </button>
+            </li>
+            <li>
+                <button @Model.DisabledCancelPeriodicOperation id="btnConfirmationModal" name="btnConfirmationModal" type="button" class="btn btn-danger"
+                data-requestid="@Model.RequestId" data-confirmationtype="Cancel" data-url="@Url.Action("ShowConfirmationModal", "Details")">
+                    <span class="mr-2 fas fa-times-circle"></span>
+                    Cancelar Operación Periódica
+                </button>
+            </li>
+            <li>
+                <button type="button" @Model.Disabled @Model.DisabledStatusChange @Model.DisabledRD class="btn btn-info" id="btnSendToRD" name="btnSendToRD" @(User.IsInRole(DefaultRoles.Admin) ? "" : "disabled")>
+                    <span class="mr-2 fas fa-share-alt"></span>
+                    Envío a Operaciones
+                    <span class="caret"></span>
+                </button>
+            </li>
+        </ul>
+    }
+    else if (Model.ShowOperationPanel)
+    {
+        <ul class="status-buttons">
+            @if (Model.ShowRegenerateDoc && User.IsInRole(DefaultRoles.Admin))
+            {
+                <li>
+                    <button type="button" @Model.Disabled @Model.DisabledRegenerate id="btnRegenerateDoc" name="btnRegenerateDoc" class="btn btn-info" data-toggle="modal" data-target="#regenerateDocumentationModal">
+                        <span class="mr-2 fas fa-file"></span>
+                        Regenerar documentación
+                    </button>
+                </li>
+            }
+            <li>
+                <button type="button" @Model.Disabled @Model.DisabledStatusChange @Model.DisabledRD class="btn btn-info" id="btnSendToRD" name="btnSendToRD" @(User.IsInRole(DefaultRoles.Admin) ? "" : "disabled")>
+                    <span class="mr-2 fas fa-share-alt"></span>
+                    Envío a Operaciones
+                    <span class="caret"></span>
+                </button>
+            </li>
+        </ul>
+    }
+    else if (Model.ShowOperationFcrPanel)
+    {
+        <ul class="status-buttons">
+
+            <li>
+                @if (string.IsNullOrEmpty(Model.DisabledCancel))
+                {
+                    <button type="button" class="btn btn-danger" data-toggle="ajax-modal" data-target="#cancel-request"
+                    asp-action="CancelRequestModal"
+                    asp-controller="Details"
+                    asp-route-id="@Model.RequestId">
+                        <span class="mr-2 fas fa-trash-alt"></span>
+
+                        Cancelar solicitud
+                    </button>
+                }
+                else
+                {
+                    <button type="button" class="btn btn-danger" data-toggle="ajax-modal" data-target="#cancel-request" disabled
+                    asp-action="CancelRequestModal"
+                    asp-controller="Details"
+                    asp-route-id="@Model.RequestId">
+                        <span class="mr-2 fas fa-trash-alt"></span>
+
+                        Cancelar solicitud
+                    </button>
+                }
+            </li>
+            @if (Model.ShowRetryRepresentativeSignButton)
+            {
+                <li>
+                    <button @Model.Disabled id="RetryRepresentativeSign" onclick="OnRepresentativeSignClick()" name="RetryRepresentativeSign" type="button" class="btn btn-danger">
+                        <span class="mr-2 fas fa-repeat"></span>
+                        Reenvio a Firma Apoderados
+                    </button>
+
+                </li>
+            }
+            <li>
+                <button type="button" @Model.Disabled @Model.DisabledStatusChange @Model.DisabledRD class="btn btn-info" id="btnSendToRD" name="btnSendToRD" @(User.IsInRole(DefaultRoles.Admin) ? "" : "disabled")>
+                    <span class="mr-2 fas fa-share-alt"></span>
+                    Envío a Operaciones
+                    <span class="caret"></span>
+                </button>
+            </li>
+        </ul>
+    }
+    else
+    {
+        <ul class="status-buttons">
+
+            <li>
+                <button @Model.Disabled @Model.DisabledStatusChange @Model.DisabledApprove id="btnApproveStatus" name="btnApproveStatus" type="button" class="btn btn-success" aria-haspopup="true">
+                    <span class="mr-2 fas fa-check-circle"></span>
+                    Aprobar estado actual
+                </button>
+
+            </li>
+            <li>
+
+                @if (string.IsNullOrEmpty(Model.DisabledCancel))
+                {
+                    <button type="button" class="btn btn-danger" data-toggle="ajax-modal" data-target="#cancel-request"
+                    asp-action="CancelRequestModal"
+                    asp-controller="Details"
+                    asp-route-id="@Model.RequestId">
+                        <span class="mr-2 fas fa-trash-alt"></span>
+
+                        Cancelar solicitud
+                    </button>
+                }
+                else
+                {
+                    <button type="button" class="btn btn-danger" data-toggle="ajax-modal" data-target="#cancel-request" disabled
+                    asp-action="CancelRequestModal"
+                    asp-controller="Details"
+                    asp-route-id="@Model.RequestId">
+                        <span class="mr-2 fas fa-trash-alt"></span>
+
+                        Cancelar solicitud
+                    </button>
+                }
+
+            </li>
+            
+            <li>
+                <button type="button" @Model.Disabled @Model.DisabledStatusChange @Model.DisabledRD class="btn btn-info" id="btnSendToRD" name="btnSendToRD" @(User.IsInRole(DefaultRoles.Admin) ? "" : "disabled")>
+                    <span class="mr-2 fas fa-share-alt"></span>
+                    Envío a Operaciones
+                    <span class="caret"></span>
+                </button>
+            </li>
+            
+
+
+            <li>
+                @{
+                    if (string.IsNullOrEmpty(Model.Disabled) && string.IsNullOrEmpty(Model.DisabledStatusChange) && string.IsNullOrEmpty(Model.DisabledAlerta))
+                    {
+                        <button type="button" class="btn btn-warning" data-toggle="ajax-modal" data-target="#create-alert-modal"
+                                asp-action="CreateAlertModal"
+                                asp-route-id="@Model.RequestId">
+
+                            <span class="mr-2 fas fa-bell"></span>
+                            Crear alerta
+                        </button>
+                    }
+                    else
+                    {
+                        <button type="button" class="btn btn-warning" data-toggle="ajax-modal" data-target="#create-alert-modal" disabled
+                                asp-action="CreateAlertModal"
+                                asp-route-id="@Model.RequestId">
+
+                            <span class="mr-2 fas fa-bell"></span>
+                            Crear alerta
+                        </button>
+                    }
+                }
+
+            </li>
+            @if (Model.ShowGenerateDoc)
+            {
+                <li>
+                    <button type="button" @Model.Disabled id="btnGenerateDoc" name="btnGenerateDoc" class="btn btn-info" data-toggle="modal" data-target="#generateDocumentationModal">
+                        <span class="mr-2 fas fa-file"></span>
+                        Generar documentación
+                    </button>
+                </li>
+            }
+
+            @if (Model.ShowRegenerateDoc)
+            {
+                <li>
+                    <button type="button" @Model.Disabled @Model.DisabledRegenerate id="btnRegenerateDoc" name="btnRegenerateDoc" class="btn btn-info" data-toggle="modal" data-target="#regenerateDocumentationModal">
+                        <span class="mr-2 fas fa-file"></span>
+                        Regenerar documentación
+                    </button>
+                </li>
+            }
+
+            @if (Model.ShowdChangeStatusNoRestrictions)
+            {
+                <li>
+                    <button type="button" @Model.Disabled @Model.DisabledChangeStatusNoRestrictions id="btnApproveStatusNoRestrictions" name="btnApproveStatusNoRestrictions" class="btn btn-primary" aria-haspopup="true">
+                        <span class="mr-2 fas fa-check-circle"></span>
+                        Aprobar estado actual sin restricciones
+                    </button>
+                </li>
+            }
+
+            @if (Model.ShowChangeStatusAdendas)
+            {
+                <li>
+                    <button type="button" @Model.Disabled id="btnAdesdasStatus" name="btnAdesdasStatus" class="btn btn-primary" aria-haspopup="true">
+                        <span class="mr-2 fas fa-check-circle"></span>
+                        Alta con adendas
+                    </button>
+                </li>
+            }
+
+            @if (Model.ShowAttachmentDocumentsAdviceProductButton)
+            {
+                <li>
+                    <button @Model.Disabled id="btnAttachmentDocumentsAdvice" data-toggle="modal"
+                            data-target="#GenerateAdviceModal" name="btnAttachmentDocumentsAdvice" type="button" class="btn btn-primary">
+                        <span class="mr-2 fas fa-inbox"></span>
+                        Adjuntar documentos de asesoramiento
+                    </button>
+                </li>
+            }
+
+            @if (Model.ShowUploadDocumentSFTP)
+            {
+                <li>
+                    <button type="button" @Model.Disabled id="btnUploadDocumentsSFTP" name="btnUploadDocumentsSFTP" class="btn btn-outline-secondary">
+                        <span class="mr-2 fas fa-cloud-upload-alt"></span>
+                        Enviar documentos a Emfasis
+                    </button>
+                </li>
+            }
+
+        </ul>
+        <ul class="status-buttons">
+            @if (Model.ShowUploadSubscriptionDealButton)
+            {
+
+                <li>
+                    <button @Model.Disabled id="btnUploadSubscriptionDeal" data-target="#uploadSubscriptionDealModal" onclick="ShowModalUploadSuscriptionDeal()" name="UploadSubscriptionDeal" type="button" class="btn btn-primary">
+                        <span class="mr-2 fas fa-envelope"></span>
+                        Acuerdo suscripcion fdo
+                    </button>
+
+                </li>
+            }
+            @if (Model.ShowRepresentativeSignButton)
+            {
+                <li>
+                    <button @Model.Disabled id="RepresentativeSign" onclick="OnRepresentativeSignClick()" name="RepresentativeSign" type="button" class="btn btn-primary">
+                        <span class="mr-2 fas fa-inbox"></span>
+                        Envío firma de apoderados
+                    </button>
+
+                </li>
+            }
+            @if (Model.ShowRetryRepresentativeSignButton)
+            {
+                <li>
+                    <button @Model.Disabled id="RetryRepresentativeSign" onclick="OnRepresentativeSignClick()" name="RetryRepresentativeSign" type="button" class="btn btn-danger">
+                        <span class="mr-2 fas fa-repeat"></span>
+                        Reenvio a Firma Apoderados
+                    </button>
+
+                </li>
+            }
+        </ul>
+    }
+</div>
+
+<div id='operationsModal' class='modal fade' role="dialog" aria-labelledby="operationLabel" data-url='@Url.Action("GetOperationDetails")'>
+</div>
+<div id='GenerateAdviceRequestModal' class='modal fade' role="dialog" aria-labelledby="GenerateAdviceModalLabel"></div>
+<div id='confirmationModal' class='modal fade' role="dialog" aria-labelledby="ConfirmationModalLabel"></div>

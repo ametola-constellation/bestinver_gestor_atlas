@@ -1,0 +1,84 @@
+﻿window.onload = function() {
+  initSignApplicantDocument();
+};
+<ul class="form_text-questions_list">
+
+    <li class="form_text-questions_list_element">
+        <h4 class="form_text-questions_title">Comprueba que has recibido un SMS de BESTINVER con tu PIN de firma.</h4>
+    </li>
+
+    <li class="form_text-questions_list_element">
+        <h4 class="form_text-questions_title">A continuación puedes visualizar o descargar los documentos que vas a firmar digitalmente.</h4>
+        <div class="form_block-content big">
+            <ul class="documentation-list" data-bind="foreach: documentCollection">
+                <li class="documentation-list_element">
+                    <i>
+                        <svg width="30" height="38" viewBox="0 0 30 38" xmlns="http://www.w3.org/2000/svg">
+                            <g stroke="#000" fill="none" fill-rule="evenodd">
+                                <path stroke-width="2.188" d="M28.399 32.406h-21.9V2h16.228l5.672 5.928z"></path>
+                                <path stroke-width="2.188" d="M23.899 33.175v3.734h-21.9V6.504h3.993"></path>
+                                <path stroke-width="1.094" d="M22.305 2.776v6.192h5.625"></path>
+                            </g>
+                        </svg>
+                    </i>
+                    <h5 class="document_title" data-bind="text: name"></h5>
+                    <p data-bind="html: linkhtml"></p>
+                </li>
+            </ul>
+        </div>
+    </li>
+
+    <li id="signature-sms" class="form_text-questions_list_element" style="display:block">
+        <h4 class="form_text-questions_title">
+            Firma introduciendo el PIN recibido por SMS:
+        </h4>
+
+        <span>Al introducir el código recibido por SMS, confirmo que los datos introducidos son correctos y están actualizados</span>
+
+        <div class="form_block-content big" id="validarOTP-form">
+
+        </div>
+
+        <div id="validarRubricaeOTP-form">
+        
+        </div>
+
+        <div id="validarBestinverOTP-form" style="font-size: 1rem; display:none">
+            <h4 class="ro-subtitle-rubricae">La introducción del código recibido por SMS sustituiría la firma manuscrita del test de conocimiento.</h4>
+        </div>
+
+        <div class="form_block-content big hidden" id="contact-signature">
+            <div class="infor">
+                <span>
+                    Por favor, ponte en contacto con nosotros a través del teléfono
+                    <a style="color:#b59971; text-decoration:none" href="tel:900878280" target="_blank">
+                        900 878 280
+                    </a>
+                    o a través del email
+                    <a style="color:#b59971; text-decoration:none" href="mailto:bestinver@bestinver.es" target="_blank">
+                        bestinver@bestinver.es
+                    </a>
+                </span>
+            </div>
+        </div>
+
+        <div class="form_block-content big">
+            <div class="pinOtpLabel">
+                <label id="BstRemedPinOtp" data-bind="text: OtpsPins"></label>
+            </div>
+        </div>
+
+        <div class="form_block-content big hidden" id="success-signature">
+            <div class="infor">
+                <span>PIN CORRECTO</span>
+            </div>
+        </div>
+
+        <div class="form_block-content big hidden" id="failure-signature">
+            <div class="infor">
+                <span>Se ha producido un error en la firma</span>
+            </div>
+        </div>
+    </li>
+
+</ul>

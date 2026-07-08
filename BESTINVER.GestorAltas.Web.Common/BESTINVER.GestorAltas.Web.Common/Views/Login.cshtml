@@ -1,0 +1,155 @@
+﻿@model BESTINVER.GestorAltas.Web.Common.Models.LoginViewModel
+@Html.AntiForgeryToken()
+
+<style>
+    @@font-face {
+       font-family: 'Acciona-Regular';
+       src: url('data:application/font-woff;base64,d09GRgABAAAAAH8YABIAAAABAqgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABEU0lHAAB/EAAAAAgAAAAIAAAAAUdERUYAAAGUAAAAkQAAAMIh7SMMR1BPUwAAAigAABAGAAAq3MR5e8tHU1VCAAASMAAABWgAAA4u4xPXwk9TLzIAABeYAAAATQAAAGBob4HAY21hcAAAF+gAAASRAAAHYPVE3/VjdnQgAAB3+AAAADEAAABoFo4GkWZwZ20AAHgsAAAGSQAADW09HI58Z2FzcAAAd/AAAAAIAAAACAAAABBnbHlmAAAcfAAAS0MAAJDyBPjSBGhlYWQAAGfAAAAANQAAADYQAO8qaGhlYQAAZ/gAAAAgAAAAJAbZBgFobXR4AABoGAAAAsoAAAfouM0hWmxvY2EAAGrkAAAD2wAAA/ZWUzD6bWF4cAAAbsAAAAAgAAAAIANBDkFuYW1lAABu4AAAAkwAAAYh+rNdyHBvc3QAAHEsAAAGxAAADezD+UbVcHJlcAAAfngAAACVAAAAoykb/VB4AQ3GJVREYQCFwe/+SKLg0nvCenoJ6wfrPeLuknB3enkJp+AZ9922WOWWOYOALACmCRSSThmigmpbR4NtptW20217GbeTLNtVtu0uV/aGZ/vGl/0TSEE5Nk9FtkSVNlJk+9VvBzVkxzRm57Vgt7RlY8V2X0nSCGR6xwSd6txe6ArpRnf+vR6RnpUg/AO3/SIdAAAAeAHMlAOUJEkXRr/IxlS1/ra7Ose2bXtt27Zt2+yjtXds27Yn17vjmdgv3saZrOo+tZPrP/Pc+15GvhfphAKQghXOODi9+gw6BhmXnHnNZYggEQC0RgJDKvLRAeHuJ/V20adn92NcHNXzKPq0gd1PcnHR4KGDXFw3ZFAvF3cdNTSwi8eOMTUvHXPUQBcVdhaFNBTY3EE6Cm2egAwU2TwR/0OxzZOQiRKbJyMLpTavhmyU2TyEHERsHkYuym2egjy4qH7xuVddhmnieeJl4nXibeLvxXuMFcQhcaa48NIzr7pYueIG4lbiLuJ+4qPEp4jPE18hvkl8z6UXX3qxekz8nPg1cYX4A/EX4jHiKeI54iXiNQAcov6ByCdBEv+djDEJyX97rIZMlKIBWqADemAAR0NIYHYLpkmeiJ9VJOmtULacgwrXgsTUepCYVoFkxRjphmTHxHeg3HWyLwm5KIaLOmgGpYboXcZIoY9m7nBkmXpEL2M2SHtqsBlzPzOdNZ6pMQFyj') format('woff');
+     }
+
+    * {
+        box-sizing: border-box;
+        font-family: 'Acciona-Regular', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+        margin: 0;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        background-color: #f4f4f9;
+    }
+
+    .content {
+        min-height: calc(100vh - 173px);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    #login_main {
+        background-color: #ffffff;
+        width: 80vw;
+        max-width: 400px;
+        height: 300px;
+        padding: 40px 30px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+        text-align: center;
+        margin: auto;
+    }
+
+        #login_main img {
+            width: 160px;
+            margin-bottom: 20px;
+        }
+
+        #login_main h1 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+    .li-login {
+        width: 100%;
+    }
+
+    .azure-login-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #b59971;
+        color: #ffffff;
+        font-size: 16px;
+        font-weight: bold;
+        padding: 12px 20px;
+        border-radius: 8px;
+        text-decoration: none;
+        transition: box-shadow 0.3s, background-color 0.3s;
+        width: 100%;
+        margin: 20px 0;
+        border: 1px solid #b59971;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+        .azure-login-btn:hover {
+            background-color: #9e7c5c;
+            border: 1px solid #9e7c5c;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            color: #ffffff;
+            text-decoration: none;
+        }
+
+    .error {
+        color: #d9534f;
+        font-size: 14px;
+        margin-top: 10px;
+    }
+
+    .alert {
+        color: #856404;
+        background-color: #fff3cd;
+        border-color: #ffeeba;
+        padding: 10px;
+        border-radius: 5px;
+        margin-top: 15px;
+    }
+</style>
+
+@if (Model.Redirect)
+
+{
+    <script>
+        @Html.Raw($"document.location = '{Model.ReturnUrl}'")
+    </script>
+}
+
+<div id="login_main">
+    <img src="https://www.bestinver.es/wp-content/themes/bstnvr/images/logo-bestinver.svg" alt="Logo Bestinver">
+    <h1>Inicia sesión con tu cuenta corporativa</h1>
+    <form method="post">
+        <input type="hidden" name="ReturnUrl" value="@Model.ReturnUrl" />
+        @if (Model.VisibleExternalProviders.Any())
+
+        {
+            <ul class="list-inline">
+                @foreach (var provider in Model.VisibleExternalProviders)
+
+                {
+                    <li class="list-inline-item li-login">
+                        <a class="azure-login-btn"
+                           asp-controller="ExternalLogin"
+                           asp-action="Index"
+                           asp-route-scheme="@provider.AuthenticationScheme"
+                           asp-route-returnUrl="@Model.ReturnUrl">
+                            INICIAR SESIÓN
+                        </a>
+                    </li>
+                }
+            </ul>
+        }
+        @if (Model.Errors != null)
+
+        {
+
+            foreach (var item in Model.Errors.ToList())
+
+            {
+                <div><span class="error">@item</span></div>
+            }
+
+        }
+        @if (!Model.EnableLocalLogin && !Model.VisibleExternalProviders.Any())
+
+        {
+            <div class="alert alert-warning">
+                @Html.Raw("Invalid Login Request")
+            </div>
+        }
+    </form>
+</div>
+

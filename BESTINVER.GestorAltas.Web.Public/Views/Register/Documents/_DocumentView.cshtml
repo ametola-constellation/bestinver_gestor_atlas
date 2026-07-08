@@ -1,0 +1,57 @@
+﻿<script>
+    
+</script>
+<p class="form_inlet">A continuación, te indicamos los documentos que necesitamos para completar el proceso.</p>
+<div class="form_block-content big">
+    <div class="infor">
+        <span data-bind="text: $root.CurrentApplicantSignatureTitle"> </span>
+        <ul class="form_list">
+            <li class="form_list-element">
+                <span>DNI/NIE</span>
+            </li>
+            <!-- ko if: !$root.CurrentEditApplicant().IsOlderThan18() -->
+            <li class="form_list-element">
+                <span>Libro de familia (A continuación elija OTRAS OPCIONES para enviarnos el libro de familia)</span>
+            </li>
+            <!-- /ko -->
+        </ul>
+    </div>
+</div>
+
+<div class="form_block boxes" id="applicant-document-view">
+
+    <!-- ko if: parser.getBrowser().name == "IE" -->
+        @{await Html.RenderPartialAsync("Documents/_MinorDocumentSubView"); }
+    <!-- /ko -->
+    
+    <!-- ko if: parser.getBrowser().name != "IE" -->
+        <!-- ko if: $root.CurrentEditApplicant().IsOlderThan18() -->
+            @{await Html.RenderPartialAsync("Documents/_DocumentSubView"); }
+        <!-- /ko -->
+        <!-- ko if: !$root.CurrentEditApplicant().IsOlderThan18() -->
+            @{await Html.RenderPartialAsync("Documents/_MinorDocumentSubView"); }
+        <!-- /ko -->
+    <!-- /ko -->
+ 
+</div>
+
+<!-- ko if: !SwapDeviceDeliveryContinueButton() -->
+    <div id="pre-save-applicant-document-data-container" class="form_block buttons">
+        <div class="form_block-content buttons big">
+            <div class="button_next">
+                <a title="Continuar" id="pre-save-applicant-document-data" class="button brown toWhite" onclick="$(this).toggleClass('disabled'); $(this).toggleClass('loading'); $('#save-applicant-document-data').click()"><span>Continuar</span></a>
+                <a href="" title="Continuar" class="button brown toWhite" id="save-applicant-document-data" data-bind="click:function () { CreateDniData($root); }" style="display:none"><span>Continuar</span></a>
+            </div>
+        </div>
+    </div>
+ <!-- /ko -->
+
+<!-- ko if: SwapDeviceDeliveryContinueButton() -->
+    <div id="pre-save-applicant-document-data-device-container" class="form_block buttons">
+        <div class="form_block-content buttons big">
+            <div class="button_next">
+                <a title="Continuar" id="pre-save-applicant-document-data" class="button brown toWhite" data-bind="click:function () { ToggleDeviceDeliveryContent(true); window.bstapp.requestCameraPermission(); }"><span>Continuar</span></a>
+            </div>
+        </div>
+    </div>
+ <!-- /ko -->

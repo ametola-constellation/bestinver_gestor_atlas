@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>BESTINVER.Wordpress.WS</name>
+    </assembly>
+    <members>
+        <member name="T:BESTINVER.Wordpress.WS.Controllers.ValuesController">
+            <summary>
+            Test api
+            </summary>
+        </member>
+        <member name="M:BESTINVER.Wordpress.WS.Controllers.ValuesController.Test">
+            <summary>
+            Método de prueba
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:BESTINVER.Wordpress.WS.Swagger.SwaggerConfiguration">
+            <summary>
+            Static class for swagger configuration
+            </summary>
+        </member>
+        <member name="M:BESTINVER.Wordpress.WS.Swagger.SwaggerConfiguration.AddRegistration(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            AddRegistration for swagger service
+            </summary>
+            <param name="services"></param>
+            <returns></returns>
+        </member>
+        <member name="M:BESTINVER.Wordpress.WS.Swagger.SwaggerConfiguration.AddRegistration(Microsoft.AspNetCore.Builder.IApplicationBuilder)">
+            <summary>
+            AddRegistration for swagger app
+            </summary>
+            <param name="app"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

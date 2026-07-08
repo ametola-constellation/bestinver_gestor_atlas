@@ -1,0 +1,17 @@
+﻿<script type="text/javascript">
+    $(document.body).hide();
+    $(document).ready(function () {
+        $(document.body).show();
+        var MobileData = Utils.GetMobileAppData();
+        var isBstapp = MobileData.AppVersion && (MobileData.AppVersion.indexOf("bstapp") != -1 || MobileData.AppVersion.indexOf("bestinver") != -1);
+        if (isBstapp) {
+            $('#footer').hide()
+        }
+    });
+</script>
+<footer id="footer" class="registration">
+    <div class="footer_inner">
+        <div class="footer_registration-content">© Bestinver @DateTime.UtcNow.Year</div>
+    </div>
+</footer>
+

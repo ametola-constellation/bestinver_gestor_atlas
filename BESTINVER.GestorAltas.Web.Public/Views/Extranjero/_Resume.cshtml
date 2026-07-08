@@ -1,0 +1,38 @@
+﻿<div class="registration_resume-content">
+    <button class="registration_resume-close_button link brown darken"><span>Resumen de contratación</span><i class="arrow"></i></button>
+    <ul class="registration_resume-list">
+        <li class="registration_resume-list_element">
+            <span class="registration_resume-title" data-bind="text: (MainApplicant().RequestApplicantType() == 'Heredero' ? 'Heredero o Nudo Propietario' : MainApplicant().RequestApplicantType() == 'Heredero y Tutor' ? 'Heredero o Nudo Propietario y Tutor' : MainApplicant().RequestApplicantType)"></span>
+            <span class="registration_resume-data" data-hj-masked data-bind="customtext: MainApplicant().ApplicantBasicData().FullName"></span>
+            <span class="registration_resume-data" data-hj-masked data-bind="customtext: MainApplicant().ApplicantBasicData().DNI"></span>
+            <span class="registration_resume-data" data-hj-masked data-bind="customtext: MainApplicant().ApplicantBasicData().MobilePhoneNumber"></span>
+            <span class="registration_resume-data" data-hj-masked data-bind="customtext: MainApplicant().ApplicantBasicData().Email"></span>
+        </li>
+
+        <!-- ko foreach:{ data:listaOtherApplicants }-->
+        <li class="registration_resume-list_element">
+            <span class="registration_resume-title" data-bind="text: (RequestApplicantType() == 'Coheredero' ? 'Cotitular' : RequestApplicantType() == 'Coheredero y Tutor' ? 'Cotitular y tutor' : RequestApplicantType)"></span>
+            <span class="registration_resume-data" data-hj-masked data-bind="customtext: ApplicantBasicData().FullName"></span>
+            <span class="registration_resume-data" data-hj-masked data-bind="customtext: ApplicantBasicData().DNI"></span>
+            <span class="registration_resume-data" data-hj-masked data-bind="customtext: ApplicantBasicData().MobilePhoneNumber"></span>
+            <span class="registration_resume-data" data-hj-masked data-bind="customtext: ApplicantBasicData().Email"></span>
+        </li>
+        <!-- /ko -->
+
+        <li class="registration_resume-list_element">
+            <span class="registration_resume-title">Estás contratando:</span>
+        </li>
+
+        <!-- ko foreach:{ data:listaOtherProducts }-->
+        <li class="registration_resume-list_element">
+            <span class="registration_resume-title" data-bind="text: Name"></span>
+            <div class="form_block" data-bind="foreach: ProductOperationList">
+                <div class="form_block-content big">
+                    <span class="registration_resume-title" data-bind="text: OperationTypeName"></span>
+                    <span class="registration_resume-data" data-hj-masked data-bind="customtext: AmountToString"></span>
+                </div>
+            </div>
+        </li>
+        <!-- /ko -->
+    </ul>
+</div>

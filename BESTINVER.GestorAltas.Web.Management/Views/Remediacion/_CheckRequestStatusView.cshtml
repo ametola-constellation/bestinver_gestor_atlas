@@ -1,0 +1,474 @@
+﻿@using BESTINVER.GestorAltas.Web.Management.Models.Remediacion
+@model BESTINVER.GestorAltas.Web.Management.Models.Remediacion.RemediationStatusModel
+
+@{
+    string requestTypeText = "", sendTypeText = "", channelText = "", expireDate = "";
+
+    if (Model != null && Model.RemediationUrl != null)
+    {
+        Model.RemediationUrl = Model.RemediationUrl.StartsWith("http") ? Model.RemediationUrl : $"http://{Model.RemediationUrl}";
+    }
+
+    string noselect = "";
+    RequestStatusEnum? lastStatus = (RequestStatusEnum?)Model?.Status.OrderByDescending(s => s.Created).FirstOrDefault()?.StatusId;
+
+    RequestStatusEnum[] notBloqueableStatus = new RequestStatusEnum[] {
+        RequestStatusEnum.SolicitudFinalizadaParcialmente,
+        RequestStatusEnum.SolicitudAprovisionadaCore,
+        RequestStatusEnum.SolicitudBloqueada
+    };
+
+    var statuses = Model?.Status?.OrderBy(s => s.Id).ToList();
+    bool allowModificarEstados = (await AuthorizationService.AuthorizeAsync(User, MiddleOfficeClaimNames.RemediacionEstadosModificacion)).Succeeded;
+    bool allowVisualizarEstados = (await AuthorizationService.AuthorizeAsync(User, MiddleOfficeClaimNames.RemediacionEstadosConsulta)).Succeeded;
+    bool allowVisualizarEstadosCotitulares = (await AuthorizationService.AuthorizeAsync(User, MiddleOfficeClaimNames.RemediacionVisualizarEstadoCotitulares)).Succeeded;
+}
+
+@if (Model == null)
+{
+    <div class="row">
+        <div class="col-md-12">
+            No se han encontrado peticiones de remediación para el código cliente introducido
+        </div>
+    </div>
+}
+else
+{
+    switch (Model.RequestType)
+    {
+        case RequestTypeEnum.DNI:
+            requestTypeText = "DNI";
+            break;
+        case RequestTypeEnum.Test:
+            requestTypeText = "Test de conocimiento";
+            break;
+        case RequestTypeEnum.Test_DNI:
+            requestTypeText = "Test de conocimiento y DNI";
+            break;
+    }
+    switch (Model.SendType)
+    {
+        case SendTypeEnum.Mail:
+            sendTypeText = "Digital";
+            break;
+        case SendTypeEnum.Postal:
+            noselect = "noselect";
+            sendTypeText = "Manual";
+            break;
+    }
+    switch (Model.Channel)
+    {
+        case RemediationChannelType.NoAplica:
+            channelText = "Canal no informado";
+            break;
+        case RemediationChannelType.Telefonico:
+            channelText = "Telefónico";
+            break;
+        default:
+            channelText = "Canal no informado";
+            break;
+    }
+    @if (Model.DNINotExpire.HasValue && Model.DNINotExpire.Value)
+    {
+        expireDate = "No expira";
+    }
+    else if (Model.DNIExpiration.HasValue)
+    {
+        expireDate = Model.DNIExpiration.Value.ToString("dd/MM/yyyy");
+    }
+    else
+    {
+        expireDate = "No actualizada";
+    }
+
+    <div id="remediacionDetail" data-id="@Model.RequestId"></div>
+
+    @if (allowVisualizarEstados)
+    {
+        <div class="row">
+            <div class="form-group col-md-3">
+                <dt>
+                    @Html.LabelFor(m => m.Email)
+                </dt>
+                <dd>
+                    <span>@Model.Email</span>
+                </dd>
+            </div>
+            <div class="form-group col-md-3">
+                <dt>
+                    @Html.LabelFor(m => m.RequestType)
+                </dt>
+                <dd>
+                    @if (allowModificarEstados)
+                    {
+                        <a href="#" id="editRequestType" title="Editar tipo de petición" style="text-decoration:none">
+                            <span class="text-danger bold">@requestTypeText</span>
+                            <span class="far fa-edit"></span>
+                        </a>
+                    }
+                    else
+                    {
+                        <span class="text-danger bold">@requestTypeText</span>
+                    }
+                </dd>
+            </div>
+            <div class="form-group col-md-3">
+                <dt>
+                    @Html.LabelFor(m => m.SendType)
+                </dt>
+                <dd>
+
+                    @if (allowModificarEstados)
+                    {
+                        <a href="#" id="btnChangeType" title="Editar tipo de envío" style="text-decoration:none">
+                            <span class="text-black">@sendTypeText</span>
+                            <span class="far fa-edit"></span>
+                        </a>
+                    }
+                    else
+                    {
+                        <span>@sendTypeText</span>
+                    }
+                </dd>
+            </div>
+            <div class="form-group col-md-3">
+                <dt>
+                    @Html.LabelFor(m => m.TestType)
+                </dt>
+                <dd>
+                    <span>@Model.TestType</span>
+                </dd>
+            </div>
+            <div class="form-group col-md-3">
+                <dt>
+                    @Html.LabelFor(m => m.RDCliente)
+                </dt>
+                <dd>
+                    <span>@Model.RDCliente</span>
+                </dd>
+            </div>
+            <div class="form-group col-md-3">
+                <dt>
+                    @Html.LabelFor(m => m.RDTitular)
+                </dt>
+                <dd>
+                    <span>@Model.RDTitular</span>
+                </dd>
+            </div>
+            <div class="form-group col-md-3">
+                <dt>
+                    @Html.LabelFor(m => m.Name)
+                </dt>
+                <dd>
+                    <span>@Model.Name</span>
+                </dd>
+            </div>
+            <div class="form-group col-md-3">
+                <dt>
+                    @Html.LabelFor(m => m.Surname)
+                </dt>
+                <dd>
+                    <span>@Model.Surname</span>
+                </dd>
+            </div>
+            <div class="form-group col-md-3">
+                <dt>
+                    @Html.LabelFor(m => m.DNI)
+                </dt>
+                <dd>
+                    <span>@Model.DNI</span>
+                </dd>
+            </div>
+            <div class="form-group col-md-3">
+                <dt>
+                    @Html.LabelFor(m => m.DNIExpiration)
+                </dt>
+                <dd>
+                    @if (allowModificarEstados)
+                    {
+                        <a href="#" id="btnChangeDate" title="Editar fecha de caducidad" style="text-decoration:none">
+                            <span class="text-black">@expireDate</span>
+                            <span class="far fa-edit"></span>
+                        </a>
+                    }
+                    else
+                    {
+                        <span>@expireDate</span>
+                    }
+                </dd>
+            </div>
+            <div class="form-group col-md-3">
+                <dt>
+                    @Html.LabelFor(m => m.Channel)
+                </dt>
+                <dd>
+                    <a href="#" id="editRemediationChannel" title="Editar" style="text-decoration:none">
+                        <span class="text-black">@channelText</span>
+                        <span class="far fa-edit"></span>
+                    </a>
+                </dd>
+            </div>
+
+            <div class="form-group col-md-3">
+                <dt>
+                    @Html.LabelFor(m => m.ExpiredTest)
+                </dt>
+                <dd>
+                    <input type="checkbox" asp-for="ExpiredTest" class="form-check" disabled />
+                </dd>
+            </div>
+
+            <div class="form-group col-md-3">
+                <dt>
+                    @Html.LabelFor(m => m.ErrorSendTest)
+                </dt>
+                <dd>
+                    <input type="checkbox" asp-for="ErrorSendTest" class="form-check" disabled />
+                </dd>
+            </div>
+
+            <div class="form-group col-md-3">
+                <dt>
+                    @Html.LabelFor(m => m.ErrorSendDoc)
+                </dt>
+                <dd>
+                    <input type="checkbox" asp-for="ErrorSendDoc" class="form-check" disabled />
+                </dd>
+            </div>
+
+            @if (Model.Channel == RemediationChannelType.Telefonico)
+            {
+                <div class="form-group col-md-3">
+                    <dt>
+                        &nbsp;
+                    </dt>
+                    <dd>
+                        <button id="btnManualPhoneRemediation" type="button" id="btnSyncUrls" class="btn btn-primary">
+                            <span class="mr-2 fas fa-phone-volume"></span>Remediar telefónicamente
+                        </button>
+                    </dd>
+                </div>
+            }
+
+            <div class="form-group col-md-12">
+                <dd class="error">
+                    <h2>@(lastStatus == RequestStatusEnum.SolicitudBloqueada ? "Solicitud bloqueada" : "")</h2>
+                </dd>
+            </div>
+
+            @if (!string.IsNullOrWhiteSpace(Model.RemediationUrl))
+            {
+                <div class="form-group col-md-12">
+                    <dt>
+                        @Html.LabelFor(m => m.RemediationUrl)
+                    </dt>
+                    <dd class="@noselect">
+                        <a href="@Model.RemediationUrl" target="_blank">@Model.RemediationUrl</a>
+                        @if (!string.IsNullOrWhiteSpace(noselect))
+                        {
+                            <div class="alert alert-danger" role="alert"> <strong>¡IMPORTANTE!</strong> Este inversor no se puede remediar mediante url al no tener informado inicialmente el email en base de datos. Por favor, solicitar la documentación por otra vía, gracias. </div>
+                        }
+                    </dd>
+                </div>
+            }
+        </div>
+    }
+
+    <div class="row">
+        <div class="form-group col-md-12">
+            @* PRO-9787: El botón de 'Validar/Reiniciar petición' ya no es necesario en Cloud, pero se queda comentado por si fuera necesario de nuevo. *@
+            @* @if (lastStatus == RequestStatusEnum.SolicitudPendienteVerificar && allowModificarEstados)
+            {
+                <button type="button" id="btnRepeatRequest" class="btn btn-primary">
+                    <span class="mr-2 fas fa-redo"></span>Validar/Reiniciar petición
+                </button>
+            } *@
+            @if (lastStatus.HasValue && !notBloqueableStatus.Contains(lastStatus.Value) && allowModificarEstados)
+            {
+                <button type="button" id="btnBlockRequest" class="btn btn-primary">
+                    <span class="mr-2 fas fa-ban"></span>Bloquear petición
+                </button>
+            }
+            @if (lastStatus == RequestStatusEnum.SolicitudBloqueada && allowModificarEstados)
+            {
+                <button type="button" id="btnUnblockRequest" class="btn btn-primary">
+                    <span class="mr-2 fas fa-check-circle"></span>Desbloquear petición
+                </button>
+            }
+            @if (Model.ErrorSendDoc || Model.ErrorSendTest)
+            {
+                <button type="button"
+                        id="btnResendOperations"
+                        class="btn btn-primary"
+                        data-request-id="@Model.RequestId">
+                    <span class="mr-2 fas fa-share-alt"></span>Reenvio a operaciones
+                </button>
+            }
+        </div>
+    </div>
+
+    @if (allowVisualizarEstadosCotitulares)
+    {
+        <div class="row">
+            <div class="form-group col-md-12" id="cotitular-remediations">
+            </div>
+        </div>
+    }
+
+    @if (allowVisualizarEstados)
+    {
+        <div class="row">
+            <div class="form-group col-md-12">
+                <div class="alert alert-primary ">
+                    <div class="row">
+                        <div class="col">
+                            <ul class="status d-flex flex-row flex-wrap align-items-center">
+                                @if (Model != null && statuses != null && statuses.Count > 0)
+                                {
+                                    var unlockStatus = statuses.OrderByDescending(p => p.Created).FirstOrDefault(q => q.StatusId != (int)RequestStatusEnum.SolicitudBloqueada);
+                                    foreach (var status in statuses.OrderBy(s => s.Created))
+                                    {
+                                        var isLast = statuses.IndexOf(status) == statuses.Count - 1;
+                                        string toUnblockStatus = status == unlockStatus ? "toUnblockStatus" : ""; //statuses.IndexOf(status) == statuses.Count - 2 ? "toUnblockStatus" : "";
+                                        var colorClass = (isLast) ? "info" : "success";
+
+                                        if (!string.IsNullOrWhiteSpace(status.Description) && (status.StatusId == (int)RequestStatusEnum.SolicitudBloqueada))
+                                        {
+                                            colorClass = "danger";
+                                            colorClass = "danger";
+                                        }
+                                        else if (!string.IsNullOrWhiteSpace(status.Description) && (status.StatusId == (int)RequestStatusEnum.NoIniciado))
+                                        {
+                                            colorClass = "warning";
+                                        }
+
+                                        <li class="m-3" id="@toUnblockStatus">
+                                            <div class="card alert-@colorClass statusModalTrigger" data-status="@status.StatusId" data-toggle="tooltip" data-placement="top" title="Abrir detalles de Estado" data-statusmodaltrigger="statusInfoModal-@status.Id">
+                                                <div class="card-header">
+                                                    <span class="mr-2 fas fa-info mr-2"></span>
+                                                    <span>Status: @status.StatusId</span>
+                                                </div>
+                                                <div class="card-body bg-white">
+                                                    <p class="card-text text-info" data-datetime="@DateTime.SpecifyKind(status.Created, DateTimeKind.Utc).ToString("O")"></p>
+                                                    <p class="badge badge-@colorClass">@status.StatusDescription</p>
+                                                    <p class="badge badge-success">@status.Name </p>
+                                                </div>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            @if (!isLast)
+                                            {
+                                                <span class="mr-2 fas fa-chevron-right fa-2x"></span>
+                                            }
+                                        </li>
+                                    }
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    @if (Model.ChangeLog == null || Model.ChangeLog.Count() == 0)
+    {
+        <button id="btnChangeLog" type="submit" class="btn btn-primary">
+            <span class="mr-2 fas fa-search"></span>Mostrar histórico de cambios
+        </button>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-striped" id="tbl-change-log">
+                <thead>
+                    <tr>
+                        <th>Modificado por</th>
+                        <th>Fecha</th>
+                        <th>Entidad</th>
+                        <th>Propiedad</th>
+                        <th>Antiguo valor</th>
+                        <th>Nuevo valor</th>
+                        <th>Operación</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.ChangeLog)
+                    {
+                        <tr>
+                            <td>@item.ChangedBy</td>
+                            <td><span data-datetime="@DateTime.SpecifyKind(item.DateChange ?? DateTime.MinValue, DateTimeKind.Utc).ToString("O")"></span></td>
+                            <td>@item.EntityName</td>
+                            <td>@item.PropertyName</td>
+                            <td>@item.OldValue</td>
+                            <td>@item.NewValue</td>
+                            <td>@item.Operation</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+
+    <script>
+            $(document).ready(function () {
+                $.fn.dataTable.moment('D/M/YYYY HH:mm:ss');
+
+                $('#tbl-change-log').DataTable({
+                    order: [[1, 'desc']],
+                    "columns": [
+                        { "orderable": false },
+                        { "orderable": true },
+                        { "orderable": false },
+                        { "orderable": false },
+                        { "orderable": false },
+                        { "orderable": false },
+                        { "orderable": false }
+                    ]
+                });
+            });
+
+        @if (allowVisualizarEstadosCotitulares)
+        {
+                     <text>$.ajax({
+                                url: routeConfig.Remediacion_CotitularNotRemediated + '?rdTitular=' + @(Model.RDTitular),
+                                dataType: 'html',
+                                cache: false,
+                                success: function(data) {
+                                    $('#cotitular-remediations').html(data);
+                                },
+                                error: function(error) { $('#cotitular-remediations').html('<div class="alert alert-danger" role="alert"> <strong>¡ERROR!</strong> Ha ocurrido un error cargando las remediaciones asociadas al titular</div>'); },
+                        });</text>
+                }
+        </script>
+
+        <script>
+                $('#btnChangeLog').on('click', function () {
+                    var button = $(this);
+                    var resultElement = $('#result-remediacion');
+                    buttonInactive(button);
+                    $.ajax({
+                        url: routeConfig.Remediacion_CheckRequestStatus + '?idClient=' + '@Model.DNI' + '&changeLog=true',
+                        dataType: 'html',
+                        success: function (html) {
+                            if (html == undefined) { toastr.info('No se ha encontrado al cliente buscado'); }
+                            resultElement.html(html);
+                        },
+                        error: function (xhr, error) {
+                            toastr.info('No se ha encontrado al cliente buscado');
+                        },
+                        complete: function () {
+                            buttonActive(button);
+                        }
+                    });
+            })
+        </script>
+
+        <script>
+            $('[data-datetime]').each(function() {
+                var utcDate = new Date($(this).data('datetime'));
+                $(this).text(utcDate.toLocaleString());
+            });
+        </script>
+    }

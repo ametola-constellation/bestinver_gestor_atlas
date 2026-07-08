@@ -1,0 +1,679 @@
+{
+	"info": {
+		"_postman_id": "b83b0cbf-b86a-418d-9afe-9f6c08ff6d92",
+		"name": "Wordpress API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Carteras",
+			"item": [
+				{
+					"name": "TopPositions",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "e7c5657d-ce64-4942-b10a-fd45baee2907",
+								"exec": [
+									"pm.test(\"response is ok\", function(){",
+									"    pm.response.to.have.status(200);",
+									"})",
+									"",
+									"pm.test(\"response must be valid\", function(){",
+									"    pm.response.to.be.ok;",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{azure}}/api/carteras/TopPositions?idCartera=13&sector=CONSUMO&numberOfResults=3",
+							"protocol": "http",
+							"host": [
+								"{{azure}}"
+							],
+							"path": [
+								"api",
+								"carteras",
+								"TopPositions"
+							],
+							"query": [
+								{
+									"key": "idCartera",
+									"value": "13"
+								},
+								{
+									"key": "sector",
+									"value": "CONSUMO"
+								},
+								{
+									"key": "numberOfResults",
+									"value": "3"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "SectorialDistribution",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "3c118aed-0a01-45e2-995f-dc6114c93414",
+								"exec": [
+									"pm.test(\"response is ok\", function(){",
+									"    pm.response.to.have.status(200);",
+									"})",
+									"",
+									"pm.test(\"response must be valid\", function(){",
+									"    pm.response.to.be.ok;",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{azure}}/api/carteras/SectoralDistribution?idCartera=13",
+							"protocol": "http",
+							"host": [
+								"{{azure}}"
+							],
+							"path": [
+								"api",
+								"carteras",
+								"SectoralDistribution"
+							],
+							"query": [
+								{
+									"key": "idCartera",
+									"value": "13"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GeographicalDistribution",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "3c118aed-0a01-45e2-995f-dc6114c93414",
+								"exec": [
+									"pm.test(\"response is ok\", function(){",
+									"    pm.response.to.have.status(200);",
+									"})",
+									"",
+									"pm.test(\"response must be valid\", function(){",
+									"    pm.response.to.be.ok;",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{azure}}/api/carteras/GeographicalDistribution?idCartera=13",
+							"protocol": "http",
+							"host": [
+								"{{azure}}"
+							],
+							"path": [
+								"api",
+								"carteras",
+								"GeographicalDistribution"
+							],
+							"query": [
+								{
+									"key": "idCartera",
+									"value": "13"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DataToDateCarteras",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "3c118aed-0a01-45e2-995f-dc6114c93414",
+								"exec": [
+									"pm.test(\"response is ok\", function(){",
+									"    pm.response.to.have.status(200);",
+									"})",
+									"",
+									"pm.test(\"response must be valid\", function(){",
+									"    pm.response.to.be.ok;",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{azure}}/api/carteras/DataToDateCarteras",
+							"protocol": "http",
+							"host": [
+								"{{azure}}"
+							],
+							"path": [
+								"api",
+								"carteras",
+								"DataToDateCarteras"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Profitability",
+			"item": [
+				{
+					"name": "DownloadExcelLiquidity",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "0bbd047e-1338-428c-80cd-315ace862cb8",
+								"exec": [
+									"pm.test(\"response is ok\", function(){",
+									"    pm.response.to.have.status(200);",
+									"})",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{azure}}/api/Profitability/DownloadExcelLiquidity?productId=1",
+							"protocol": "http",
+							"host": [
+								"{{azure}}"
+							],
+							"path": [
+								"api",
+								"Profitability",
+								"DownloadExcelLiquidity"
+							],
+							"query": [
+								{
+									"key": "productId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "MonthlyVL",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "0bbd047e-1338-428c-80cd-315ace862cb8",
+								"exec": [
+									"pm.test(\"response is ok\", function(){",
+									"    pm.response.to.have.status(200);",
+									"})",
+									"",
+									"pm.test(\"response must be valid\", function(){",
+									"    pm.response.to.be.ok;",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{azure}}/api/Profitability/MonthlyVL?idProduct=1&chartLegend=test&countValues=0",
+							"protocol": "http",
+							"host": [
+								"{{azure}}"
+							],
+							"path": [
+								"api",
+								"Profitability",
+								"MonthlyVL"
+							],
+							"query": [
+								{
+									"key": "idProduct",
+									"value": "1"
+								},
+								{
+									"key": "chartLegend",
+									"value": "test"
+								},
+								{
+									"key": "countValues",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "AnnualProfitability",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "0bbd047e-1338-428c-80cd-315ace862cb8",
+								"exec": [
+									"pm.test(\"response is ok\", function(){",
+									"    pm.response.to.have.status(200);",
+									"})",
+									"",
+									"pm.test(\"response must be valid\", function(){",
+									"    pm.response.to.be.ok;",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{azure}}/api/Profitability/AnnualProfitability?idProduct=1&chartLegend=test&countValues=0",
+							"protocol": "http",
+							"host": [
+								"{{azure}}"
+							],
+							"path": [
+								"api",
+								"Profitability",
+								"AnnualProfitability"
+							],
+							"query": [
+								{
+									"key": "idProduct",
+									"value": "1"
+								},
+								{
+									"key": "chartLegend",
+									"value": "test"
+								},
+								{
+									"key": "countValues",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "MonthlyProfitability",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "0bbd047e-1338-428c-80cd-315ace862cb8",
+								"exec": [
+									"pm.test(\"response is ok\", function(){",
+									"    pm.response.to.have.status(200);",
+									"})",
+									"",
+									"pm.test(\"response must be valid\", function(){",
+									"    pm.response.to.be.ok;",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{azure}}/api/Profitability/MonthlyProfitability?idProduct=1&chartLegend=test&countValues=0",
+							"protocol": "http",
+							"host": [
+								"{{azure}}"
+							],
+							"path": [
+								"api",
+								"Profitability",
+								"MonthlyProfitability"
+							],
+							"query": [
+								{
+									"key": "idProduct",
+									"value": "1"
+								},
+								{
+									"key": "chartLegend",
+									"value": "test"
+								},
+								{
+									"key": "countValues",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "LiquidityValuesByDate",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "0bbd047e-1338-428c-80cd-315ace862cb8",
+								"exec": [
+									"pm.test(\"response is ok\", function(){",
+									"    pm.response.to.have.status(200);",
+									"})",
+									"",
+									"pm.test(\"response must be valid\", function(){",
+									"    pm.response.to.be.ok;",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{azure}}/api/Profitability/LiquidityValuesByDate?startDate=2019/05/05",
+							"protocol": "http",
+							"host": [
+								"{{azure}}"
+							],
+							"path": [
+								"api",
+								"Profitability",
+								"LiquidityValuesByDate"
+							],
+							"query": [
+								{
+									"key": "startDate",
+									"value": "2019/05/05"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "LiquidityValuesByDate_ByProduct",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "13a7826e-4ba8-4788-81f5-fe65ec2e12df",
+								"exec": [
+									"pm.test(\"response is ok\", function(){",
+									"    pm.response.to.have.status(200);",
+									"})",
+									"",
+									"pm.test(\"response must be valid\", function(){",
+									"    pm.response.to.be.ok;",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{azure}}/api/Profitability/LiquidityValuesByDate?startDate=2019/05/05&productId=1",
+							"protocol": "http",
+							"host": [
+								"{{azure}}"
+							],
+							"path": [
+								"api",
+								"Profitability",
+								"LiquidityValuesByDate"
+							],
+							"query": [
+								{
+									"key": "startDate",
+									"value": "2019/05/05"
+								},
+								{
+									"key": "productId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CumulativeProfitability",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "0bbd047e-1338-428c-80cd-315ace862cb8",
+								"exec": [
+									"pm.test(\"response is ok\", function(){",
+									"    pm.response.to.have.status(200);",
+									"})",
+									"",
+									"pm.test(\"response must be valid\", function(){",
+									"    pm.response.to.be.ok;",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{azure}}/api/Profitability/CumulativeProfitability?idProduct=1",
+							"protocol": "http",
+							"host": [
+								"{{azure}}"
+							],
+							"path": [
+								"api",
+								"Profitability",
+								"CumulativeProfitability"
+							],
+							"query": [
+								{
+									"key": "idProduct",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "AllLiquidityProfitabilityDateLastYear",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "0bbd047e-1338-428c-80cd-315ace862cb8",
+								"exec": [
+									"pm.test(\"response is ok\", function(){",
+									"    pm.response.to.have.status(200);",
+									"})",
+									"",
+									"pm.test(\"response must be valid\", function(){",
+									"    pm.response.to.be.ok;",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{azure}}/api/Profitability/AllLiquidityProfitabilityDateLastYear",
+							"protocol": "http",
+							"host": [
+								"{{azure}}"
+							],
+							"path": [
+								"api",
+								"Profitability",
+								"AllLiquidityProfitabilityDateLastYear"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ProductResumenProfitability",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "0bbd047e-1338-428c-80cd-315ace862cb8",
+								"exec": [
+									"pm.test(\"response is ok\", function(){",
+									"    pm.response.to.have.status(200);",
+									"})",
+									"",
+									"pm.test(\"response must be valid\", function(){",
+									"    pm.response.to.be.ok;",
+									"    pm.response.to.be.withBody;",
+									"    pm.response.to.be.json;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{azure}}/api/Profitability/ProductResumenProfitability?idProduct=1&chartLegend=test",
+							"protocol": "http",
+							"host": [
+								"{{azure}}"
+							],
+							"path": [
+								"api",
+								"Profitability",
+								"ProductResumenProfitability"
+							],
+							"query": [
+								{
+									"key": "idProduct",
+									"value": "1"
+								},
+								{
+									"key": "chartLegend",
+									"value": "test"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "values",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a2be8e55-05ab-4e96-8271-20208ffacb51",
+						"exec": [
+							"pm.test(\"response is ok\", function(){",
+							"    pm.response.to.have.status(200);",
+							"})",
+							"",
+							"pm.test(\"response must be valid\", function(){",
+							"    pm.response.to.be.ok;",
+							"    pm.response.to.be.withBody;",
+							"    pm.response.to.be.json;",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{azure}}/api/values",
+					"protocol": "http",
+					"host": [
+						"{{azure}}"
+					],
+					"path": [
+						"api",
+						"values"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

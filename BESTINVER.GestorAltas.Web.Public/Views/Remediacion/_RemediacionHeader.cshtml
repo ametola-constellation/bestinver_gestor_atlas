@@ -1,0 +1,12 @@
+﻿<section class="module-registration-header">
+    <ul class="module_list" data-bind="foreach: {data: headerItemCollection}">
+        <li data-perc="0" steps="1" class="module_list-element" data-bind="attr: { 'id': 'progress-'+ ($index()+1)}">
+            <div class="number">
+                <svg width="58" height="58">
+                    <circle cx="50%" cy="50%" r="28" stroke="#b59971" stroke-width="1" fill="transparent" class="circle_background"></circle>
+                    <circle cx="50%" cy="50%" r="28" stroke="#b59971" stroke-width="2" stroke-dashoffset="176" stroke-dasharray="176" fill="transparent" class="circle_complete" style="stroke-dasharray: 175.929px; stroke-dashoffset: 175.929px;"></circle>
+                </svg><span data-steps="/4" class="number-data" style="opacity: 0.3;" data-bind="text: ($index() + 1)"></span>
+            </div><span class="title" data-bind="text: descripcion"></span>
+        </li>
+    </ul>
+</section>

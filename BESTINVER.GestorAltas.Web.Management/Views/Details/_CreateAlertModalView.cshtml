@@ -1,0 +1,46 @@
+﻿@model CreateAlertModel
+
+<div id='create-alert-modal' class='modal fade' role="dialog" data-target="#create-alert-modal" aria-labelledby="createAlertModal">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="cotitularLabel">Crear una alerta</h4>
+
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form asp-action="CreateAlert" asp-controller="Details" method="post">
+
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col">
+                            <input asp-for="Id" hidden />
+                            <input asp-for="RequestId" hidden />
+                            <input asp-for="StartDate" hidden />
+                            <input asp-for="EndDate" hidden />
+                            <input asp-for="AlertType" hidden />
+                            <div class="form-group col-md-4">
+                                <label asp-for="AlertTypeId"></label>
+                                <select asp-for="AlertTypeId" asp-items="@Model.AlertTypes" class="form-control">
+                                    <option value="" hidden disabled selected>Seleccione una opción</option>
+                                </select>
+                                <span asp-validation-for="AlertTypeId" class="text-danger"></span>
+                            </div>
+                            <div class="form-group col-md-12">
+                                <label asp-for="Details"></label>
+                                <textarea asp-for="Details" class="form-control col-md-12" cols="10" rows="5" />
+                                <span asp-validation-for="Details" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary" data-save="modal">Crear</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<partial name="_ValidationScriptsPartial" />

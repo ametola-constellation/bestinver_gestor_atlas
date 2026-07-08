@@ -1,0 +1,35 @@
+#See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
+
+#Depending on the operating system of the host machines(s) that will build or run the containers, the image specified in the FROM statement may need to be changed.
+#For more information, please see https://aka.ms/containercompat
+
+FROM mcr.microsoft.com/dotnet/core/aspnet:2.1-nanoserver-1809 AS base
+WORKDIR /app
+EXPOSE 80
+EXPOSE 443
+
+FROM mcr.microsoft.com/dotnet/core/sdk:2.1-nanoserver-1809 AS build
+WORKDIR /src
+COPY ["BESTINVER.GestorAltas.Web.Management/BESTINVER.GestorAltas.Web.Management.csproj", "BESTINVER.GestorAltas.Web.Management/"]
+COPY ["BESTINVER.GestorAltas.Web.Management/nuget.config", "BESTINVER.GestorAltas.Web.Management/"]
+COPY ["BESTINVER.GestorAltas.Domain.Interfaces/BESTINVER.GestorAltas.Domain.Interfaces.csproj", "BESTINVER.GestorAltas.Domain.Interfaces/"]
+COPY ["BESTINVER.GestorAltas.Resource/BESTINVER.GestorAltas.Resource.csproj", "BESTINVER.GestorAltas.Resource/"]
+COPY ["BESTINVER.GestorAltas.Web.Models/BESTINVER.GestorAltas.Web.Models.csproj", "BESTINVER.GestorAltas.Web.Models/"]
+COPY ["BESTINVER.GestorAltas.Utilities/BESTINVER.GestorAltas.Utilities.csproj", "BESTINVER.GestorAltas.Utilities/"]
+COPY ["BESTINVER.GestorAltas.Web.Common/BESTINVER.GestorAltas.Web.Common/BESTINVER.GestorAltas.Web.Common.csproj", "BESTINVER.GestorAltas.Web.Common/BESTINVER.GestorAltas.Web.Common/"]
+COPY ["Bestinver.Auth.Ldap/Bestinver.Auth.Ldap.csproj", "Bestinver.Auth.Ldap/"]
+COPY ["BESTINVER.GestorAltas.MicroservicesProxy/BESTINVER.GestorAltas.MicroservicesProxy.csproj", "BESTINVER.GestorAltas.MicroservicesProxy/"]
+COPY ["BESTINVER.GestorAltas.Exceptions/BESTINVER.GestorAltas.Exceptions.csproj", "BESTINVER.GestorAltas.Exceptions/"]
+COPY ["BESTINVER.GestorAltas.Domain/BESTINVER.GestorAltas.Domain.csproj", "BESTINVER.GestorAltas.Domain/"]
+RUN dotnet restore "BESTINVER.GestorAltas.Web.Management/BESTINVER.GestorAltas.Web.Management.csproj" --configfile BESTINVER.GestorAltas.Web.Management/nuget.config
+COPY . .
+WORKDIR "/src/BESTINVER.GestorAltas.Web.Management"
+RUN dotnet build "BESTINVER.GestorAltas.Web.Management.csproj" -c Release -o /app/build
+
+FROM build AS publish
+RUN dotnet publish "BESTINVER.GestorAltas.Web.Management.csproj" -c Release -o /app/publish
+
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "BESTINVER.GestorAltas.Web.Management.dll"]

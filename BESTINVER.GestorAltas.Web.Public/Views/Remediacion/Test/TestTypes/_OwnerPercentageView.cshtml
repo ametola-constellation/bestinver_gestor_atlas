@@ -1,0 +1,18 @@
+﻿@{
+    string ApplicantRequestName = Model.ApplicantRequestName;
+}
+
+<div class="form_block-content big title"><span class="form_block-title"></span></div>
+<div class="form_block-content big subtitle"><span class="form_block-subtitle">Porcentaje titular real</span></div>
+
+<!-- ko if:  IsPercentageRequired()  -->
+<div class="form_block-content">
+    <label for="personaldata-coowner-percentage-real-owner"><span>Porcentaje</span></label>
+    <input name="personaldata-coowner-percentage-real-owner" id="personaldata-coowner-percentage-real-owner" maxlength="5" min="25" max="100" required=""
+           data-bind="value:Percentage, valueUpdate: 'afterkeydown'"
+           type="text" class="input-decimal-2">
+    <span class="error_message" data-bind="validationMessage: Percentage"></span>
+</div>
+<!-- /ko -->
+
+

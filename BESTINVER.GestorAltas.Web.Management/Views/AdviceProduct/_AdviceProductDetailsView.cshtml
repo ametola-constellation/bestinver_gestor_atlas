@@ -1,0 +1,244 @@
+﻿@using BESTINVER.GestorAltas.Web.Management.Models.FcrFunds;
+
+@model RequestFCRFundModel;
+
+@{
+    var foundTypes = ViewBag.FoundTypes;
+    var products = ViewBag.Products;
+    var productsListJson = Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.Products);
+    var personTypes = ViewBag.PersonTypes;
+}
+
+
+<div class="modal-dialog modal-lg" role="document" style="width:75%;max-width:75%">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title">Crear Nuevo Asesoramiento - 2 de 2</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+        <form method="post" id="sendDocumentation">
+            <div class="modal-body">
+
+                <input asp-for="DocumentNumber" hidden />
+                <input asp-for="Username" hidden />
+                <input asp-for="CustomerId" hidden />
+
+                <div class="row">
+                    <div class="form-group col-xs-12 col-md-6">
+                        <label>Cuenta</label><br />
+                        <label>@Model.AccountId</label>
+                        <input asp-for="AccountId" hidden />
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group  col-xs-12 col-md-3">
+                        <label>Producto</label>
+                        <select asp-for="ProductId" id="productSelect" class="form-control" required onchange="handleInputsInvolvedInMinInvesmentChange()">
+                            @foreach (var p in products)
+                            {
+                                <option name="productOption-@p.MoProductId" value="@p.MoProductId">@p.Name</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group  col-xs-12 col-md-3">
+                        <label>Conveniente</label>
+                        <select asp-for="IsConvenient" id="productSelect" class="form-control" required>
+                            <option name="is-convenient" value="true">MINORISTA CONVENIENTE</option>
+                            <option name="is-convenient" value="false">MINORISTA NO CONVENIENTE</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-xs-12 col-md-3 pt-1 mt-4 d-flex align-items-baseline">
+                        <input type="checkbox" asp-for="IsEmployee" class="form-check" onchange="handleInputsInvolvedInMinInvesmentChange()" /><label asp-for="IsEmployee" class="ml-2">Es empleado</label>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group col-xs-12 col-md-4">
+                        <label asp-for="Amount">Cantidad</label>
+                        <input asp-for="Amount" class="form-control input-decimal-2" onchange="fn_ValidateAmount(this, checkMinInvestment())" />
+                        <div id="amountError" class="margin15" hidden></div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group col-xs-12 col-md-12">
+                        <label>Firmante</label>
+                        <table class="table table-striped table-bordered dt-responsive wrap dataTable no-footer dtr-inline">
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Rol</th>
+                                    <th>Menor</th>
+                                    <th>Teléfono</th>
+                                    <th>Email</th>
+                                    <th>Test de conveniencia</th>
+                                    <th>Resultado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (var i = 0; i < Model.Applicants.Count(); i++)
+                                {
+                                    var applicant = Model.Applicants[i];
+                                    var personType = personTypes[i];
+                                    <tr>
+                                        <td>@applicant.Applicant.CompleteName</td>
+                                        <td>@applicant.ApplicantRoleType.Description</td>
+                                        <td>@(applicant.Applicant.Birthday.HasValue ? (applicant.Applicant.Birthday.IsMinor() ? "Si" : "No") : "N/A")</td>
+                                        <td>@applicant.Applicant.MobilePhoneNumber</td>
+                                        <td>@applicant.Applicant.Email</td>
+                                        <td>
+                                            @if (personType != "J" && !applicant.Applicant.Birthday.IsMinor())
+                                            {
+                                                <div class="form-group col-md-12 d-flex">
+                                                    <input class="form-control" type="file" id="KnowledgeFile_@Model.Applicants[i].Applicant.DNI" name="File" accept="application/pdf"
+                                                           data-file-type="knowledge" style="max-width:none !important" data-document-number="@Model.Applicants[i].Applicant.DNI" />
+                                                    <button type="button" class="btn btn-clear-file ml-2" data-input-id="KnowledgeFile_@Model.Applicants[i].Applicant.DNI">
+                                                        <i class="fas fa-times"></i>
+                                                    </button>
+                                                </div>
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (personType != "J" && !applicant.Applicant.Birthday.IsMinor())
+                                            {
+                                                <div class="form-group col-md-12 d-flex">
+                                                    <input class="form-control" type="file" id="KnowledgeResultFile_@Model.Applicants[i].Applicant.DNI" name="File" accept="application/pdf"
+                                                           data-file-type="knowledge_result" data-document-number="@Model.Applicants[i].Applicant.DNI" style="max-width:none !important" />
+                                                    <button type="button" class="btn btn-clear-file ml-2" data-input-id="KnowledgeResultFile_@Model.Applicants[i].Applicant.DNI">
+                                                        <i class="fas fa-times"></i>
+                                                    </button>
+                                                </div>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                        <div id="fileError" class="margin15" hidden></div>
+                    </div>
+                </div>
+                <input asp-for="Applicants" id="applicantsId" hidden />
+
+                <div class="row">
+                    <div class="form-group col-xs-12 col-md-8 d-flex align-items-baseline">
+                        <input type="checkbox" asp-for="AreConditionsAccepted" class="form-check" onchange="onChangeConditions(this)" /><label asp-for="AreConditionsAccepted" class="ml-2">He enviado la documentación precontractual previa a la firma con suficiente antelación al cliente</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer" id="modalButton">
+                <button type="submit" class="btn btn-primary" data-save="modal" asp-controller="FCRFunds" asp-action="SendDocumentation"
+                        loadingText="Enviando..." disabled>
+                    Enviar
+                </button>
+
+                <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cerrar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('.btn-clear-file').click(function () {
+            var inputId = $(this).data('input-id');
+            $('#' + inputId).val('');
+        });
+
+        $('#Amount').on('input', function () {
+            console.log(this.dataset);
+            if (this.dataset.touched == null) {
+                this.setAttribute('data-touched', 'true');
+            }
+        });
+    });
+
+    function handleInputsInvolvedInMinInvesmentChange() {
+        var amountInput = document.getElementById('Amount');
+        if (amountInput.getAttribute('data-touched') === 'true') {
+            fn_ValidateAmount(amountInput, checkMinInvestment());
+        }
+    }
+
+    function checkMinInvestment() {
+        var productId = $('#productSelect').val();
+        var productsList = @Html.Raw(productsListJson);
+        var isEmployee = $('#IsEmployee').prop('checked');
+        var filteredProduct = productsList.filter(x => x.MoProductId.toString() === productId)[0];
+
+        return isEmployee ? filteredProduct.EmployeeMin : filteredProduct.AdultMin;
+    }
+
+    $("#sendDocumentation").submit(function () {
+        event.preventDefault();
+
+        var amount = $('#Amount')[0];
+
+        if (!fn_ValidateAmount(amount, checkMinInvestment())) {
+            return false;
+        }
+
+        var form = $(this)[0];
+        var formData = new FormData(form);
+        var files = formData.getAll('File');
+        var fileInputs = $('#fcrFundModal input[type="file"]');
+
+        if (!fn_ValidateInputFiles(fileInputs)) {
+            return false;
+        }
+
+        if (!fn_ValidateFileExceedSizeAndFileType(fileInputs, 'pdf')) {
+            return false;
+        }
+
+        var fileDicctionary = {};
+        fileDicctionary[30] = 'Test Conveniencia Private Equity.pdf';
+        fileDicctionary[32] = 'Test Conveniencia Infra II.pdf';
+
+        var productMoId = formData.get('ProductId');
+
+        var knowledge_file_name = fileDicctionary[productMoId];
+        var knowledge_result_file_name = 'Resultado Conveniencia ProdComplejo.pdf';
+
+        for (var i = 0; i < files.length; i++) {
+            var fileInput = fileInputs[i];
+            var file = files[i];
+
+            var fileType = fileInput.attributes.getNamedItem('data-file-type').value;
+            var documentNumber = fileInput.attributes.getNamedItem('data-document-number').value;
+            var newFileName = '';
+            if (file.size > 0) {
+                if (fileType == 'knowledge') {
+                    newFileName = documentNumber + '_' + knowledge_file_name;
+                } else {
+                    newFileName = documentNumber + '_' + knowledge_result_file_name;
+                }
+
+                var renamedFile = new File([file], newFileName, { type: file.type });
+
+                formData.append('Files', renamedFile);
+            }
+        }
+
+        $.ajax({
+            url: routeConfig.FCRFunds_SendDocumentation,
+            type: form.method,
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                $('#fcrFundModal').modal('hide');
+                toastr.success('La operación ha sido generada correctamente');
+            },
+            error: function (xhr, status, error) {
+                $('#fcrFundModal').modal('hide');
+                toastr.error('No se pudo realizar la acción', '', { timeOut: 3000 });
+            }
+        });
+
+        var button = $(this).find('button[type=submit]');
+        buttonInactive(button);
+        $('.sendingway').prop('disabled', false);
+    })
+</script>

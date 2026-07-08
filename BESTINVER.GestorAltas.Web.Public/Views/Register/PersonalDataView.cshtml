@@ -1,0 +1,417 @@
+﻿@using Newtonsoft.Json;
+
+@model BESTINVER.GestorAltas.Web.Public.Models.Register.PersonalDataViewModel
+
+@Html.AntiForgeryToken()
+
+@{
+    int milliseconds = (int)Model.SessionTimeout * 60 * 1000;
+}
+
+@section scripts{
+
+    <script language="javascript" type="text/javascript">
+
+        $.blockUI.defaults.css.cursor = "dafault";
+        $.blockUI.defaults.css.backgroundColor = "#fff";
+        $.blockUI.defaults.overlayCSS.cursor = "default";
+        $.blockUI.defaults.overlayCSS.backgroundColor = "#fff";
+
+        var timeoutfnc;
+        var timeouturl = '@(Url.Action("SessionExpiredError", "Error", null))';
+        var internalerrorurl = '@(Url.Action("InternalError", "Error", null))';
+        var timeoutcheck = false;
+        var parser = new UAParser();
+
+        function InitTimeoutFnc() {
+            timeoutfnc = setTimeout(function () {
+                timeoutcheck = true;
+            },
+                @milliseconds.ToString()
+            );
+        }
+        function ResetTimeoutFnc() {
+            clearTimeout(timeoutfnc);
+            timeoutfnc = setTimeout(function () {
+                timeoutcheck = true;
+            },
+                @milliseconds.ToString()
+            );
+        }
+
+        var ProductID = '@Model.ProductID';
+        var ProductTypeID = '@Model.ProductTypeID';
+        var username = '@Html.Raw(Model.UserName)';
+        var usermail = '@Html.Raw(Model.UserMail)';
+        var ismobile = '@Html.Raw(Model.IsMobile).ToString().ToLower()';
+        var modal = '@Model.Modal';
+        var IsAuthenticated = '@User.Identity.IsAuthenticated.ToString().ToLower()' == 'true';
+        var ProductModel = @Html.Raw(JsonConvert.SerializeObject(Model.Product));
+
+        var CurrentProduct;
+        sessionStorage.setItem("device", ismobile == 'true' ? 'mobile' : 'desktop');
+        window.setDatalayerItem('residente', 'si');
+
+        if (ProductID != undefined && ProductID.trim() != "") {
+            CurrentProduct = new Product(ProductModel.Id, ProductModel.ProductTypeId, ProductModel.Name, ProductModel.Description, ProductModel.Profitability, ProductModel.ProfitabilityDateText, ProductModel.IdOperation, ProductModel.AdultMax, ProductModel.AdultMin, ProductModel.MinorMax, ProductModel.MinorMin, ProductModel.DisabledMax, ProductModel.DisabledMin, ProductModel.IBAN, ProductModel.FromAge, ProductModel.ToAge, ProductModel.ComplexProduct, ProductModel.RDCode, ProductModel.Family, ProductModel.EmployeeMax, ProductModel.EmployeeMin, ProductModel.SubFamilyProductId);
+        } else {
+            location.href = 'Index';
+        }
+
+        var username = '@Html.Raw(Model.UserName)';
+        var usermail = '@Html.Raw(Model.UserMail)';
+
+        if (username != "") {
+            if (usermail.toUpperCase().indexOf('BESTINVER.ES') < 0) {
+                var external = username.slice(username.length - 4);
+                if (external.toUpperCase() == "_EXT") {
+                    validatedomain = false;
+                    $('#basicdata-email-comercial').attr('readonly', true);
+                }
+            }
+        }
+
+        var deliveryOptionsHidden = @(Context.Request.IsMobile() ? "false" : "true");
+        var applicant = Utils.GetMainApplicant(CurrentProduct, ApplicantTypeEnum.FISICA, RequestApplicantTypeEnum.TITULAR, IsAuthenticated, deliveryOptionsHidden);
+        var vm = new ViewModel(applicant, CurrentProduct);
+        var GMT = new GoogleTagManager(ProductTypeEnum.properties[ProductTypeID].name, CurrentProduct.Name());
+        var productslist = @Html.Raw(JsonConvert.SerializeObject(Model.Products));
+        var typeproductslist = @Html.Raw(JsonConvert.SerializeObject(Model.ProductTypes));
+        var MasterData = new MasterDataModel(ApplicantTypeEnum.FISICA, ProductID, ProductTypeEnum.properties[ProductTypeID].value);
+
+        $(document).ready(function () {
+            MasterData.setProductList(productslist)
+                .then(function () { return MasterData.setProductTypeList(typeproductslist, false) })
+                .then(function () {
+                    var genders = @Html.Raw(JsonConvert.SerializeObject(Model.MasterData.Genders));
+                    var countries = @Html.Raw(JsonConvert.SerializeObject(Model.MasterData.Countries));
+                    var nationalities = @Html.Raw(JsonConvert.SerializeObject(Model.MasterData.Nationalities));
+                    var viatypes = @Html.Raw(JsonConvert.SerializeObject(Model.MasterData.ViaTypes));
+                    var provinces = @Html.Raw(JsonConvert.SerializeObject(Model.MasterData.Provinces));
+                    var sendingways = @Html.Raw(JsonConvert.SerializeObject(Model.MasterData.SendingWays));
+                    var receivingways = @Html.Raw(JsonConvert.SerializeObject(Model.MasterData.ReceivingWays));
+                    var documentsendingways = @Html.Raw(JsonConvert.SerializeObject(Model.MasterData.DocumentSendingWays));
+                    var signaturetypes = @Html.Raw(JsonConvert.SerializeObject(Model.MasterData.SignatureTypes));
+
+                    MasterData.setGender(genders);
+                    MasterData.setViaType(viatypes);
+                    MasterData.setSignatureType(signaturetypes);
+                    MasterData.setSendingWay(sendingways);
+                    MasterData.setReceivingWay(receivingways);
+                    MasterData.setDocumentSendingWay(documentsendingways);
+                    MasterData.getOperationType();
+                    MasterData.setProvinces(provinces);
+                    MasterData.setCountry(countries);
+                    MasterData.setNationality(nationalities);
+                    MasterData.setMonthsRange();
+                    MasterData.getQuestionCollection();
+
+                    vm.Init(IsAuthenticated, username, usermail, MasterData.ProductTypeList());
+
+                    if (location.hash == '#BasicData') {
+                        Navigation.ShowNextStep(location.hash.split('#')[1]);
+                    } else {
+                        location.hash = '#BasicData';
+                    }
+
+                    ko.applyBindings(vm);
+                    bindAutocomplete();
+                    initAutocomplete();
+                    InitInvestmentAutocomplete(ProductTypeID);
+
+                    if (modal == 'S') {
+                        setTimeout(function () {
+                            window.launchAjax(routeConfig.GA_Register_PopPup_popup_cta_access);
+                        }, 1000);
+                    }
+
+                    window.SetCleaveClass();
+                    InitTimeoutFnc();
+                })
+        });
+    </script>
+}
+
+@{ await Html.RenderPartialAsync("_RegistrationHeader"); }
+
+<div class="registration_resume" style="height: 1496px;" data-bind="with: vm">
+    @{ await Html.RenderPartialAsync("_Resume"); }
+</div>
+
+<div class="registration_form">
+    <div class="registration_inner" id="personal-data-content">
+        <h2 id="basic-data-head" class="form_title">1. Datos personales</h2>
+        <ul id="personal-data-content-steps" class="form_steps-list">
+
+            <li id="basicdata-content-head" class="form_steps-list_element hidden" data-circle="1" data-progress="25" data-step="BasicData">
+                <h3 class="form_steps-title" data-bind="with: vm">
+                    <span data-bind="text: MainApplicant().ApplicantType() == 'Heredero' ? 'Datos básicos del heredero o nudo propietario' :  'Datos básicos del titular'"></span>
+                </h3>
+                <div id="basicdata-content" class="form_block hidden" data-bind="with: vm">
+                    @{ await Html.RenderPartialAsync("_BasicDataView"); }
+                </div>
+            </li>
+
+            <li id="personaldata-content-head" class="form_steps-list_element hidden" data-circle="1" data-progress="50" data-step="PersonalData">
+                <h3 class="form_steps-title" data-bind="with: vm">
+                    <span data-bind="text: MainApplicant().ApplicantType() == 'Heredero' ? 'Datos personales del heredero o nudo propietario' :  'Datos personales del titular'"></span>
+
+                    <button class="form_steps-edit_button link brown darken" data-bind="click:function () { Navigation.EditData(1 , this, 'PersonalData'); }">
+                        <span>Editar</span>
+                    </button>
+                </h3>
+                <div id="personaldata-content" class="form_block hidden" data-bind="with: vm">
+                    @{ await Html.RenderPartialAsync("_PersonalDataView"); }
+                </div>
+            </li>
+
+            <li id="personaldata-address-content-head" class="form_steps-list_element hidden" data-circle="1" data-progress="75" data-step="ContactData">
+                <h3 class="form_steps-title" data-bind="with: vm">
+                    <span data-bind="text: MainApplicant().ApplicantType() == 'Heredero' ? 'Dirección de contacto del heredero o nudo propietario' :  'Dirección de contacto del titular'"></span>
+
+                    <button class="form_steps-edit_button link brown darken" data-bind="click:function () { Navigation.EditData(2, this, 'ContactData'); }">
+                        <span>Editar</span>
+                    </button>
+                </h3>
+                <div id="contactdata-content" class="form_block hidden" data-bind="with: vm">
+                    @{ await Html.RenderPartialAsync("_ContactView"); }
+                </div>
+            </li>
+
+            <li id="cotitular-content-head" class="form_steps-list_element hidden" data-circle="1" data-progress="75" data-step="CoownerData">
+                <h3 class="form_steps-title" id="other-applicant-title-2">
+                    Cotitulares
+                    <button class="form_steps-edit_button link brown darken" data-bind="click:function () { Navigation.EditData(3, this, 'CoownerData'); }">
+                        <span>Editar</span>
+                    </button>
+                </h3>
+                <div id="cotitular-content" class="form_block hidden" data-bind="with: vm">
+                    <div class="form_block-content big">
+                        <p class="form_inlet">
+                                Si lo necesitas, puedes añadir 
+                            <button data-eventname="cotitular" class="tooltip_button underline">
+                                <span>cotitulares</span>
+                                <span class="tooltip_content eyeable-skipContrast">El cotitular es la persona que comparte la inversión con el titular.</span>
+                            </button>
+                        </p>
+                        <span class="small_text">Si no quieres añadir cotitulares, pulsa en el botón continuar</span>
+                    </div>
+                    @{
+                        var cotitularModel = new OtherApplicantModel
+                        {
+                            ApplicantRequestType = "2",
+                            ApplicantRequestName = "cotitular"
+                        };
+                    }
+
+                    <partial name="_OtherApplicantView" model="cotitularModel" />
+
+                </div>
+            </li>
+
+            <li id="autorizado-content-head" class="form_steps-list_element hidden" data-circle="1" data-progress="75" data-step="AuthorizedData">
+                <h3 class="form_steps-title" id="other-applicant-title-3">
+                    Autorizados
+                    <button class="form_steps-edit_button link brown darken" data-bind="click:function () { Navigation.EditData(4, this, 'AuthorizedData'); }">
+                        <span>Editar</span>
+                    </button>
+                </h3>
+                <div id="autorizado-content" class="form_block hidden" data-bind="with: vm">
+                    <div class="form_block-content big">
+                        <p class="form_inlet">
+                            Si lo necesitas, puedes añadir
+                            <button class="tooltip_button underline" data-eventname="autorizado">
+                                <span>autorizados</span><span class="tooltip_content eyeable-skipContrast">
+                                    Un autorizado es una persona que el titular designa para poder firmar operaciones y realizar consultas de posiciones
+                                </span>
+                            </button>
+                        </p>
+                        <span class="small_text">Si no quieres añadir autorizados, pulsa en el botón continuar</span>
+                    </div>
+                    @{
+                        var autorizadoModel = new OtherApplicantModel
+                        {
+                            ApplicantRequestType = "3",
+                            ApplicantRequestName = "autorizado"
+                        };
+                    }
+                    <partial name="_OtherApplicantView" model="autorizadoModel" />
+                </div>
+            </li>
+
+            <li id="coheredero-content-head" class="form_steps-list_element hidden" data-circle="1" data-progress="75" data-step="CoInheritorData">
+                <h3 class="form_steps-title" id="other-applicant-title-25">
+                    Cotitulares
+                    <button class="form_steps-edit_button link brown darken" data-bind="click:function () { Navigation.EditData(7, this, 'CoInheritorData'); }">
+                        <span>Editar</span>
+                    </button>
+                </h3>
+                <div id="coheredero-content" class="form_block hidden" data-bind="with: vm">
+                    @{
+                        var coherederoModel = new OtherApplicantModel
+                        {
+                            ApplicantRequestType = "25",
+                            ApplicantRequestName = "coheredero"
+                        };
+                    }
+
+                    <partial name="_OtherApplicantView" model="coherederoModel" />
+
+                </div>
+            </li>
+
+
+
+            <li id="usufructuario-content-head" class="form_steps-list_element hidden" data-circle="1" data-progress="75" data-step="UsufructuaryData">
+                <h3 class="form_steps-title" id="other-applicant-title-23">
+                    Usufructuarios
+                    <button class="form_steps-edit_button link brown darken" data-bind="click:function () { Navigation.EditData(8 , this, 'UsufructuaryData'); }">
+                        <span>Editar</span>
+                    </button>
+                </h3>
+                <div id="usufructuario-content" class="form_block hidden" data-bind="with: vm">
+                    @{
+                        var usufructuarioModel = new OtherApplicantModel
+                        {
+                            ApplicantRequestType = "23",
+                            ApplicantRequestName = "usufructuario"
+                        };
+                    }
+
+                    <partial name="_OtherApplicantView" model="usufructuarioModel" />
+                </div>
+            </li>
+
+            <li id="beneficiario-content-head" class="form_steps-list_element hidden" data-circle="1" data-progress="75" data-step="BeneficiaryData">
+                <h3 class="form_steps-title" id="other-applicant-title-4">
+                    Beneficiarios
+                    <button class="form_steps-edit_button link brown darken" data-bind="click:function () { Navigation.EditData(6 , this, 'BeneficiaryData'); }">
+                        <span>Editar</span>
+                    </button>
+                </h3>
+                <div id="beneficiario-content" class="form_block hidden" data-bind="with: vm">
+                    <div class="form_block-content big">
+                        <p class="form_inlet">
+                            Los beneficiarios son las personas que recibirán las prestación del plan de pensiones en caso de fallecimiento del titular. Puedes añadir beneficiarios de forma opcional.
+                        </p>
+                        <p class="form_inlet">
+                            En caso de no añadir beneficiarios, los beneficiarios serán de acuerdo al régimen actual establecido por ley y podrás continuar configurando tu inversión.
+                        </p>
+                    </div>
+                    @{
+                        var beneficiarioModel = new OtherApplicantModel
+                        {
+                            ApplicantRequestType = "4",
+                            ApplicantRequestName = "beneficiario"
+                        };
+                    }
+
+                    <partial name="_OtherApplicantView" model="beneficiarioModel" />
+                </div>
+            </li>
+
+            <li id="tutor-content-head" class="form_steps-list_element hidden" data-circle="1" data-progress="75" data-step="TutorData">
+                <h3 class="form_steps-title" id="other-applicant-title-5">
+                    Tutores
+                    <button class="form_steps-edit_button link brown darken" data-bind="click:function () { Navigation.EditData(5, this, 'TutorData'); }">
+                        <span>Editar</span>
+                    </button>
+                </h3>
+                <div id="tutor-content" class="form_block hidden" data-bind="with: vm">
+                    <div class="form_block-content big">
+                        <p class="form_inlet">En el caso de titulares menores de edad, es obligatorio añadir al menos un tutor.</p>
+                    </div>
+                    @{
+                        var tutorModel = new OtherApplicantModel
+                        {
+                            ApplicantRequestType = "5",
+                            ApplicantRequestName = "tutor"
+                        };
+                    }
+                    <partial name="_OtherApplicantView" model="tutorModel" />
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    @if (User.Identity.IsAuthenticated)
+    {
+        <div class="registration_inner hidden" id="investment-content" data-bind="with: vm" data-circle="2" data-progress="0" data-step="OperationData">
+            <partial name="Operation/_CriiConfigureInvestmentView" />
+        </div>
+
+        <div class="registration_inner hidden" id="investment-iban-content" data-bind="with: vm, attr: { 'data-progress': dataProgressStep2 }" data-circle="2" data-progress="50" data-step="OperationIbanAssistedData">
+            @{ await Html.RenderPartialAsync("Operation/_OperationIbanView"); }
+        </div>
+    }
+    else
+    {
+        <div class="registration_inner hidden" id="investment-content" data-bind="with: vm" data-circle="2" data-progress="0" data-step="OperationData">
+            @{ await Html.RenderPartialAsync("Operation/_OperationIbanView"); }
+        </div>
+    }
+
+    <div class="registration_inner hidden" id="test-content" data-bind="with: vm" data-circle="3" data-progress="0" data-step="TestData">
+        @{ await Html.RenderPartialAsync("_TestView"); }
+    </div>
+
+    <div id="documents-content" class="registration_inner hidden">
+        <h2 id="signature-head" class="form_title">4. Firma de documentación</h2>
+
+        <ul class="form_steps-list">
+
+            <li id="signature-content-head" class="form_steps-list_element hidden" data-circle="4" data-progress="25" data-step="SignatureData"
+                data-bind="with: vm">
+                <h3 class="form_steps-title">
+                    Firma de la documentación
+                </h3>
+                <div id="signature-content" class="form_block hidden" data-bind="with: SignatureData">
+                    @{ await Html.RenderPartialAsync("Documents/_SignatureView"); }
+                </div>
+
+                <div id="signature-content-download" class="form_block hidden">
+                    @{ await Html.RenderPartialAsync("Documents/_SignatureDocumentDownloadView"); }
+                </div>
+
+                <div id="signature-content-post" class="form_block hidden">
+                    @{ await Html.RenderPartialAsync("Documents/_SignatureDocumentPostView"); }
+                </div>
+            </li>
+
+            <li id="signature-document-content-head" class="form_steps-list_element hidden" data-circle="4" data-progress="50" data-step="SignatureDocumentData">
+                <h3 class="form_steps-title">
+                    Envío de documentación
+                </h3>
+                <div id="signature-document-content" class="form_block hidden" data-bind="with: vm">
+                    @{ await Html.RenderPartialAsync("Documents/_SignatureDocumentView"); }
+                </div>
+            </li>
+
+            <li id="applicant-document-content-head" class="form_steps-list_element hidden" data-circle="4" data-progress="75" data-step="DocumentData">
+                <h3 class="form_steps-title">
+                    Envío de documentación del titular
+                </h3>
+                <div id="applicant-document-content" class="form_block hidden" data-bind="with: DniData">
+                    @{ await Html.RenderPartialAsync("Documents/_DocumentView"); }
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <div id="success-content" class="registration_inner hidden" data-bind="with: vm" data-circle="5" data-progress="100" data-step="Success">
+        <ul class="form_steps-list">
+            <li id="success-content-head" class="form_steps-list_element hidden">
+                <h3 class="form_steps-title">
+                    Finalización del proceso
+                </h3>
+                <div id="success-content-view" class="form_block hidden">
+                    @{ await Html.RenderPartialAsync("_SuccessView"); }
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <div id="error-content" class="registration_inner hidden" data-bind="with: vm" data-circle="0" data-progress="0" data-step="Error">
+        @{ await Html.RenderPartialAsync("_ErrorView"); }
+    </div>
+</div>

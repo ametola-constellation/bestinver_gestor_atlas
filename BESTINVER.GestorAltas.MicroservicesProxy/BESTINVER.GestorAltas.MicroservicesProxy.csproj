@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>$(NetVersion)</TargetFrameworks>
+		<Configurations>Debug;Release;Development</Configurations>
+		<CodeAnalysisRuleSet>..\.sonarlint\bes_gestoraltas__bes_gestoraltascsharp.ruleset</CodeAnalysisRuleSet>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<AdditionalFiles Include="..\.sonarlint\bes_gestoraltas__bes_gestoraltas\CSharp\SonarLint.xml" Link="SonarLint.xml" />
+	</ItemGroup>
+
+
+	<ItemGroup>
+		<PackageReference Include="Autofac" />
+		<PackageReference Include="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore" />
+  </ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\BESTINVER.GestorAltas.Domain.Interfaces\BESTINVER.GestorAltas.Domain.Interfaces.csproj" />
+		<ProjectReference Include="..\BESTINVER.GestorAltas.Domain\BESTINVER.GestorAltas.Domain.csproj" />
+		<ProjectReference Include="..\BESTINVER.GestorAltas.Exceptions\BESTINVER.GestorAltas.Exceptions.csproj" />
+		<ProjectReference Include="..\BESTINVER.GestorAltas.Web.Models\BESTINVER.GestorAltas.Web.Models.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Data\" />
+	</ItemGroup>
+
+
+</Project>

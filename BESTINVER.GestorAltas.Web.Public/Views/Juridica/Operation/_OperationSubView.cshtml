@@ -1,0 +1,317 @@
+﻿<div id="operation_section" data-selecttitle="Elige un tipo de operación" class="form_block boxes">
+    <p class="header_product-extended" data-bind="text: Product().ProductExtendedHeader"></p>
+    <div id="operationtype-box" class="radio_box-container" data-bind="foreach: MasterData.OperationTypeList">
+        <div class="form_block-content radio_box big_block">
+            <input type="radio" name="contracttype" data-bind="attr: {value: id , id: 'operation-type-' + id , 'data-relative': 'operation-type-content-' + id} ,
+                  checked: $parent.IdOperationType , validationMessage: $parent.IdOperationType">
+            <label class="radio_box-label" style="min-height: 190px;" data-bind="attr: {for: 'operation-type-' + id}">
+                <i class="label_icon">
+                    <svg width="19" height="17" viewBox="0 0 19 17" xmlns="http://www.w3.org/2000/svg">
+                        <g stroke="#B59971" stroke-width="2.25" fill="none" fill-rule="evenodd" stroke-linecap="square">
+                            <path d="M2.289 9.273l4.498 5.51M6.742 14.727L17.426 1.64"></path>
+                        </g>
+                    </svg>
+                </i>
+                <i class="block_icon" data-bind="html: svgfile"></i>
+                <h4 class="title">
+                    <button class="tooltip_button" data-eventname="tipo de operacion">
+                        <span data-bind="text: valor"></span>
+                        <span class="tooltip_content eyeable-skipContrast" data-bind="text: tooltip"> </span>
+                    </button>
+                </h4>
+                <span class="text" data-bind="text: descripcion">
+                </span>
+            </label>
+        </div>
+    </div>
+</div>
+
+<div id="operation-type-content-1" class="form_block hidden">
+
+    <!-- ko if: Product().Family() == 12 && Product().Id() == 25 -->
+    @if (User.Identity.IsAuthenticated)
+    {
+        <div class="form_block-content big">
+            <input type="checkbox" name="is-employee" id="is-employee" data-bind="checked: IsEmployee">
+            <label for="is-employee">
+                <i class="icon"></i>
+                <div class="text">
+                    El inversor es empleado de Bestinver
+                </div>
+            </label>
+        </div>
+    }
+    <!-- /ko -->
+
+    <div data-currency="€" class="form_block-content currency">
+
+        <!-- ko if: Product().Family() == 12 -->
+        <label for="suscripcion-amount"><span>Indica el importe del capital comprometido</span></label>
+        <!-- /ko -->
+        <!-- ko if: Product().Family() != 12 -->
+        <label for="suscripcion-amount"><span>Indica el importe de la suscripción</span></label>
+        <!-- /ko -->
+
+
+        <input type="text" name="suscripcion-amount" id="suscripcion-amount"
+               data-bind="value: Amount , validationElement: Amount"
+               class="input-decimal-2"
+               data-private>
+    </div>
+
+    <div class="form_block-content big help">
+        <span class="mini_text" data-bind="text:AmountRange"></span>
+        <span class="error_message" data-bind="validationMessage: Amount"></span>
+    </div>
+
+    @if (User.Identity.IsAuthenticated)
+    {
+        <div class="form_block-content big vertical">
+            <input type="radio" name="suscripcion-paymenttype" data-relative="paymenttype-transfer-content-suscripcion"
+                   id="suscripcion-paymenttype-transfer" value="1"
+                   data-bind="checked: IdWayToPay , validationMessage: IdWayToPay" />
+            <label for="suscripcion-paymenttype-transfer"><i class="icon"></i><span class="text">A través de una transferencia a Bestinver</span></label>
+
+            <!-- ko if: Product().Family() != 12 -->
+            <input type="radio" name="suscripcion-paymenttype" data-relative="paymenttype-check-content-suscripcion"
+                   id="suscripcion-paymenttype-check" value="2"
+                   data-bind="checked: IdWayToPay , validationMessage: IdWayToPay" />
+            <label for="suscripcion-paymenttype-check"><i class="icon"></i><span class="text">A través de un cheque nominativo a Bestinver</span></label>
+            <!-- /ko -->
+
+            <div id="paymenttype-transfer-content-suscripcion" class="infor">
+                <span data-bind="text: vm.ProductSuscriptionTransferContent"></span>
+            </div>
+
+            <!-- ko if: Product().Family() != 12 -->
+            <div id="paymenttype-check-content-suscripcion" class="infor hidden">
+                <span>Al seleccionar cheque tendrás que enviar un cheque nominativo con beneficiario <span data-bind="text: Product().Name"></span> a la dirección que se indicará en el apartado firma y envío de documentación.</span>
+            </div>
+            <!-- /ko -->
+        </div>
+        @*<div class="form_block-content big" data-bind="visible: IdWayToPay() == 1">
+            <label for="suscripcion-payer">
+                <span data-bind="text: PayerDisclaimer"></span>
+            </label>
+            <input type="text" name="suscripcion-payer" id="suscripcion-payer" data-bind="value: PayerName" maxlength="100" />
+        </div>*@
+        <span class="error_message" data-bind="validationMessage: IdWayToPay"></span>
+    }
+   
+</div>
+
+<div id="operation-type-content-2" class="form_block hidden">
+
+    <div data-currency="€" class="form_block-content currency">
+        <label for="aportacion-amount"><span>Indica el importe de la aportación</span></label>
+        <input type="text" name="aportacion-amount" id="aportacion-amount"
+               data-bind="value: Amount , validationElement: Amount"
+               class="input-decimal-2"
+               data-private />
+    </div>
+
+    <div class="form_block-content big help">
+        <span class="mini_text" data-bind="text:AmountRange"></span>
+        <span class="error_message" data-bind="validationMessage: Amount"></span>
+    </div>
+
+    @if (User.Identity.IsAuthenticated)
+    {
+        <div class="form_block-content big vertical">
+            <input type="radio" name="aportacion-paymenttype" data-relative="paymenttype-transfer-content-aportacion"
+                   id="aportacion-paymenttype-transfer" value="1"
+                   data-bind="checked: IdWayToPay , validationMessage: IdWayToPay" />
+            <label for="aportacion-paymenttype-transfer"><i class="icon"></i><span class="text">A través de una transferencia a Bestinver</span></label>
+            <input type="radio" name="aportacion-paymenttype" data-relative="paymenttype-check-content-aportacion"
+                   id="aportacion-paymenttype-check" value="2"
+                   data-bind="checked: IdWayToPay , validationMessage: IdWayToPay" />
+            <label for="aportacion-paymenttype-check"><i class="icon"></i><span class="text">A través de un cheque nominativo a Bestinver</span></label>
+            <div id="paymenttype-transfer-content-aportacion" class="infor">
+                <span>Al seleccionar una aportación al Plan de Pensiones por transferencia deberás realizar una transferencia bancaria en favor de <span data-bind="text: Product().Name"></span> con el importe seleccionado en la cuenta que se te indicará tras completar con éxito el proceso de contratación.</span>
+            </div>
+            <div id="paymenttype-check-content-aportacion" class="infor hidden">
+                <span>Al seleccionar cheque tendrás que enviar un cheque nominativo con beneficiario <span data-bind="text: Product().Name"></span> a la dirección que se indicará en el apartado firma y envío de documentación.</span>
+            </div>
+        </div>
+        @*<div class="form_block-content big" data-bind="visible: IdWayToPay() == 1">
+            <label for="aportacion-payer">
+                <span data-bind="text: PayerDisclaimer"></span>
+            </label>
+            <input type="text" name="aportacion-payer" id="aportacion-payer" data-bind="value: PayerName" maxlength="100" />
+        </div>*@
+        <span class="error_message" data-bind="validationMessage: IdWayToPay"></span>
+    }
+
+    <div data-currency="€" class="form_block-content big smallContent currency">
+        <label for="aportacion-monthly-amount"><span>Domiciliación mensual (Opcional)</span></label>
+        <span class="help_label">Indica la cantidad que quieres aportar mensualmente a tu plan de pensiones y el número de cuenta (IBAN) desde el que quieres realizar la operación</span>
+
+        <input type="text" name="aportacion-monthly-amount" id="aportacion-monthly-amount"
+               data-bind="value: MonthlyAmount , validationElement: MonthlyAmount"
+               class="input-decimal-2"
+               data-private>
+        <span class="mini_text" data-bind="text:MonthlyAmountRange"></span>
+        <span class="error_message" data-bind="validationMessage: MonthlyAmount"></span>
+    </div>
+
+    <div class="form_block-content big smallContent">
+        <label for="aportacion-iban"><span>IBAN</span></label>
+        <input type="text" name="aportacion-iban" id="aportacion-iban"
+               data-bind="value: IBAN ,validationElement: IBAN" class="input-iban" data-private />
+        <span class="error_message" data-bind="validationMessage: IBAN"></span>
+    </div>
+
+    <div class="form_block-content general_error" data-bind="validationElement: TotalAmount">
+        <span class="error_message" data-bind="validationMessage: TotalAmount" data-private></span>
+    </div>
+
+</div>
+
+<div id="operation-type-content-3" class="form_block hidden">
+
+    <div class="form_block-content big" data-bind="visible: Product().ProductTypeId() == '2' || Product().ProductTypeId() == '3'">
+        <span class="label">Origen del traspaso</span>
+        <input type="radio" name="contracttype-externaltransfer-origin" id="contracttype-externaltransfer-origin-national"
+               value="true" data-bind="checked: FondoType , validationMessage: FondoType , click: ResetData">
+        <label for="contracttype-externaltransfer-origin-national"><i class="icon"></i><span class="text">Fondo nacional</span></label>
+        <input type="radio" name="contracttype-externaltransfer-origin" id="contracttype-externaltransfer-origin-foreign"
+               value="false" data-bind="checked: FondoType , validationMessage: FondoType, click: ResetData">
+        <label for="contracttype-externaltransfer-origin-foreign"><i class="icon"></i><span class="text">Fondo extranjero</span></label><span class="error_message"></span>
+        <span class="error_message" data-bind="validationMessage: FondoType"></span>
+    </div>
+
+    <div class="form_block-content" data-bind="visible: (Product().ProductTypeId() == 2 || Product().ProductTypeId() == 3) &&  FondoType() == 'false'">
+        <label for="contracttype-externaltransfer-fundisin-ext"><span>ISIN del Fondo</span></label>
+        <input type="text" name="contracttype-externaltransfer-fundisin-ext" id="contracttype-externaltransfer-fundisin-ext"
+               data-bind="value: FondoISIN , validationElement: FondoISIN" onchange="Request.GetIsinData();">
+        <span class="error_message" data-bind="validationMessage: FondoISIN"></span>
+        <span id="message-error-isin" class="error_message"></span>
+    </div>
+
+    <div class="form_block-content" data-bind="visible: Product().ProductTypeId() == 1">
+        <label for="contracttype-externaltransfer-planname"><span>Nombre del Plan</span></label>
+        <input type="text" name="contracttype-externaltransfer-planname" id="contracttype-externaltransfer-planname" data-bind="value: PlanName">
+        <input id="contracttype-externaltransfer-plancode" type="hidden" data-bind="value: PlanCode ,validationElement: PlanCode" />
+        <input id="contracttype-externaltransfer-planname-previous" type="hidden" />
+        <span class="error_message" data-bind="validationMessage: PlanName"></span>
+        <span class="error_message" data-bind="validationMessage: PlanCode"></span>
+    </div>
+
+    <div class="form_block-content" data-bind="visible: (Product().ProductTypeId() == 2 || Product().ProductTypeId() == 3) &&  FondoType() == 'true'">
+        <label for="contracttype-externaltransfer-fundname"><span>Nombre del Fondo</span></label>
+        <input type="text" name="contracttype-externaltransfer-fundname" id="contracttype-externaltransfer-fundname" data-bind="value: FondoName">
+        <input id="contracttype-externaltransfer-fundname-code" type="hidden" data-bind="value: FondoCode ,validationElement: FondoCode" />
+        <input id="contracttype-externaltransfer-fundname-previous" type="hidden" />
+        <span class="error_message" data-bind="validationMessage: FondoCode"></span>
+        <span class="error_message" data-bind="validationMessage: FondoName"></span>
+    </div>
+
+    <div class="form_block-content" data-bind="visible: (Product().ProductTypeId() == 2 || Product().ProductTypeId() == 3) &&  FondoType() == 'false'">
+        <label for="contracttype-externaltransfer-fundname-ext"><span>Nombre del Fondo</span></label>
+        <input type="text" name="contracttype-externaltransfer-fundname-ext" id="contracttype-externaltransfer-fundname-ext"
+               data-bind="value: FondoName" readonly>
+        <input id="contracttype-externaltransfer-fundname-code-ext" type="hidden" data-bind="value: FondoCode ,validationElement: FondoCode" />
+        <span class="error_message" data-bind="validationMessage: FondoCode"></span>
+    </div>
+
+    <div class="form_block-content" data-bind="visible: FondoType() == 'false' && (Product().ProductTypeId() == 2 || Product().ProductTypeId() == 3)">
+        <label for="contracttype-externaltransfer-manager"><span>Comercializadora</span></label>
+        <input type="text" name="contracttype-externaltransfer-manager" id="contracttype-externaltransfer-manager" data-bind="value: ManagerName">
+        <input id="contracttype-externaltransfer-manager-code" type="hidden" data-bind="value: ManagerCode ,validationElement: ManagerCode" />
+        <input id="contracttype-externaltransfer-manager-previous" type="hidden" />
+        <span class="error_message" data-bind="validationMessage: ManagerName"></span>
+        <span class="error_message" data-bind="validationMessage: ManagerCode"></span>
+    </div>
+
+    <div class="form_block-content" data-bind="visible: (Product().ProductTypeId() == 2 || Product().ProductTypeId() == 3)">
+        <label for="contracttype-externaltransfer-participant-account"><span>Cuenta partícipe (Opcional)</span></label>
+        <input type="text" class="input-integer-20 numonly" name="contracttype-externaltransfer-participant-account"
+               id="contracttype-externaltransfer-participant-account" data-bind="value: ParticipantAccount , validationElement: ParticipantAccount">
+        <span class="error_message" data-bind="validationMessage: ParticipantAccount"></span>
+    </div>
+
+    <div class="form_block-content" data-bind="visible: (Product().ProductTypeId() == 2 || Product().ProductTypeId() == 3) &&  FondoType() == 'true'">
+        <label for="contracttype-externaltransfer-fundisin"><span>ISIN del Fondo</span></label>
+        <input type="text" name="contracttype-externaltransfer-fundisin" id="contracttype-externaltransfer-fundisin"
+               data-bind="value: FondoISIN , validationElement: FondoISIN" readonly>
+        <span class="error_message" data-bind="validationMessage: FondoISIN"></span>
+    </div>
+    <!-- EPSV -->
+    <div class="form_block-content" data-bind="visible: Product().ProductTypeId() == 4">
+        <label for="contracttype-externaltransfer-planname"><span>Nombre del Plan de Previsión Social</span></label>
+        <input type="text" name="contracttype-externaltransfer-planname" id="contracttype-externaltransfer-planname" data-bind="value: PlanName">
+        <span class="error_message" data-bind="validationMessage: PlanName"></span>
+    </div>
+
+    <div class="form_block-content">
+
+        <!-- ko if:Product().ProductTypeId() == 1-->
+        <label for="contracttype-externaltransfer-type"><span>Tipo de Traspaso</span></label>
+        <select id="contracttype-externaltransfer-type"
+                data-bind="options:  MasterData.TransferTypeListPlan,  optionsText: 'valor', value: selectedTransferType , validationElement:selectedTransferType "></select>
+        <span class="error_message" data-bind="validationMessage: selectedTransferType"></span>
+        <!-- /ko -->
+        <!-- ko if:Product().ProductTypeId() != 1-->
+        <label for="contracttype-externaltransfer-type"><span>Tipo de Traspaso</span></label>
+        <select id="contracttype-externaltransfer-type"
+                data-bind="options:  MasterData.TransferTypeListFondo,  optionsText: 'valor', value: selectedTransferType , validationElement:selectedTransferType "></select>
+        <span class="error_message" data-bind="validationMessage: selectedTransferType"></span>
+        <!-- /ko -->
+
+    </div>
+
+    <div data-currency="€" class="form_block-content currency" data-bind="visible: selectedTransferType().id == '2'">
+        <label for="contracttype-externaltransfer-amount">
+            <span>Importe</span>
+        </label>
+        <input type="text" name="contracttype-externaltransfer-amount" id="contracttype-externaltransfer-amount"
+               data-bind="value: TransferAmount , validationElement: TransferAmount"
+               class="input-decimal-2"
+               data-private>
+        <span class="mini_text" data-bind="text:TransferAmountRange"></span>
+        <span class="error_message" data-bind="validationMessage: TransferAmount"></span>
+    </div>
+
+    <div class="form_block-content" data-bind="visible: selectedTransferType().id == '3'">
+        <label for="contracttype-externaltransfer-part-amount">
+            <span>Número de participaciones</span>
+        </label>
+        <input type="text" name="contracttype-externaltransfer-part-amount" id="contracttype-externaltransfer-part-amount"
+               data-bind="value: TransferPartNumAmount , validationElement: TransferPartNumAmount"
+               class="input-decimal-6"
+               data-private>
+        <span class="error_message" data-bind="validationMessage: TransferPartNumAmount"></span>
+    </div>
+
+    <div class="form_block-content big" data-bind="visible: selectedTransferType().id == '2' && Product().ProductTypeId() == 1">
+        <input type="checkbox" id="contracttype-transfer-before2007" name="contracttype-transfer-before2007"
+               data-bind="checked: Before2007">
+        <label for="contracttype-transfer-before2007">
+            <i class="icon"></i>
+            <div class="text">
+                De las participaciones anteriores al 01.01.2007
+            </div>
+        </label>
+    </div>
+    <div class="form_block-content big" data-bind="visible: selectedTransferType().id == '2' && Product().ProductTypeId() == 1">
+        <input type="checkbox" id="contracttype-transfer-after2007" name="contracttype-transfer-after2007"
+               data-bind="checked: After2007">
+        <label for="contracttype-transfer-after2007">
+            <i class="icon"></i>
+            <div class="text">
+                De las participaciones iguales o posteriores al 01.01.2007
+            </div>
+        </label>
+    </div>
+
+    <div class="form_block-content big" data-bind="visible: selectedTransferType().id == '2' && Product().ProductTypeId() == 1">
+        <div class="infor">
+            <span> En caso de no marcar ninguna de las opciones anteriores, los derechos a movilizar se calcularán de forma proporcional según correspondan a aportaciones anteriores y posteriores a dicha fecha, cuando éstas existan.</span>
+        </div>
+    </div>
+
+</div>
+
+<div class="form_block-content general_error" data-bind="validationElement: IdOperationType">
+    <span class="error_message" data-bind="validationMessage: IdOperationType"></span>
+</div>

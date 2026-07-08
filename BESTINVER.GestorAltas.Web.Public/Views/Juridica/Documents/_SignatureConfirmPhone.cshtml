@@ -1,0 +1,41 @@
+﻿<div class="form_block" data-bind="with: $data">
+
+    <div class="form_block-content big">
+        <div class="infor">
+            <span data-bind="text: ApplicantName() + ': ' + MobilePhone()"></span>
+        </div>
+    </div>
+
+    <div class="form_block-content big vertical">
+        <input type="radio" value=true
+               data-bind="attr: {name: ApplicantDni() + '-is-mobile-phone-ok', id: ApplicantDni() + '-mobile-phone-ok'},
+           checked: IsMobilePhoneOk , validationMessage: IsMobilePhoneOk" />
+        <label data-bind="attr: {for: ApplicantDni() + '-mobile-phone-ok'}">
+            <i class="icon"></i><span class="text">Es correcto</span>
+        </label>
+
+        <input type="radio" data-relative="mobilephone-number" value=false
+               data-bind="attr: {name: ApplicantDni() + '-is-mobile-phone-ok', id: ApplicantDni() + '-mobile-phone-no-ok' , 'data-relative': ApplicantDni() + '-mobilephone-number'},
+           checked: IsMobilePhoneOk , validationMessage: IsMobilePhoneOk" />
+        <label data-bind="attr: {for: ApplicantDni() + '-mobile-phone-no-ok'}">
+            <i class="icon"></i><span class="text">No es correcto</span>
+        </label>
+        <span class="error_message" data-bind="validationMessage: IsMobilePhoneOk"></span>
+    </div>
+
+    <div data-bind="attr: {id: ApplicantDni() + '-mobilephone-number'}" class="form_block-content phone hidden">
+
+        <label for="new-mobilephone-number"><span>Indica el móvil</span></label>
+
+        <input class="input-tel-prefix" id="basicdata-mobile-phone-prefix" name="basicdata-mobile-phone-prefix" type="text"
+               data-bind="value:MobilePhonePrefix">
+
+        <input type="tel" class="inputphone numonly" maxlength="9"
+               data-bind="attr: {id: ApplicantDni() + '-new-mobilephone-number', name:  ApplicantDni() + '-new-mobilephone-number'}, value: MobilePhone" data-private>
+        
+        <span class="error_message" data-bind="validationMessage: MobilePhone"></span>
+        <span class="error_message" data-bind="validationMessage: MobilePhonePrefix"></span>
+
+    </div>
+
+</div>

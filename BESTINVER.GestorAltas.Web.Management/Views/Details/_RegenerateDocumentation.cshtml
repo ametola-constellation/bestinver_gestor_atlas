@@ -1,0 +1,12 @@
+﻿@model BESTINVER.GestorAltas.Web.Management.Models.DocumentGroupData
+
+@{
+    Model.DisableUpdateSendingWays = true;
+}
+
+<div id='regenerateDocumentationModal' class='modal fade' role="dialog" aria-labelledby="regenerateDocumentationLabel">
+    @using (Html.BeginForm("GenerateJuridicDocumentation", "Details", FormMethod.Post, new { @class = "container" }))
+    {
+        @await Html.PartialAsync("_GenerateDocPartialView", Model)
+    }
+</div>

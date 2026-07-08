@@ -1,0 +1,262 @@
+﻿@using BESTINVER.GestorAltas.Web.Management.ViewModels
+
+@model RequestDashboardViewModel
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<div class="card-group" id="accordion" role="tablist" aria-multiselectable="true">
+    <div class="card">
+        <div class="card-header" role="tab" id="headingOne">
+            <h4 class="card-title">
+                <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    <span class="mr-2 fas fa-search"></span>
+                    Filtros de búsqueda
+                </a>
+            </h4>
+        </div>
+        <div id="collapseOne" class="collapse in show" role="tabpanel" aria-labelledby="headingOne">
+            <div class="card-body">
+
+                @using (Html.BeginForm("Index", "Operation", FormMethod.Post, new { @id = "filterForm" }))
+                {
+                    for (int i = 0; i < Model.Products.Count(); i++)
+                    {
+                        @Html.HiddenFor(model => Model.Products[i].Value)
+                        @Html.HiddenFor(model => Model.Products[i].Text)
+                    }
+
+                    @Html.HiddenFor(model => model.ExcludeSalesChannel)
+
+                    <div class="row">
+
+                        <div class="form-group col-md-3">
+                            @Html.LabelFor(m => m.StartDate, new { @class = "" })
+                            @Html.TextBoxFor(m => m.StartDate, new { @class = "form-control", @type = "date" })
+                        </div>
+
+                        <div class="form-group col-md-3">
+                            @Html.LabelFor(m => m.EndDate, new { @class = "" })
+                            @Html.TextBoxFor(m => m.EndDate, new { @class = "form-control", @type = "date" })
+                        </div>
+
+                        <div class="form-group col-md-3">
+                            @Html.LabelFor(m => m.ProductType, new { @class = "" })
+                            @Html.DropDownListFor(m => m.ProductType, new List<SelectListItem>()
+                            {
+                                new SelectListItem() { Text= "Planes de Pensiones", Value="1" },
+                                new SelectListItem() {Text = "Fondos de Inversión", Value="2" },
+                                new SelectListItem() {Text = "Fondos de Inversión Libre", Value="3" },
+                                new SelectListItem() {Text = "EPSV", Value="4" }
+                            }, "Elegir...", new { @class = "form-control" })
+                        </div>
+
+                        <div class="form-group col-md-3">
+                            @Html.LabelFor(m => m.Product, new { @class = "" })
+                            @Html.DropDownListFor(m => m.Product, Model.Products, "Elegir...", new { @class = "form-control" })
+                        </div>
+
+                        <div class="form-group col-md-3">
+                            @Html.LabelFor(m => m.Status, new { @class = "" })
+                            @Html.DropDownListFor(m => m.Status, new List<SelectListItem>()
+                             {
+                                 new SelectListItem() { Text= "Pendiente de firma", Value="20"},
+                                 new SelectListItem() { Text= "Pendiente de firma mancomunada", Value="2"},
+                                 new SelectListItem() {Text = "Pendiente blanqueo de capitales", Value="14" },
+                                 new SelectListItem() {Text = "Rechazado", Value="17" },
+                                 new SelectListItem() {Text = "Anulado", Value="18" },
+                                 new SelectListItem() {Text = "Caducado", Value="8" },
+                                 new SelectListItem() {Text = "Ejecutado", Value="19" },
+                                 new SelectListItem() {Text = "Ejecutado traspaso salida", Value="28" },
+                                 new SelectListItem() {Text = "Bloqueado", Value="9" },
+                                 new SelectListItem() {Text = "Envío a operaciones", Value="30" },
+                                 new SelectListItem() {Text = "Error envio a operaciones", Value="31" }
+                             }, "Elegir...", new { @class = "form-control" })
+                        </div>
+                        <div class="form-group col-md-3">
+                            @Html.LabelFor(m => m.OperationType, new { @class = "" })
+                            @Html.DropDownListFor(m => m.OperationType, new List<SelectListItem>()
+                            {
+                                new SelectListItem() { Text= "Suscripción", Value="1" },
+                                new SelectListItem() {Text = "Aportación", Value="2" },
+                                new SelectListItem() {Text = "Traspaso externo", Value="3" },
+                                new SelectListItem() {Text = "Recibo", Value="4" },
+
+                                new SelectListItem() {Text = "Reembolso", Value="7" },
+                                new SelectListItem() {Text = "Traspaso interno", Value="8" }
+                            }, "Elegir...", new { @class = "form-control" })
+                        </div>
+                        <div class="form-group col-md-3">
+                            @Html.LabelFor(m => m.DNI, new { @class = "" })
+                            @Html.TextBoxFor(m => m.DNI, new { @class = "form-control" })
+                        </div>
+                        <div class="form-group col-md-3">
+                            @Html.LabelFor(m => m.Name, new { @class = "" })
+                            @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+                        </div>
+
+                        <div class="form-group col-md-3">
+                            @Html.LabelFor(m => m.FirstSurname, new { @class = "" })
+                            @Html.TextBoxFor(m => m.FirstSurname, new { @class = "form-control" })
+                        </div>
+                        <div class="form-group col-md-3">
+                            @Html.LabelFor(m => m.SecondSurname, new { @class = "" })
+                            @Html.TextBoxFor(m => m.SecondSurname, new { @class = "form-control" })
+                        </div>
+                        <div class="form-group col-md-3">
+                            @Html.LabelFor(m => m.RDCode, new { @class = "" })
+                            @Html.TextBoxFor(m => m.RDCode, new { @class = "form-control" })
+                        </div>
+                        <div class="form-group col-md-3">
+                            @Html.LabelFor(m => m.FromPrice, new { @class = "" })
+                            @Html.TextBoxFor(m => m.FromPrice, new { @class = "form-control" })
+                        </div>
+
+                        <div class="form-group col-md-3">
+                            @Html.LabelFor(m => m.ToPrice, new { @class = "" })
+                            @Html.TextBoxFor(m => m.ToPrice, new { @class = "form-control" })
+                        </div>
+
+                        <div class="form-group col-md-3">
+                            @Html.LabelFor(m => m.Price, new { @class = "" })
+                            @Html.TextBoxFor(m => m.Price, new { @class = "form-control" })
+                        </div>
+
+                        <div class="form-group col-md-3">
+                            @Html.LabelFor(m => m.Document, new { @class = "" })
+                            @Html.TextBoxFor(m => m.Document, new { @class = "form-control" })
+                        </div>
+                        <div class="form-group col-md-3">
+                            @Html.LabelFor(m => m.PayerName, new { @class = "" })
+                            @Html.TextBoxFor(m => m.PayerName, new { @class = "form-control" })
+                        </div>
+
+                        <div class="form-group col-md-3">
+                            @Html.LabelFor(m => m.LifeCicleOk, new { @class = "" })
+                            @Html.DropDownListFor(m => m.LifeCicleOk, new List<SelectListItem>
+                                ()
+                                {
+                                new SelectListItem() { Text= "Si", Value="True" },
+                                new SelectListItem() {Text="No", Value="False" }
+                                }, "Elegir...", new { @class = "form-control" })
+                        </div>
+
+                        <div class="form-group col-md-3">
+                            @Html.LabelFor(m => m.LifeCycleChanged, new { @class = "" })
+                            @Html.DropDownListFor(m => m.LifeCycleChanged, new List<SelectListItem>
+                                ()
+                                {
+                                new SelectListItem() { Text= "Si", Value="True" },
+                                new SelectListItem() {Text="No", Value="False" }
+                                }, "Elegir...", new { @class = "form-control" })
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col">
+                            <div class="btn-group m-2" role="group">
+                                <button class="btn btn-primary" onclick="loadSearchResultsTable(event)"><span class="mr-2 fas fa-sync"></span>Cargar datos</button>
+                                <button id="btnClearFilter" type="button" class="btn btn-outline-secondary"><span class="mr-2 fas fa-trash-alt"></span>Quitar filtros</button>
+                                <button id="btnClearOperations" type="button" class="btn btn-warning" style="display:none">
+                                    <span class="mr-2 fas fa-recycle"></span>
+                                    Limpiar selección <span id="operation-count" class="badge badge-light"></span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-md-offset-4" id="exportButtons">
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="progress" id="searchLoader" style="display:none">
+            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+                cargando
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row" id="searchResult">
+    <div class="col-md-12">
+        <table id="request-list" class="datatable table striped hovered cell-hovered border bordered" style="width:100%">
+            <thead>
+                <tr>
+                    <th><input name="select_all" value="1" type="checkbox"></th>
+                    <th>Fecha</th>
+                    <th>Cuenta</th>
+                    <th>Titulares</th>
+                    <th>Fondo</th>
+                    <th>Tipo de operación</th>
+                    <th>Importe</th>
+                    <th>Estado</th>
+                    <th>Observaciones</th>
+                    <th></th>
+                    <th>Fecha de firma</th>
+                    <th>Consultar</th>
+                    <th>Adhiere ciclo de vida</th>
+                    <th>Cambio ciclo de vida</th>
+                    <th>Extranjero</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+@* 
+<div id="generateFiles" class="card" style="margin-top: 30px">
+    <div class="card-header">
+        <h3 class="card-title">Generación de ficheros</h3>
+    </div>
+    <div class="card-body bg-white">
+        <div class="form-inline">
+
+            @if (User.IsInRole(DefaultRoles.Admin) || User.IsInRole(DefaultRoles.Operaciones))
+            {
+
+                <div class="input-group">
+                    <label for="FVliquidativo" class="input-group-text fas fa-calendar">	&nbsp; Fecha valor liquidativo</label>
+                    <input class="form-control" type="date" id="FVliquidativo" />
+                </div>
+            }
+
+            <div class="btn-group" role="group">
+                <div class="btn-group" role="group">
+
+                    @if (User.IsInRole(DefaultRoles.Admin) || User.IsInRole(DefaultRoles.Operaciones))
+                    {
+                        <button type="button" class="btn btn-primary" id="OpGenerateAndPrint">
+                            <i class="mr-2 fas fa-book"></i>Generar e imprimir documentación
+                        </button>
+                    }
+
+                    <button type="button" class="btn btn-outline-secondary" id="OpPrint">
+                        <i class="mr-2 fas fa-print"></i>Imprimir
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>*@
+
+<div id='TitularesModal' class='modal fade' role="dialog" aria-labelledby="TitularesLabel" data-url='@Url.Action("OperationDetail")'></div>
+<div id='ObservacionesModal' class='modal fade' role="dialog" aria-labelledby="ObservacionesLabel" data-url='@Url.Action("StatusDetail")'></div>
+<div id='ShowInfoModal' class='modal fade' role="dialog" aria-labelledby="ShowInfoLabel" data-url='@Url.Action("ShowInfo")'></div>
+<div id='ShowDocumentsModal' class='modal fade' role="dialog" aria-labelledby="ShowDocumentsLabel" data-url='@Url.Action("ShowDocuments")'></div>
+<div id='ShowSignatureStatusModal' class='modal fade' role="dialog" aria-labelledby="ShowSignatureStatusLabel" data-url='@Url.Action("ShowSignatureStatus")'></div>
+
+
+<div id='CancelOperationModal' class='modal fade' role="dialog" aria-labelledby="CancelOperationLabel" data-url='@Url.Action("OperationCancelDetail")'></div>
+
+@section Scripts {
+
+    <environment include="Development">
+
+        <script src="~/js/operation.js" asp-append-version="true"></script>
+    </environment>
+
+    <environment exclude="Development">
+        <script src="~/js/operation.min.js" asp-append-version="true"></script>
+    </environment>
+}

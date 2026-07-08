@@ -1,0 +1,60 @@
+# ASP.NET
+# Build and test ASP.NET projects.
+# Add steps that publish symbols, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/apps/aspnet/build-aspnet-4
+
+trigger:
+ branches:
+   include:
+     - develop
+ paths:
+   include:
+     - BESTINVER.Wordpress.WS
+
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+  solution: '**/*.sln'
+  buildPlatform: 'Any CPU'
+  buildConfiguration: 'Release'
+
+steps:
+
+- task: NuGetToolInstaller@1
+  displayName: 'Use NuGet 4.4.1'
+  inputs:
+    versionSpec: 4.4.1
+
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet restore'
+  inputs:
+    command: 'restore'
+    projects: '**/BESTINVER.Wordpress.WS.csproj'
+    feedsToUse: 'select'
+    vstsFeed: '39298fd1-2803-4eda-bd67-c1537b6db1dc/32f4b40d-794c-4488-ac18-29e1870d67d2'
+
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet build'
+  inputs:
+    command: 'build'
+    projects: '**/BESTINVER.Wordpress.WS.csproj'
+    arguments: '--no-restore  /p:platform="$(BuildPlatform)" /p:PublishProfile="$(BuildConfiguration)" /p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactstagingdirectory)\$(BuildConfiguration)"'
+
+- task: CopyFiles@2
+  displayName: 'copy postman files'
+  inputs:
+    SourceFolder: '$(Build.SourcesDirectory)/BESTINVER.Wordpress.WS/Postman'
+    Contents: '**/*.json'
+    TargetFolder: '$(build.artifactstagingdirectory)'
+
+- task: PublishSymbols@2
+  inputs:
+    SearchPattern: '**/bin/**/*.pdb'
+    PublishSymbols: false
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'

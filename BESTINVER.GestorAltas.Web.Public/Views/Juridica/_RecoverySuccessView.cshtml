@@ -1,0 +1,72 @@
+﻿<div class="form_block form_steps-title">
+    <p class="form_inlet">Tu firma se ha procesado correctamente</p>
+    <!-- ko if: $root.Product().ProductTypeId() != 5 -->
+    <div class="infor">
+        <span>Estás a punto de ser inversor de BESTINVER. Solamente tienes que completar los siguientes pasos:</span>
+    </div>
+    <div class="form_block-content big" data-bind="foreach: $root.SuccessTextOperation">
+        <div class="infor">
+            <span data-bind="text: valor"></span>
+        </div>
+    </div>
+
+    <div class="form_block-content big">
+        <span class="small_text">Si tienes cualquier duda contacta con nosotros telefónicamente o de forma presencial en cualquiera de nuestras oficinas</span>
+    </div>
+    <!-- /ko -->
+    <!-- ko if: $root.Product().ProductTypeId() == 5 -->    
+    <div class="infor">
+        Tu firma ha sido procesada correctamente.
+    </div>
+    <div class="infor">
+        Podrás hacer efectiva la contratación de los productos incluidos en tu recomendación personalizada de inversión transcurridas 24 horas.
+    </div>
+    <div class="infor">
+        Si tienes cualquier duda puedes ponerte en contacto con nosotros.
+    </div>    
+    <!-- /ko -->
+
+
+
+    <div class="form_block-content big">
+        <ul class="documentation_complete-list" style="text-align:center">
+            <li class="documentation_complete-list_element phone">
+                <i class="icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12">
+                        <path class="st0" d="M7.4 7.3c-1-.8-2-1.7-2.7-2.7l1-1L4.3 0h-.7c-1 0-1.9.4-2.5 1.1C.4 1.8 0 2.7 0 3.7c0 .7.2 1.3.5 1.9C1.9 8 4 10.1 6.4 11.5c.6.3 1.2.5 1.9.5 1 0 2-.4 2.7-1.1.7-.7 1.1-1.6 1.1-2.5v-.7L8.4 6.4l-1 .9zm3.3 1.3c-.1.5-.3 1.1-.7 1.4-.5.5-1.1.7-1.8.7-.4 0-.9-.1-1.3-.3-2.1-1.3-4-3.2-5.3-5.4-.2-.4-.4-.8-.4-1.3 0-.7.3-1.3.8-1.8.4-.4.9-.6 1.4-.7l.8 2.1L3 4.5l.3.4c1 1.5 2.3 2.8 3.8 3.8l.4.3 1.2-1.2 2 .8z" />
+                    </svg>
+                </i>
+                <h4 class="title"><a class="customBrown" href="tel:900878280" title="900878280"><span>900 878 280</span></a></h4>
+                <p class="text">Horario de Lunes a Viernes de 9:00 a 19:00</p><a id="success-contact-link" href="http://www.bestinver.es/wp-content/themes/bstnvr/modules/popup/popup-contact.php" title="¿Te llamamos?" class="link brown darken arrow">
+                    <span>¿Te llamamos?</span><i>
+                        <svg width="5" height="8" viewBox="0 0 5 8" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M1.143 0L0 1.25 2.514 4 0 6.75 1.143 8 4.8 4z" fill="#B59971" fill-rule="evenodd" />
+                        </svg>
+                    </i>
+                </a>
+            </li>
+            <li class="documentation_complete-list_element ofice">
+                <i class="icon">
+                    <svg width="25" height="34" viewBox="0 0 25 34" xmlns="http://www.w3.org/2000/svg">
+                        <g stroke-width="3" stroke="#000" fill="none" fill-rule="evenodd">
+                            <path d="M2 12.16c0 5.612 10.643 18.681 10.643 18.681s10.645-13.07 10.645-18.68C23.288 6.548 18.522 2 12.643 2 6.765 2 2 6.549 2 12.16z" />
+                            <path d="M16.695 12.827c0-2.136-1.814-3.867-4.051-3.867s-4.052 1.73-4.052 3.867c0 2.136 1.815 3.867 4.052 3.867 2.237 0 4.05-1.731 4.05-3.867z" />
+                        </g>
+                    </svg>
+
+                </i>
+                <h4 class="title">Directorio de oficinas</h4>
+                <p class="text">Puedes encontrarnos en cualquiera de nuestras oficinas</p><a href="http://www.bestinver.es/contacto/" title="Nuestras oficinas" class="link brown darken arrow">
+                    <span>Nuestras oficinas</span><i>
+                        <svg width="5" height="8" viewBox="0 0 5 8" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M1.143 0L0 1.25 2.514 4 0 6.75 1.143 8 4.8 4z" fill="#B59971" fill-rule="evenodd" />
+                        </svg>
+                    </i>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div class="form_block-content buttons big">
+        <div class="button_next"><a href="http://www.bestinver.es" title="IR A BESTINVER.ES" class="button brown toWhite"><span>IR A BESTINVER.ES</span></a></div>
+    </div>
+</div>

@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+
+  <PropertyGroup>
+    <TargetFrameworks>$(NetVersion)</TargetFrameworks>
+    <Configurations>Debug;Release;Development</Configurations>
+    <CodeAnalysisRuleSet>..\.sonarlint\bes_gestoraltas__bes_gestoraltascsharp.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+
+
+  <ItemGroup>
+	  <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <AdditionalFiles Include="..\.sonarlint\bes_gestoraltas__bes_gestoraltas\CSharp\SonarLint.xml" Link="SonarLint.xml" />
+  </ItemGroup>
+
+</Project>

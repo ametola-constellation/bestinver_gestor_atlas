@@ -1,0 +1,40 @@
+# ASP.NET
+# Build and test ASP.NET projects.
+# Add steps that publish symbols, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/apps/aspnet/build-aspnet-4
+
+pool:
+  vmImage: 'windows-latest'
+
+steps:
+- task: TriggerPipeline@2
+  displayName: 'Trigger GestorAltas BackOffice'
+  inputs:
+    serviceConnection: 'AzureDevOpsAPI'
+    project: 'bes_WebPrivada'
+    Pipeline: 'Build'
+    buildDefinition: '1906'
+    Branch: 'develop'
+    buildapiversion: '6.0'
+
+- task: maikvandergaag.maikvandergaag-trigger-pipeline.TriggerPipeline.TriggerPipeline@2
+  displayName: 'Trigger GestorAltas Remediación'
+  inputs:
+    serviceConnection: 'AzureDevOpsAPI'
+    project: 'bes_WebPrivada'
+    Pipeline: 'Build'
+    buildDefinition: '1905'
+    Branch: 'develop'
+    buildapiversion: '6.0'
+
+- task: maikvandergaag.maikvandergaag-trigger-pipeline.TriggerPipeline.TriggerPipeline@2
+  displayName: 'Trigger GestorAltas Altas'
+  inputs:
+    serviceConnection: 'AzureDevOpsAPI'
+    project: 'bes_WebPrivada'
+    Pipeline: 'Build'
+    buildDefinition: '1904'
+    Branch: 'develop'
+    buildapiversion: '6.0'
+
+

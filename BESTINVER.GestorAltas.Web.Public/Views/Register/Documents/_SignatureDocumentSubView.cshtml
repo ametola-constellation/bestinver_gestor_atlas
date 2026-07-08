@@ -1,0 +1,305 @@
+﻿<ul class="form_text-questions_list">
+
+    <li class="form_text-questions_list_element">
+        <!-- ko if: $root.Product().ProductTypeId() == 5 -->
+        <h4 class="form_text-questions_title">A continuación, puedes visualizar o descargar los documentos que vas a firmar digitalmente.</h4>
+        <!-- /ko -->
+        <!-- ko if: $root.Product().ProductTypeId() != 5 -->
+        <h4 class="form_text-questions_title">Comprueba que has recibido un SMS de BESTINVER con tu PIN de firma.</h4>
+        <!-- /ko -->
+    </li>
+
+    <li class="form_text-questions_list_element">
+        <!-- ko if: $root.Product().ProductTypeId() == 5 -->
+        <h4 class="form_text-questions_title">
+            Te recomendamos <b>leer detenidamente</b> toda la <b>información</b> antes de proceder con la firma. Si tienes alguna pregunta, nuestro equipo de asesores está disponible para ayudarte.
+        </h4>
+        <!-- /ko -->
+        <!-- ko if: $root.Product().ProductTypeId() != 5 -->
+        <h4 class="form_text-questions_title">A continuación puedes visualizar o descargar los documentos que vas a firmar digitalmente.</h4>
+        <!-- /ko -->
+        <div class="form_block-content big">
+            <ul class="documentation-list" data-bind="foreach: DocumentList">
+                <li class="documentation-list_element">
+                    <i>
+                        <svg width="30" height="38" viewBox="0 0 30 38" xmlns="http://www.w3.org/2000/svg">
+                            <g stroke="#000" fill="none" fill-rule="evenodd">
+                                <path stroke-width="2.188" d="M28.399 32.406h-21.9V2h16.228l5.672 5.928z"></path>
+                                <path stroke-width="2.188" d="M23.899 33.175v3.734h-21.9V6.504h3.993"></path>
+                                <path stroke-width="1.094" d="M22.305 2.776v6.192h5.625"></path>
+                            </g>
+                        </svg>
+                    </i>
+                    <h5 class="document_title" data-bind="text: name"></h5>
+                    <p data-bind="html: linkhtml, click: EventPdf"></p>
+                </li>
+            </ul>
+        </div>
+    </li>
+
+    <!-- ko if: $root.CurrentEditApplicant().ApplicantBasicData().RequestApplicantType() != 4 && $root.CurrentEditApplicant().ApplicantBasicData().RequestApplicantType() != 3 -->
+    <li class="form_text-questions_list_element">
+        <!-- ko if: $root.Product().ProductTypeId() == 5 -->
+        <h4 class="form_text-questions_title">Selecciona cada una de las casillas declarando que has recibido y leído todos los documentos. Una vez seleccionadas podrás introducir el PIN de firma recibido por SMS.</h4>
+        <!-- /ko -->
+        <!-- ko if: $root.Product().ProductTypeId() != 5 -->
+        <h4 class="form_text-questions_title">Haz click en cada una de las casillas declarando que has recibido y leído los documentos:</h4>
+        <!-- /ko -->
+
+        <!-- ko if: $root.Product().ProductTypeId() == 2 || $root.Product().ProductTypeId() == 3 -->
+        <div id="chk-fondo" class="form_block-content big vertical">
+            <div class="form_block-content big">
+                <input type="checkbox" name="fondo-signature-check-01" id="fondo-signature-check-01" onchange="Utils.CheckSignatureVisible(this);">
+                <label for="fondo-signature-check-01">
+                    <i class="icon"></i>
+                    <div class="text">
+                        He recibido y leído los boletines de alta cliente y boletín de suscripción o traspaso
+                    </div>
+                </label>
+            </div>
+            <div class="form_block-content big">
+                <input type="checkbox" name="fondo-signature-check-02" id="fondo-signature-check-02" onchange="Utils.CheckSignatureVisible(this);">
+                <label for="fondo-signature-check-02">
+                    <i class="icon"></i>
+                    <div class="text">
+                        He recibido, leído y entendido el resultado del test de conveniencia, con el resultado de "Conveniente"/"No Conveniente"/"No ha sido posible valorar la conveniencia"
+                    </div>
+                </label>
+            </div>
+            <div class="form_block-content big">
+                <input type="checkbox" name="fondo-signature-check-03" id="fondo-signature-check-03" onchange="Utils.CheckSignatureVisible(this);">
+                <label for="fondo-signature-check-03">
+                    <i class="icon"></i>
+                    <div class="text">
+                        He recibido y leído los datos fundamentales del inversor
+                    </div>
+                </label>
+            </div>
+            <div class="form_block-content big">
+                <input type="checkbox" name="fondo-signature-check-04" id="fondo-signature-check-04" onchange="Utils.CheckSignatureVisible(this);">
+                <label for="fondo-signature-check-04">
+                    <i class="icon"></i>
+                    <div class="text">
+                        He recibido y leído el último informe semestral
+                    </div>
+                </label>
+            </div>
+        </div>
+        <!-- /ko -->
+        <!-- TODO: falta por confirmar los checkbox que deben aparecer -->
+        <!-- ko if: $root.Product().ProductTypeId() == 5 -->
+        <div id="chk-fondo" class="form_block-content big vertical">
+            <div class="form_block-content big">
+                <input type="checkbox" name="asesoramiento-signature-check-01" id="asesoramiento-signature-check-01" onchange="Utils.CheckSignatureVisible(this);">
+                <label for="asesoramiento-signature-check-01">
+                    <i class="icon"></i>
+                    <div class="text">
+                        He recibido y leído el boletín de alta de nuevo inversor
+                    </div>
+                </label>
+            </div>
+            <div class="form_block-content big">
+                <input type="checkbox" name="asesoramiento-signature-check-02" id="asesoramiento-signature-check-02" onchange="Utils.CheckSignatureVisible(this);">
+                <label for="asesoramiento-signature-check-02">
+                    <i class="icon"></i>
+                    <div class="text">                        
+                        He recibido y leído el contrato de asesoramiento
+                    </div>
+                </label>
+            </div>
+            <div class="form_block-content big">
+                <input type="checkbox" name="asesoramiento-signature-check-03" id="asesoramiento-signature-check-03" onchange="Utils.CheckSignatureVisible(this);">
+                <label for="asesoramiento-signature-check-03">
+                    <i class="icon"></i>
+                    <div class="text">
+                        He recibido y leído el test de idoneidad
+                    </div>
+                </label>
+            </div>
+            <div class="form_block-content big">
+                <input type="checkbox" name="asesoramiento-signature-check-04" id="asesoramiento-signature-check-04" onchange="Utils.CheckSignatureVisible(this);">
+                <label for="asesoramiento-signature-check-04">
+                    <i class="icon"></i>
+                    <div class="text">
+                        He recibido y leído la recomendación personalizada de inversión
+                    </div>
+                </label>
+            </div>
+        </div>
+        <!-- /ko -->
+        <!-- ko if: $root.Product().ProductTypeId() == 1 -->
+        <div id="chk-plan" class="form_block-content big vertical">
+            <div class="form_block-content big">
+                <input type="checkbox" name="plan-signature-check-01" id="plan-signature-check-01" onchange="Utils.CheckSignatureVisible(this);">
+                <label for="plan-signature-check-01">
+                    <i class="icon"></i>
+                    <div class="text">
+                        He recibido y leído el contrato de adhesión y si es el caso también el documento de traspaso
+                    </div>
+                </label>
+            </div>
+            <div class="form_block-content big">
+                <input type="checkbox" name="plan-signature-check-03" id="plan-signature-check-03" onchange="Utils.CheckSignatureVisible(this);">
+                <label for="plan-signature-check-03">
+                    <i class="icon"></i>
+                    <div class="text">
+                        He recibido y leído los datos fundamentales para el partícipe
+                    </div>
+                </label>
+            </div>
+            <div class="form_block-content big">
+                <input type="checkbox" name="plan-signature-check-04" id="plan-signature-check-04" onchange="Utils.CheckSignatureVisible(this);">
+                <label for="plan-signature-check-04">
+                    <i class="icon"></i>
+                    <div class="text">
+                        He recibido y leído los principios de inversión, especificaciones y ficha del plan de pensiones
+                    </div>
+                </label>
+            </div>
+        </div>
+        <!-- /ko -->
+        <!-- ko if: $root.Product().ProductTypeId() == 4 -->
+        <div id="chk-epsv" class="form_block-content big vertical">
+            <div class="form_block-content big">
+                <input type="checkbox" name="epsv-signature-check-01" id="epsv-signature-check-01" onchange="Utils.CheckSignatureVisible(this);">
+                <label for="epsv-signature-check-01">
+                    <i class="icon"></i>
+                    <div class="text">
+                        He recibido y leído el contrato de adhesión y si es el caso también el documento de traspaso
+                    </div>
+                </label>
+            </div>
+            <div class="form_block-content big">
+                <input type="checkbox" name="epsv-signature-check-04" id="epsv-signature-check-04" onchange="Utils.CheckSignatureVisible(this);">
+                <label for="epsv-signature-check-04">
+                    <i class="icon"></i>
+                    <div class="text">
+                        He recibido y leído los principios de inversión, estatutos y reglamento
+                    </div>
+                </label>
+            </div>
+        </div>
+        <!-- /ko -->
+
+    </li>
+    <!-- /ko -->
+    <li id="GDPR-Online-Acceptation-content" class="form_text-questions_list_element" style="display:none">
+        <div class="form_block-content big">
+            <input type="checkbox" name="GDPR-Online-Acceptation-1" id="GDPR-Online-Acceptation-1" onchange="Utils.SendGdprCheckAnalitics(this, '1', false);" data-bind="checked: $root.CurrentEditApplicant().GDPR1">
+            <label for="GDPR-Online-Acceptation-1">
+                <i class="icon"></i>
+                <div class="text">
+                    @{
+                     
+                    }
+                    Consiento el envío de información y recursos sobre ahorro e inversión, así como el envío de comunicaciones comerciales sobre fondos de inversión, fondos de capital riesgo, planes de pensiones, planes de previsión social individual y otros productos gestionados, promovidos o comercializados por las diferentes entidades o empresas de <a href="https://www.bestinver.es/grupo-bestinver/" id="bstInfoResourcesSignatureView" target="_blank">BESTINVER</a>.
+                </div>
+            </label>
+        </div>
+
+        <div class="form_block-content big">
+            <input type="checkbox" name="GDPR-Online-Acceptation-2" id="GDPR-Online-Acceptation-2" onchange="Utils.SendGdprCheckAnalitics(this, '2', false);" data-bind="checked: $root.CurrentEditApplicant().GDPR2">
+            <label for="GDPR-Online-Acceptation-2">
+                <i class="icon"></i>
+                <div class="text">
+                    Consiento el envío de invitaciones a eventos promocionales, ponencias y/o webinars organizados por las diferentes entidades o empresas de <a href="https://www.bestinver.es/grupo-bestinver/" id="bstPromosSignatureView" target="_blank">BESTINVER</a>.
+                </div>
+            </label>
+        </div>
+        
+        <div class="form_block-content big">
+            <input type="checkbox" name="GDPR-Online-Acceptation-3" id="GDPR-Online-Acceptation-3" onchange="Utils.SendGdprCheckAnalitics(this, '3', false);" data-bind="checked: $root.CurrentEditApplicant().GDPR3">
+            <label for="GDPR-Online-Acceptation-3">
+                <i class="icon"></i>
+                <div class="text">
+                    Consiento el envío de información comercial por cualquier canal de comunicación sobre productos y servicios comercializados por otros <a href="https://www.bestinver.es/grupo-acciona/" id="accionaComercialInfoSignatureView" target="_blank"> negocios del Grupo ACCIONA</a> sin que ello implique la cesión de mis datos personales.
+                </div>
+            </label>
+        </div>
+    </li>
+
+    <li id="signature-sms" class="form_text-questions_list_element" style="display:none">
+        <h4 class="form_text-questions_title">
+            Firma introduciendo el PIN recibido por SMS:
+        </h4>
+
+        <div class="form_block-content big" id="validarOTP-form">
+
+        </div>
+
+        <div id="validarRubricaeOTP-form">
+ 
+        </div>
+
+        <div id="validarBestinverOTP-form" style="font-size: 1rem; display:none">
+            <h4 class="ro-subtitle-rubricae">Al introducir el código recibido por SMS, que sustituye a mi firma manuscrita, confirmo que he recibido, leído y aceptado la documentación anterior.</h4>
+        </div>
+
+        <!-- ko if: $root.Product().Id() != 25 -->
+        <div class="form_block-content big hidden" id="contact-signature">
+            <div class="infor">
+                <span>
+                    Por favor, ponte en contacto con nosotros a través del teléfono
+                    <a style="color:#b59971; text-decoration:none" href="tel:900878280" target="_blank">
+                        900 878 280
+                    </a>
+                    o a través del email
+                    <a style="color:#b59971; text-decoration:none" href="mailto:bestinver@bestinver.es" target="_blank">
+                        bestinver@bestinver.es
+                    </a>
+                </span>
+            </div>
+        </div>
+        <!-- /ko -->
+        <!-- ko if: $root.Product().Id() == 25 -->
+        <div class="form_block-content big hidden" id="contact-signature">
+            <div class="infor">
+                <span>
+                    Por favor, ponte en contacto con nosotros a través del teléfono
+                    <a style="color:#b59971; text-decoration:none" href="tel:910009290" target="_blank">
+                        91 000 92 90
+                    </a>
+                    o a través del email
+                    <a style="color:#b59971; text-decoration:none" href="mailto:bestinver-infra@bestinver.es" target="_blank">
+                        bestinver-infra@bestinver.es
+                    </a>
+                </span>
+            </div>
+        </div>
+        <!-- /ko -->
+
+        <div class="form_block-content big hidden" id="success-signature">
+            <div class="infor">
+                <span>PIN CORRECTO</span>
+            </div>
+        </div>
+
+        <div class="form_block-content big hidden" id="failure-signature">
+            <div class="infor">
+                <span>Se ha producido un error en la firma</span>
+            </div>
+        </div>
+    </li>
+
+</ul>
+
+<script type="text/javascript">
+function isMobileApp() {
+    var MobileData = Utils.GetMobileAppData();
+    var isBstapp = MobileData.AppVersion && (MobileData.AppVersion.indexOf("bstapp") != -1 || MobileData.AppVersion.indexOf("bestinver") != -1);
+    if (isBstapp) {
+            $("#bstInfoResourcesSignatureView").attr('href', "https://www.bestinver.es/grupo-bestinver/#bstapp");
+            $("#bstInfoResourcesSignatureView").removeAttr('target');
+
+            $("#bstPromosSignatureView").attr('href', "https://www.bestinver.es/grupo-bestinver/#bstapp");
+            $("#bstPromosSignatureView").removeAttr('target');
+
+            $("#accionaComercialInfoSignatureView").attr('href', "https://www.bestinver.es/grupo-acciona/#bstapp");
+            $("#accionaComercialInfoSignatureView").removeAttr('target');
+    }
+}
+
+    $(document).ready(function () {
+        isMobileApp();
+    });
+</script>

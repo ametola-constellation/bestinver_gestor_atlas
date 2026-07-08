@@ -1,0 +1,136 @@
+﻿<!-- ko if:!ManualAssisted() && ($root.IsFCRFlag() == false && $root.IsOtherProductFCR() == false)-->
+<p class="form_inlet">A continuación es necesario firmar tus contratos con BESTINVER. Te ofrecemos dos opciones, pero te recomendamos la más rápida que es firmar electrónicamente a través del móvil.</p>
+<div class="form_block boxes" style="padding-top:0;">
+    <span class="label">Selecciona una opción para firmar el contrato</span>
+    <div class="form_block-content radio_box big_block">
+        <input type="radio" name="signtype" data-relative="signtype-online-content" id="signtype-electronic" value="1" data-bind="checked: IdDocumentSignatureType, validationMessage: IdDocumentSignatureType">
+        <label for="signtype-electronic" class="radio_box-label" style="min-height: 190px;">
+            <i class="label_icon">
+                <svg width="19" height="17" viewBox="0 0 19 17" xmlns="http://www.w3.org/2000/svg">
+                    <g stroke="#B59971" stroke-width="2.25" fill="none" fill-rule="evenodd" stroke-linecap="square">
+                        <path d="M2.289 9.273l4.498 5.51M6.742 14.727L17.426 1.64"></path>
+                    </g>
+                </svg>
+            </i><i class="block_icon">
+                <svg width="23" height="36" viewBox="0 0 23 36" xmlns="http://www.w3.org/2000/svg">
+                    <g fill="none" fill-rule="evenodd">
+                        <path stroke="#000" stroke-width="2" d="M1 34.817h20.438V1H1z"></path>
+                        <path d="M1.507 27.533h19.425M1.507 4.993h19.425" stroke="#000" stroke-width="1.179"></path>
+                        <path d="M12.67 30.662a1.25 1.25 0 1 1-2.501-.001 1.25 1.25 0 0 1 2.5 0" fill="#000" fill-rule="nonzero"></path>
+                    </g>
+                </svg>
+            </i>
+            <h4 class="title">Firma digital con tu móvil</h4><span class="text">Completa ahora tu solicitud realizando la firma de todos los documentos de forma rápida y sencilla con tu teléfono móvil</span>
+        </label>
+    </div>
+    <div class="form_block-content radio_box big_block">
+        <input type="radio" name="signtype" data-relative="signtype-manual-content" id="signtype-manual" value="2" data-bind="checked: IdDocumentSignatureType, validationMessage: IdDocumentSignatureType">
+        <label for="signtype-manual" class="radio_box-label" style="min-height: 190px;">
+            <i class="label_icon">
+                <svg width="19" height="17" viewBox="0 0 19 17" xmlns="http://www.w3.org/2000/svg">
+                    <g stroke="#B59971" stroke-width="2.25" fill="none" fill-rule="evenodd" stroke-linecap="square">
+                        <path d="M2.289 9.273l4.498 5.51M6.742 14.727L17.426 1.64"></path>
+                    </g>
+                </svg>
+            </i><i class="block_icon"></i>
+            <h4 class="title">Firma manual</h4><span class="text">Completa tu solicitud firmando de forma manuscrita los documentos</span>
+        </label>
+    </div>
+    <div id="signtype-manual-content" class="form_block-content big vertical hidden">
+        <div class="form_block-content big vertical" data-bind="visible: ShowSendingWays()">
+            <span class="label">Para firmar tus documentos puedes elegir una de estas dos opciones:</span>
+            <input type="radio" name="bestinver-sending-way" id="sending-way-download" value=1 data-bind="checked: IdSendingWay ,validationMessage: IdSendingWay">
+            <label for="sending-way-download">
+                <i class="icon"></i><span class="text">Descarga e imprime los documentos</span>
+            </label>
+
+            <input type="radio" name="bestinver-sending-way" id="sending-way-post" value=2 data-bind="checked: IdSendingWay ,validationMessage: IdSendingWay">
+            <label for="sending-way-post">
+                <i class="icon"></i><span class="text">Solicitar los documentos por correo postal</span>
+            </label>
+            <span class="error_message" data-bind="validationMessage: IdSendingWay"></span>
+        </div>
+
+        <div class="form_block-content big">
+            <input type="checkbox" name="GDPR-Acceptation" id="GDPR-Acceptation" data-bind="checked: GDPR_Group">
+            <label for="GDPR-Acceptation">
+                <i class="icon"></i>
+                <div class="text">
+                    Acepto el tratamiento de mis datos de contacto por las empresas de Bestinver (BESTINVER GESTIÓN S.A. S.G.I.I.C; BESTINVER PENSIONES E.G.F.P. S.A.; BESTINVER INDIVIDUAL EPSV) para los fines definidos en nuestra política de <a href="https://www.bestinver.es/finalidades-del-tratamiento-datos/" target="_blank">protección de datos</a>. La finalidad es mejorar su conocimiento de los productos que tiene contratados y otros complementarios promovidos por las empresas de Bestinver, pudiendo utilizar sus datos para invitarle a eventos promocionales, ofrecerle nuestros productos presentes y futuros como fondos y/o planes de pensiones, o enviarle cualquier tipo de información que pueda ser de su interés.
+                </div>
+            </label>
+        </div>
+
+    </div>
+    <div id="signtype-online-content" class="form_block-content big vertical hidden">
+        <div class="form_block-content big">
+            <ul class="process-list">
+                <li class="process-list_element complete">
+                    A continuación podrás descargar los documentos que vas a firmar.
+                </li>
+                <li class="process-list_element complete">
+                    Recibirás en tu teléfono móvil un SMS con un PIN de seis dígitos.
+                </li>
+                <li class="process-list_element complete">
+                    Una vez hayas leído los documentos introduce el PIN para firmarlos. Recibirás una copia firmada en tu e-mail.
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<!-- /ko -->
+
+<div class="form_block-content big vertical" data-bind="visible: vm.ManualAssisted() == true || (vm.ManualAssisted() == false && (vm.IsFCRFlag() == true || vm.IsOtherProductFCR() == true))">
+    <div class="form_block-content big vertical" data-bind="visible: ShowSendingWays()">
+        <span class="label">Para firmar tus documentos puedes elegir una de estas dos opciones:</span>
+        <input type="radio" name="bestinver-sending-way" id="sending-way-download" value=1 data-bind="checked: IdSendingWay ,validationMessage: IdSendingWay">
+        <label for="sending-way-download">
+            <i class="icon"></i><span class="text">Descarga e imprime los documentos</span>
+        </label>
+
+        <input type="radio" name="bestinver-sending-way" id="sending-way-post" value=2 data-bind="checked: IdSendingWay ,validationMessage: IdSendingWay">
+        <label for="sending-way-post">
+            <i class="icon"></i><span class="text">Solicitar los documentos por correo postal</span>
+        </label>
+        <span class="error_message" data-bind="validationMessage: IdSendingWay"></span>
+    </div>
+    <div class="form_block-content big">
+        <span class="label">A continuación, para ofrecerte el mejor servicio posible necesitamos pedirte autorización para realizar las siguientes actividades:</span>
+        <input type="checkbox" name="GDPR-Acceptation" id="GDPR-Acceptation" data-bind="checked: GDPR_Group">
+        <label for="GDPR-Acceptation">
+            <i class="icon"></i>
+            <div class="text">
+                He leído y acepto la <a href="" data-bind="click:function () { window.launchAjax(routeConfig.GA_Register_PopPup_popup_legal);} ">“Información básica sobre Protección de Datos”</a>, por la que autorizo el tratamiento de mis datos para la contratación de productos del grupo de sociedades de Bestinver, así como poder recibir comunicaciones referentes a evolución de carteras, información sobre productos, invitación a eventos...
+            </div>
+        </label>
+    </div>
+
+</div>
+<!-- ko if:IdDocumentSignatureType() == '1'-->
+<p class="form_inlet">Por favor, antes de pulsar en CONTINUAR, confírmanos que los numeros de móvil son correctos:</p>
+<!-- ko foreach:{ data:ApplicantPhones }-->
+@{ await Html.RenderPartialAsync("Documents/_SignatureConfirmPhone");}
+<!-- /ko -->
+<!-- /ko -->
+
+<div class="form_block-content general_error" data-bind="validationElement: IdDocumentSignatureType">
+    <span class="error_message" data-bind="validationMessage: IdDocumentSignatureType"></span>
+</div>
+
+<div id="document-wait" class="form_block hidden">
+    <div class="form_block-content big">
+        <div class="infor">
+            <span>
+                Por favor espera mientras generamos tus documentos.
+            </span>
+        </div>
+    </div>
+</div>
+
+<div class="form_block buttons">
+    <div class="form_block-content buttons big">
+        <div class="button_next">
+            <a href="" title="Continuar" class="button brown toWhite" id="save-signature-data" data-bind="click:function () { CreateSignatureData($root); }"><span>Continuar</span></a>
+        </div>
+    </div>
+</div>

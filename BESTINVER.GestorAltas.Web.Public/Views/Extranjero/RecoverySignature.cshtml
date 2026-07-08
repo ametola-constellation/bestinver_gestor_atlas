@@ -1,0 +1,198 @@
+﻿@using Newtonsoft.Json;
+
+@model SignatureRestoreDataViewModel;
+
+@{
+    Layout = "~/Views/Shared/_Layout_Extranjero.cshtml";
+}
+
+@Html.AntiForgeryToken()
+
+@{
+    int milliseconds = (int)Model.SessionTimeout * 60 * 1000;
+}
+
+@section scripts{
+    <script language="javascript" type="text/javascript">
+
+        $.blockUI.defaults.css.cursor = "dafault";
+        $.blockUI.defaults.css.backgroundColor = "#fff";
+        $.blockUI.defaults.overlayCSS.cursor = "default";
+        $.blockUI.defaults.overlayCSS.backgroundColor = "#fff";
+
+        var timeoutfnc;
+        var timeouturl = '@(Url.Action("SessionExpiredError", "Error", null))';
+        var internalerrorurl = '@(Url.Action("InternalError", "Error", null))';
+        var timeoutcheck = false;
+        var parser = new UAParser();
+
+        var ismobile = '@Html.Raw(Model.IsMobile).ToString().ToLower()';
+        sessionStorage.setItem("device", ismobile == 'true' ? 'mobile' : 'desktop');
+
+        function InitTimeoutFnc() {
+            timeoutfnc = setTimeout(function () {
+                timeoutcheck = true;
+            },
+                @milliseconds.ToString()
+            );
+        }
+        function ResetTimeoutFnc() {
+            clearTimeout(timeoutfnc);
+            timeoutfnc = setTimeout(function () {
+                timeoutcheck = true;
+            },
+                @milliseconds.ToString()
+            );
+        }
+
+        var GMT;
+        var vm = new RecoverySignatureViewModel();
+        var MasterData = new MasterDataModel(1, 1, 1);
+        var documentsendingways = @Html.Raw(JsonConvert.SerializeObject(Model.MasterData.DocumentSendingWays));
+        MasterData.setDocumentSendingWay(documentsendingways);
+
+        $(document).ready(function () {
+
+            var data = {
+                RequestId: '@Model.RequestId' ,
+                Dni: '@Model.Dni'
+            };
+
+            $.ajax({
+                url: apiConfig.API_Register_RestoreSignatureProcess,
+                context: this,
+                type: "POST",
+                crossDomain: false,
+                data: JSON.stringify(data),
+                dataType: "json",
+                contentType: 'application/json; charset=utf-8',
+                headers: { 'RequestVerificationToken': $("input[name='__RequestVerificationToken']").val() }
+            }).done(function (data) {
+                var obj = $.parseJSON(JSON.stringify(data));
+                var docpdf = new PdfDocumentData();
+                docpdf.Dni(obj.Dni);
+                docpdf.OtpsToken(obj.OtpsToken);
+                docpdf.OtpsTokensSigner(obj.OtpsTokensSigner);
+                docpdf.ElectronicSignatureServiceVersion(obj.ElectronicSignatureServiceVersion);
+                docpdf.AccessToken(obj.AccessToken);
+                docpdf.OtpsId(obj.OtpsId);
+                docpdf.CompleteName(obj.CompleteName);
+                docpdf.RequestApplicantType(obj.RequestApplicantType);
+                docpdf.Signed(obj.Signed);
+                vm.Signed(obj.Signed);
+
+                var idlead = obj.ParentRequestId;
+                window.setDatalayerItem('idLeadCorto', idlead);
+
+                var productType = obj.ProductType;
+                var product = obj.Product;
+
+                var doc = obj.DocumentList;
+                var doclist = [];
+
+                if (doc == undefined) {
+                    customError('@Model.RequestId' + ": No Documents", apiConfig.API_Register_RestoreSignatureProcess);
+                    location.href = internalerrorurl;
+                }
+
+                $.each(doc, function (i, item) {   
+                    doclist.push(new PdfDocument(doc[i].Label, doc[i].Url));
+                });
+
+                docpdf.DocumentList(doclist);
+
+                if (docpdf.DocumentList().length > 0) {
+                     var bdate = new Date(obj.Birthday);
+                    vm.Init('@Model.RequestId', docpdf, productType, obj.Minors, bdate);
+                    ko.applyBindings(vm);
+                    $('#signature-document-content').toggleClass('hidden');
+                    $('#GDPR-Online-Acceptation-content').remove();
+                }
+
+                GMT = new GoogleTagManager(ProductTypeEnum.properties[productType].name, product);
+                GMT.Asynchronous = true;
+                GMT.Push(PageEnum.FIRMA_DOCUMENTOS);
+                InitTimeoutFnc();
+
+            }).fail(function (data, textStatus, xhr) {
+                    switch (data.status) {
+                        case 302:
+                            customError('@Model.RequestId' + ": Timeout", apiConfig.API_Juridica_RestoreSignatureProcess);
+                            location.href = timeouturl;
+                            break;
+                        default:
+                            customError('@Model.RequestId' + ": Error", apiConfig.API_Juridica_RestoreSignatureProcess);
+                            location.href = internalerrorurl;
+                    }
+            });
+        });
+
+    </script>
+}
+
+<div class="registration_form">
+
+    <div id="documents-content" class="registration_inner">                
+        @if (Model.IsAsesoramiento)
+        {
+            <h2 class="form_title">SERVICIO DE ASESORAMIENTO EN INVERSIONES ALTERNATIVAS</h2>
+        }
+        else
+        {
+            <h2 class="form_title">Firma y envío de documentación</h2>
+        }
+        <ul class="form_steps-list">
+            <li id="signature-document-content-head" class="form_steps-list_element">
+                <h3 class="form_steps-title">
+                    Firma de documentación
+                </h3>
+                <div id="signature-document-content" class="form_block hidden" data-bind="with: PdfDocumentData">
+                    <!-- Vista para documentos sin firmar -->
+                    <div data-bind="visible: !Signed()">
+                        @{
+                            await Html.RenderPartialAsync("Documents/_SignatureDocumentSubView");
+                        }
+                    </div>
+                    <!-- Vista para documentos firmados -->
+                    <div data-bind="visible: Signed()">
+                        @{
+                            await Html.RenderPartialAsync("Documents/_SignatureDocumentSignedSubView");
+                        }
+                    </div>
+                </div>
+            </li>
+            <li id="applicant-document-content-head" class="form_steps-list_element hidden" data-bind="with: vm">
+                <h3 class="form_steps-title">
+                    Envío de documento de identificación
+                </h3>
+                <div id="applicant-document-content" class="form_block hidden" data-bind="with: DniDataView">
+                    @{ await Html.RenderPartialAsync("Documents/_DocumentView"); }
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <div id="success-content" class="registration_inner hidden" data-bind="with: vm">
+        @if (Model.IsAsesoramiento)
+        {
+            <h2 class="form_title">SERVICIO DE ASESORAMIENTO EN INVERSIONES ALTERNATIVAS</h2>
+        }
+        <ul class="form_steps-list">
+            <li id="success-content-head" class="form_steps-list_element hidden">               
+                @if (!Model.IsAsesoramiento)
+                {
+                    <h3 class="form_steps-title" data-bind="text: SuccessMessage"></h3>
+                }                                
+                <div id="success-content-view" class="hidden">
+                    @{ await Html.RenderPartialAsync("_RecoverySuccessView"); }
+                </div>
+            </li>
+        </ul>
+
+    </div>
+
+    <div id="error-content" class="registration_inner hidden" data-bind="with: vm">
+        @{ await Html.RenderPartialAsync("_ErrorView"); }
+    </div>
+
+</div>

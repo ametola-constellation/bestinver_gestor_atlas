@@ -1,0 +1,36 @@
+﻿<div class="form_block">
+
+    <div class="form_block-content big">
+        <div class="infor">
+            <span data-bind="text: personalDataModel().userName() + ': ' + personalDataModel().email()"></span>
+        </div>
+    </div>
+
+    <div class="form_block-content big vertical">
+        <input type="radio" value=true
+               data-bind="attr: {name: personalDataModel().dni() + '-is-email-ok', id: personalDataModel().dni() + '-email-ok'},
+           checked: personalDataModel().isEmailOk()" />
+        <label data-bind="attr: {for: personalDataModel().dni() + '-email-ok'}">
+            <i class="icon"></i><span class="text">Es correcto</span>
+        </label>
+
+        <input type="radio" data-relative="mobilephone-number" value=false
+               data-bind="attr: {name: personalDataModel().dni() + '-is-email-ok', id: personalDataModel().dni() + '-email-no-ok' ,
+               'data-relative': personalDataModel().dni() + '-email'}, checked: personalDataModel().isEmailOk()" />
+        <label data-bind="attr: {for: personalDataModel().dni() + '-email-no-ok'}">
+            <i class="icon"></i><span class="text">No es correcto</span>
+        </label>
+        <span class="error_message"></span>
+    </div>
+
+    <div data-bind="attr: {id: personalDataModel().dni() + '-email'}, css: { hidden: personalDataModel().isEmailOk() == 'true' }" class="form_block-content hidden">
+
+        <label for="new-email"><span>Indica el email</span></label>
+
+        <input type="text" maxlength="255" data-private
+               data-bind="attr: {id: personalDataModel().dni() + '-new-email', name: personalDataModel().dni() + '-new-email'},
+               value: personalDataModel().email">
+        <span class="error_message" data-bind="text: personalDataModel().errorMessageEmail()"></span>
+    </div>
+
+</div>

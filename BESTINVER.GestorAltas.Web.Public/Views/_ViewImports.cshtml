@@ -1,0 +1,14 @@
+﻿@using BESTINVER.GestorAltas.Web.Public
+@using BESTINVER.GestorAltas.Web.Public.Models
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.Extensions.Options;
+@using BESTINVER.GestorAltas.Domain.Configurations;
+@using Microsoft.AspNetCore.Hosting;
+@using BESTINVER.GestorAltas.Web.Models;
+@using BESTINVER.GestorAltas.Web.Public.Models.Register;
+
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@inject IAuthorizationService AuthorizationService
+@inject IOptions<BESTINVER.GestorAltas.Domain.Configurations.AppSettings> AppSettings
+@*@inject IHostingEnvironment hostingEnv*@
+@inject IWebHostEnvironment hostingEnv

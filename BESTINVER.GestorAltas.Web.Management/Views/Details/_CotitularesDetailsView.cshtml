@@ -1,0 +1,324 @@
+﻿@model CotitularDataModel
+
+@using BestInver.WebPrivada.Shared.Models.Microservices.Tests.Enums
+
+@{
+    var hasModificacionApoderados = (await AuthorizationService.AuthorizeAsync(User, MiddleOfficeClaimNames.ModificacionApoderados)).Succeeded;
+
+    int[] editableApplicantTypes = new int[] {
+(int)ApplicantRoleType.Apoderado,
+(int)ApplicantRoleType.TitularReal,
+(int)ApplicantRoleType.TitularRealAndApoderado
+};
+    bool isMinor = Model.Birthday.IsMinor(); ;
+
+    if (Model.DisabledSaveButton == "")    {
+        
+        Model.DisabledSaveButton = Model.LockedIsLocked && Model.LockedUserName == User.Identity.Name ? "" : "disabled";
+
+        if (editableApplicantTypes.Contains(Model.RequestApplicantType) && !hasModificacionApoderados)
+        {
+            Model.DisabledSaveButton = "disabled";
+        }
+    }
+
+}
+
+<script type="text/javascript">
+    function loadDifferentCotitularPostalAddressButtonBehavior() {
+        if ($('#cotitularFiscalAddressData #DifferentPostalAddress').is(":checked")) {
+            $('.rowCotitularPostalAddress').show();
+        }
+        else {
+            $('.rowCotitularPostalAddress').hide();
+        }
+
+        $('#cotitularFiscalAddressData #DifferentPostalAddress').change(function () {
+            if ($(this).is(":checked")) {
+                $('.rowCotitularPostalAddress').show();
+            }
+            else {
+                $('.rowCotitularPostalAddress').hide();
+            }
+        });
+    }
+
+    $(document).ready(function () {
+        loadDifferentCotitularPostalAddressButtonBehavior();
+    });
+</script>
+
+<div class="modal-dialog  modal-lg" role="document">
+
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title" id="cotitularLabel">Detalle de cotitular @Model.DNI</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+
+        <form asp-action="UpdateCotitular">
+            <input type="hidden" asp-for="RequestId" />
+            <input type="hidden" asp-for="DNI" />
+            <input id="cotitularInvalidPhonesArray" type="hidden" asp-for="InvalidPhones" />
+
+            <div class="modal-body">
+                <h4>Datos Cotitular</h4>
+                <div class="row">
+                    <div class="form-group col-md-4">
+                        <label asp-for="Name"></label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label asp-for="FirstSurname"></label>
+                        <input asp-for="FirstSurname" class="form-control" />
+                        <span asp-validation-for="FirstSurname" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label asp-for="SecondSurname"></label>
+                        <input asp-for="SecondSurname" class="form-control" />
+                        <span asp-validation-for="SecondSurname" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label asp-for="DNI"></label>
+                        <input asp-for="DNI" class="form-control" disabled />
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label asp-for="IDDocumentIsPermanent"></label>
+                        <input type="checkbox" asp-for="IDDocumentIsPermanent" class="checkbox" />
+
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label asp-for="IDDocumentExpirationDate"></label>
+                        <input asp-for="IDDocumentExpirationDate" class="form-control" type="date"
+                               data-val="true" data-val-requiredexpirationdate="la fecha de caducidad del DNI es obligatoria" />
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label asp-for="Birthday"></label>
+                        <input asp-for="Birthday" class="form-control" type="date"
+                               data-val="true" data-val-validage="La fecha de nacimiento no es correcta" data-val-validage-minor="@isMinor" />
+                        <span asp-validation-for="Birthday" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label asp-for="Gender"></label>
+                        <select asp-for="Gender" asp-items="@Model.Genders.ToSelectListItem()" class="form-control">
+                            <option value="" hidden disabled selected>Seleccione una opción</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group col-md-3">
+                        <label asp-for="IsResident"></label>
+                        <input type="checkbox" asp-for="IsResident" class="checkbox" />
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label asp-for="Country"></label>
+                        <select asp-for="Country" asp-items="@Model.Countries.ToSelectListItem()" class="form-control">
+                            <option value="" hidden disabled selected>Seleccione una opción</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label asp-for="Nacionality"></label>
+                        <select asp-for="Nacionality" asp-items="@Model.Nationalities.ToSelectListItem()" class="form-control">
+                            <option value="" hidden disabled selected>Seleccione una opción</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label asp-for="RdClientCode"></label>
+                        <input asp-for="RdClientCode" class="form-control col-md-12" disabled />
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group col-md-8">
+                        <label>RGPD Acepta Consentimiento 1 (Comunicaciones comerciales)</label>
+                        <input type="checkbox" asp-for="gdpr" class="form-check" disabled />
+                    </div>
+
+                    <div class="form-group col-md-8">
+                        <label>RGPD Acepta Consentimiento 2 (Eventos promocionales)</label>
+                        <input type="checkbox" asp-for="gdprEvents" class="form-check" disabled />
+                    </div>
+                </div>
+                <h4>Datos de contacto</h4>
+                <div class="row">
+                    <div class="form-group col-md-4">
+                        <label asp-for="PhoneNumber"></label>
+                        <input asp-for="PhoneNumber" class="form-control" maxlength="20" min="9" />
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label asp-for="MobilePhoneNumber"></label>
+                        <input asp-for="MobilePhoneNumber" class="form-control" />
+                        <span asp-validation-for="MobilePhoneNumber" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label asp-for="Email"></label>
+                        <input type="email" asp-for="Email" class="form-control" />
+                    </div>
+                </div>
+                <h4>Dirección Fiscal</h4>
+                <div class="row" id="cotitularFiscalAddressData">
+                    <input type="hidden" asp-for="FiscalAddress.Id" />
+                    <input type="hidden" asp-for="FiscalAddress.AddressType" />
+                    <div class="form-group col-md-3">
+                        <label asp-for="FiscalAddress.ViaType"></label>
+                        <select asp-for="FiscalAddress.ViaType" asp-items="@Model.ViaTypes.ToSelectListItem()" class="form-control">
+                            <option value="" hidden disabled selected>Seleccione una opción</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label asp-for="FiscalAddress.Name"></label>
+                        <input asp-for="FiscalAddress.Name" class="form-control" />
+                        <span asp-validation-for="FiscalAddress.Name" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group col-md-2">
+                        <label asp-for="FiscalAddress.Number"></label>
+                        <input asp-for="FiscalAddress.Number" class="form-control" />
+                        <span asp-validation-for="FiscalAddress.Number" class="text-danger"></span>
+                    </div>
+
+                    <div class="form- col-md-2">
+                        <label asp-for="FiscalAddress.Stairs"></label>
+                        <input asp-for="FiscalAddress.Stairs" class="form-control" />
+                        <span asp-validation-for="FiscalAddress.Stairs" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group col-md-4">
+                        <label asp-for="FiscalAddress.Floor"></label>
+                        <input asp-for="FiscalAddress.Floor" class="form-control" />
+                        <span asp-validation-for="FiscalAddress.Floor" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group col-md-4">
+                        <label asp-for="FiscalAddress.Door"></label>
+                        <input asp-for="FiscalAddress.Door" class="form-control" />
+                        <span asp-validation-for="FiscalAddress.Door" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group col-md-4">
+                        <label asp-for="FiscalAddress.AddressExtension"></label>
+                        <input asp-for="FiscalAddress.AddressExtension" class="form-control" />
+                        <span asp-validation-for="FiscalAddress.AddressExtension" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group col-md-3">
+                        <label asp-for="FiscalAddress.PostalCode"></label>
+                        <input asp-for="FiscalAddress.PostalCode" class="form-control" />
+                        <span asp-validation-for="FiscalAddress.PostalCode" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group col-md-3">
+                        <label asp-for="FiscalAddress.City"></label>
+                        <input asp-for="FiscalAddress.City" class="form-control" />
+                        <span asp-validation-for="FiscalAddress.City" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label asp-for="FiscalAddress.Province"></label>
+                        <input asp-for="FiscalAddress.Province" class="form-control" />
+                        <span asp-validation-for="FiscalAddress.Province" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label asp-for="FiscalAddress.IdCountry"></label>
+                        <select asp-for="FiscalAddress.IdCountry" asp-items="@Model.Countries.ToSelectListItem()" class="form-control">
+                            <option value="" hidden disabled selected>Seleccione una opción</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <input type="checkbox" asp-for="DifferentPostalAddress" class="form-check" />
+                        <label asp-for="DifferentPostalAddress"></label>
+                    </div>
+                </div>
+
+                <div class="rowCotitularPostalAddress">
+                    <h4>Dirección postal</h4>
+                    <div class="row">
+                        <input type="hidden" asp-for="PostalAddress.Id" />
+                        <input type="hidden" asp-for="PostalAddress.AddressType" />
+                        <div class="form-group col-md-3">
+                            <label asp-for="PostalAddress.ViaType"></label>
+                            <select asp-for="PostalAddress.ViaType" asp-items="@Model.ViaTypes.ToSelectListItem()" class="form-control">
+                                <option value="" hidden disabled selected>Seleccione una opción</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label asp-for="PostalAddress.Name"></label>
+                            <input asp-for="PostalAddress.Name" class="form-control" />
+                            <span asp-validation-for="PostalAddress.Name" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group col-md-2">
+                            <label asp-for="PostalAddress.Number"></label>
+                            <input asp-for="PostalAddress.Number" class="form-control" />
+                            <span asp-validation-for="PostalAddress.Number" class="text-danger"></span>
+                        </div>
+
+                        <div class="form- col-md-2">
+                            <label asp-for="PostalAddress.Stairs"></label>
+                            <input asp-for="PostalAddress.Stairs" class="form-control" />
+                            <span asp-validation-for="PostalAddress.Stairs" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group col-md-4">
+                            <label asp-for="PostalAddress.Floor"></label>
+                            <input asp-for="PostalAddress.Floor" class="form-control" />
+                            <span asp-validation-for="PostalAddress.Floor" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group col-md-4">
+                            <label asp-for="PostalAddress.Door"></label>
+                            <input asp-for="PostalAddress.Door" class="form-control" />
+                            <span asp-validation-for="PostalAddress.Door" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group col-md-4">
+                            <label asp-for="PostalAddress.AddressExtension"></label>
+                            <input asp-for="PostalAddress.AddressExtension" class="form-control" />
+                            <span asp-validation-for="PostalAddress.AddressExtension" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group col-md-3">
+                            <label asp-for="PostalAddress.PostalCode"></label>
+                            <input asp-for="PostalAddress.PostalCode" class="form-control" />
+                            <span asp-validation-for="PostalAddress.PostalCode" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group col-md-3">
+                            <label asp-for="PostalAddress.City"></label>
+                            <input asp-for="PostalAddress.City" class="form-control" />
+                            <span asp-validation-for="PostalAddress.City" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label asp-for="PostalAddress.Province"></label>
+                            <input asp-for="PostalAddress.Province" class="form-control" />
+                            <span asp-validation-for="PostalAddress.Province" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label asp-for="PostalAddress.IdCountry"></label>
+                            <select asp-for="PostalAddress.IdCountry" asp-items="@Model.Countries.ToSelectListItem()" class="form-control">
+                                <option value="" hidden disabled selected>Seleccione una opción</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cerrar</button>
+                @if (Model.ShowOperationChange)
+                {
+                    <button type="submit" class="btn btn-primary" @Model.DisabledSaveButton>Guardar</button>
+                }
+                </div>
+
+        </form>
+
+    </div>
+</div>
+
+<partial name="_ValidationScriptsPartial" />
+
+
+
+
+
+

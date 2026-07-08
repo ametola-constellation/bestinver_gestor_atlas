@@ -1,0 +1,38 @@
+parameters:
+- name: Environment
+  displayName: Environment
+  type: string
+  default: uat
+  values:
+  - uat
+- name: ProjectName
+  displayName: Project Name
+  type: string
+  default: All
+  values:
+  - All
+  - MiddleOffice
+  - Altas
+  - Remediacion
+  - WordpressApi
+   
+- name: Deploy
+  type: boolean
+  default: true
+
+- name: PublishDocker
+  type: boolean
+  default: true
+
+trigger:
+- 'none'
+
+extends:
+  template: ci_base.yml
+  parameters:    
+    Environment: ${{parameters.Environment}}
+    NugetUser: $(JFROG_USER)
+    NugetPassword: $(JFROG_PASS)
+    ProjectName: ${{parameters.ProjectName}}
+    PublishDocker: ${{parameters.PublishDocker}}
+    Deploy: ${{parameters.Deploy}}

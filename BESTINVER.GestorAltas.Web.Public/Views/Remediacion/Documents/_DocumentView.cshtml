@@ -1,0 +1,56 @@
+﻿<div class="form_block-content big">
+    <div class="infor">
+        <span data-bind="text: currentApplicantSignatureTitle"> </span>
+        <ul class="form_list">
+            <li class="form_list-element">
+                <span>DNI/NIE</span>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<div class="form_block boxes">
+
+    <!-- ko if: parser.getBrowser().name == "IE" -->
+        @{await Html.RenderPartialAsync("Documents/_IEDocumentSubView"); }
+    <!-- /ko -->
+
+    <!-- ko if: parser.getBrowser().name != "IE" -->
+        @{await Html.RenderPartialAsync("Documents/_DocumentSubView"); };
+    <!-- /ko -->
+
+</div>
+
+<div class="form_block-content date" data-bind="visible: !dniModel().isPermanent()">
+    <label for="personaldata-expiration-day"><span>Fecha de caducidad NIF/NIE</span></label>
+    <input type="text" placeholder="dd" max="31" min="0" name="personaldata-expiration-day" id="personaldata-expiration-day"
+           maxlength="2" class="input-integer-2 numonly"
+           data-bind="value: dniModel().expirationDay">
+    <input type="text" placeholder="mm" max="12" min="0" name="personaldata-expiration-month" id="personaldata-expiration-month"
+           maxlength="2" class="input-integer-2 numonly"
+           data-bind="value: dniModel().expirationMonth">
+    <input type="text" placeholder="aaaa" max="9999" min="0" name="personaldata-expiration-year" id="personaldata-expiration-year"
+           maxlength="4" class="input-integer-4 numonly"
+           data-bind="value: dniModel().expirationYear">
+    <span class="error_message" data-bind="text: dniModel().errorMessageValidDate"></span>
+</div>
+
+<div class="form_block-content big" data-bind="visible: personalDataModel().isOlderThan65()">
+    <input type="checkbox" name="personaldata-permanent-expiration" id="personaldata-permanent-expiration" data-bind="checked: dniModel().isPermanent">
+    <label for="personaldata-permanent-expiration">
+        <i class="icon"></i>
+        <div class="text">Caducidad permanente del DNI / NIE</div>
+    </label>
+</div>
+
+<span class="error_message" data-bind="text: dniModel().errorMessage"></span>
+
+<div class="form_block buttons">
+    <div class="form_block-content buttons big">
+        <div class="button_next">
+            <a href="" title="Continuar" class="button brown toWhite" id="save-applicant-document-data" data-bind="click:function () { dniModel().saveDniData(); }">
+                <span>Continuar</span>
+            </a>
+        </div>
+    </div>
+</div>

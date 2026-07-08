@@ -1,0 +1,210 @@
+﻿@model BESTINVER.GestorAltas.Web.Management.Models.ManagementRequestModel
+@using BestInver.WebPrivada.Shared.Models.Microservices.Tests.Enums
+@using BestInver.WebPrivada.Shared.Models.Microservices.Operations.Enums
+@using BESTINVER.GestorAltas.Web.Models.Requests
+@using Newtonsoft.Json;
+@using BestInver.WebPrivada.Shared.Models.Microservices.Requests.Enums;
+
+@{
+    int[] operationsReceivedByDefault = new int[] { (int)OperationType.Traspaso, (int)OperationType.Recibo };
+    string fundReceived = string.Empty;
+    string fundStatus = string.Empty;
+    var operations = Model.ProductOperations.SelectMany(o => o.Operations);
+    int[] operationNotAvailableTypes = new int[] { (int)OperationType.Recibo };
+
+    if (operations.All(o => !operationNotAvailableTypes.Contains(o.IdOperationType) && (o.FundReceived.HasValue && o.FundReceived == false)))
+    {
+        fundReceived = "No recibidos";
+        fundStatus = "danger";
+    }
+    else if (operations.All(o => !operationNotAvailableTypes.Contains(o.IdOperationType) && (o.FundReceived.HasValue && o.FundReceived == true)))
+    {
+        fundReceived = "Recibidos";
+        fundStatus = "success";
+    }
+    else if (operations.Any(o => (o.FundReceived.HasValue && o.FundReceived == true)) &&
+     operations.Any(o => (o.FundReceived.HasValue && o.FundReceived == false)))
+    {
+        fundReceived = "Recibidos Parcialmente";
+        fundStatus = "warning";
+    }
+
+}
+
+@{
+    if (@Model.Request.NombreProducto != "")
+    {
+        <label class="col-form-label">Producto seleccionado: @Model.Request.NombreProducto</label>
+        <br />
+    }
+}
+<script>
+    var productOperationsModel =  @Html.Raw(JsonConvert.SerializeObject(Model.ProductOperations));
+</script>
+<label class="col-form-label">Operaciones</label>
+<div class="alert alert-primary">
+    <h4>Estado de recibir dinero: <span class="badge badge-@fundStatus">@fundReceived</span></h4>
+    <table id="products-list" class="table table-bordered dataTable no-footer">
+        <thead>
+            <tr>
+                <th>Nombre del producto y operaciones asociadas</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var p in Model.ProductOperations)
+            {
+                <tr>
+                    <td>
+                        @{
+                            var productName = (p.IdProduct == (int)ProductNames.BESTINVER_INFRA || p.IdProduct == (int)ProductNames.BESTINVER_PRIVATE_EQUITY || p.IdProduct == (int)ProductNames.BESTINVER_INFRA_II) 
+                                            ? $"{p.ProductName} ({Model.Request.FoundClass})" 
+                                            : p.ProductName;
+                        }
+                        <h3 class="badge badge-secondary"><span class="mr-2 fas fa-exchange-alt"></span>@productName</h3>
+                        @if (p.Operations.Any(o => o.IdOperationType != (int)OperationTypeMOEnum.PeriodicSuscription && o.IdOperationType != (int)OperationTypeMOEnum.PeriodicSuscriptionPsd2))
+                        {
+                            <div>
+                                <table class="table table-bordered table-condensed operations-list">
+                                    <thead>
+                                        <tr>
+                                            <th>Id Operación</th>
+                                            <th>Tipo Operación</th>
+                                            <th>Importe</th>
+                                            <th>Forma de Pago</th>
+                                            <th>Recibido</th>
+                                            <th>Fecha dinero recibido</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var op in p.Operations)
+                                        {
+                                            string units = string.Empty;
+                                            string amount = "Total";
+
+                                            if (op.IdTransferType != (int)BestInver.WebPrivada.Shared.Models.Microservices.Tests.Enums.TransferType.Total)
+                                            {
+                                                amount = op.Amount.HasValue ? op.Amount.Value.ToString("#,##.##") : string.Empty;
+                                                units = " €";
+                                                if (op.IdTransferType == (int)BestInver.WebPrivada.Shared.Models.Microservices.Tests.Enums.TransferType.Participaciones)
+                                                {
+                                                    units = " participaciones";
+                                                    amount = op.Amount.Value.ToString("#,##.######");
+                                                }
+                                            }
+
+                                            <tr data-type="@op.IdOperationType">
+                                                <td>@op.Id</td>
+                                                <td>@op.OperationDisplayName</td>
+                                                <td>@(@op.Amount.HasValue ? amount + units : (@op.MonthlyAmount.HasValue ? @op.MonthlyAmount.Value.ToString("#.## ") + units : "Total"))</td>
+                                                <td>@op.OperationDisplayWayToPay</td>
+                                                @if (operationsReceivedByDefault.Contains(op.IdOperationType))
+                                                {
+                                                    <td>Recibido</td>
+                                                    <td>No aplica</td>
+                                                }
+                                                else
+                                                {
+                                                    <td class="operation-check">
+                                                        <input disabled type="checkbox" class="toggle-received-fund"
+                                                               data-id-operation="@op.Id"
+                                                               data-request-id="@Model.Id"
+                                                               data-operation-date="@op.FundReceivedDate"
+                                                               @(op.FundReceived == true ? "checked=\"ckecked\"" : "") />
+                                                    </td>
+                                                    <td>@(op.FundReceivedDate?.ToString("dd/MM/yyyy"))</td>
+                                                }
+
+                                                <td>
+                                                    @{
+                                                        if ((op.Amount.HasValue || op.MonthlyAmount.HasValue) && Model.LockedIsLocked && Model.LockedUserName == User.Identity.Name && Model.ShowOperationChange)
+                                                        {
+                                                            <button type='button' class='btn btn-outline-secondary' data-requestid="@Model.Request.Id" data-operationid="@op.Id" data-productid="@p.IdProduct"
+                                                                    data-url='@Url.Action("GetOperationDetails")'>
+                                                                <span class='mr-2 fas fa-edit'></span>
+                                                                Modificar
+                                                            </button>
+                                                        }
+                                                    }
+                                                </td>
+                                            </tr>
+                                            if (!string.IsNullOrEmpty(op.PayerName))
+                                            {
+                                                <tr>
+                                                    <td>Ordenante</td>
+                                                    <td colspan="6">@op.PayerName</td>
+                                                </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+                        @if (p.Operations.Any(o => o.IdOperationType == (int)OperationTypeMOEnum.PeriodicSuscription || o.IdOperationType == (int)OperationTypeMOEnum.PeriodicSuscriptionPsd2))
+                        {
+                            <div>
+                                <table class="table table-bordered table-condensed operations-list">
+                                    <thead>
+                                        <tr>
+                                            <th>Id Operación</th>
+                                            <th>Tipo Operación</th>
+                                            <th>Importe Periódico</th>
+                                            <th>Fecha de Inicio</th>
+                                            <th>IBAN</th>
+                                            <th>Codigo Externo</th>
+                                            <th>Url PSD2</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var op in p.Operations.Where(o => o.IdOperationType == (int)OperationTypeMOEnum.PeriodicSuscription || o.IdOperationType == (int)OperationTypeMOEnum.PeriodicSuscriptionPsd2))
+                                        {
+                                            string units = " €";
+                                            string amount = op.MonthlyAmount.HasValue ? op.MonthlyAmount.Value.ToString("#,##.##") : string.Empty;
+                                            if (op.IdTransferType == (int)BestInver.WebPrivada.Shared.Models.Microservices.Tests.Enums.TransferType.Participaciones)
+                                            {
+                                                units = " participaciones";
+                                                amount = op.Amount.Value.ToString("#,##.######");
+                                            }
+                                            <tr data-type="@op.IdOperationType">
+                                                <td>@op.Id</td>
+                                                <td>@op.OperationDisplayName</td>
+                                                <td>@(@op.MonthlyAmount.HasValue ? amount + units : (@op.MonthlyAmount.HasValue ? @op.MonthlyAmount.Value.ToString("#.## ") + units : "Total"))</td>
+                                                <td>@op.InitialDay/@op.InitialMonth/@op.InitialYear</td>
+                                                <td>@op.IBAN</td>
+                                                <td>@op.ExternalCode</td>
+
+                                                <td>
+                                                    @{
+                                                        if (op.Amount.HasValue || op.MonthlyAmount.HasValue)
+                                                        {
+                                                            <button type='button' class='btn btn-outline-secondary' data-requestid="@Model.Request.Id" data-operationid="@op.Id" data-productid="@p.IdProduct" 
+                                                                    data-url='@Url.Action("GetPeriodicOperationDetails", "Details")' @(Model.Status.LastOrDefault().IDStatus == (int)RequestStatusEnum.Periodic_NotStarted ? "" : "hidden")>
+                                                                <span class='mr-2 fas fa-edit'></span>
+                                                                Modificar
+                                                            </button>
+                                                        }
+                                                    }
+                                                </td>
+                                            </tr>
+                                            if (!string.IsNullOrEmpty(op.PayerName))
+                                            {
+                                                <tr>
+                                                    <td>Ordenante</td>
+                                                    <td colspan="6">@op.PayerName</td>
+                                                </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div id='operationsModal' class='modal fade' role="dialog" aria-labelledby="operationLabel" data-url='@Url.Action("GetOperationDetails")'>
+</div>

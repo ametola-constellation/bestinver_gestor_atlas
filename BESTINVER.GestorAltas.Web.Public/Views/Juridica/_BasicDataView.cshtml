@@ -1,0 +1,139 @@
+﻿<div class="form_block-content" data-bind="with: MainApplicant().ApplicantBasicData">
+    <label for="basicdata-name"><span>Denominación Social</span></label>
+    <input type="text" name="basicdata-name" id="basicdata-name" data-bind="value: Name " class="socialname-chars" maxlength="60" data-private>
+    <span class="error_message" data-bind="validationMessage: Name"></span>
+</div>
+
+<div class="form_block-content" data-bind="with: MainApplicant().ApplicantBasicData">
+    <label for="basicdata-dni"><span>CIF</span></label>
+    <input type="text" name="basicdata-dni" id="basicdata-dni" maxlength="9" data-bind="value: DNI" data-private>
+    <span class="mini_text">Ejemplos CIF: G15091416, A04787388</span>
+    <span class="error_message" data-bind="validationMessage: DNI"></span>
+</div>
+
+<div class="form_block-content phone" data-bind="with: MainApplicant().ApplicantBasicData">
+    <label for="basicdata-phone">
+        <span>Teléfono Fijo</span>
+        <span class="optional">(Opcional)</span>
+    </label>
+    <input class="input-tel-prefix numonly" id="basicdata-phone-prefix" name="basicdata-phone-prefix" type="text"
+           data-bind="value:PhoneNumberPrefix">
+    <input type="tel" class="inputphone numonly" maxlength="20" name="basicdata-phone" id="basicdata-phone"
+           data-bind="value:PhoneNumber" data-private="">
+    <span class="error_message" data-bind="validationMessage: PhoneNumberPrefix" style="display: none;"></span>
+    <span class="error_message" data-bind="validationMessage: PhoneNumber"></span>
+</div>
+
+<div class="form_block-content" data-bind="with: MainApplicant().ApplicantBasicData">
+    <label for="basicdata-email">
+        <span>Email</span>
+    </label>
+    <input type="text" name="basicdata-email" id="basicdata-email" data-bind="value: Email" maxlength="50" data-private>
+    <span class="error_message" data-bind="validationMessage: Email"></span>
+</div>
+
+<div class="form_block-content phone" data-bind="with: MainApplicant().ApplicantBasicData">
+    <label for="basicdata-mobile-phone">
+        <span>Teléfono móvil</span>
+    </label>
+    <input class="input-tel-prefix numonly" id="basicdata-mobile-phone-prefix" name="basicdata-mobile-phone-prefix" type="text"
+           data-bind="value:MobilePhonePrefix">
+    <input type="tel" class="inputphone numonly" maxlength="20" name="basicdata-mobile-phone" id="basicdata-mobile-phone"
+           data-bind="value:MobilePhoneNumber" data-private="">
+    <span class="error_message" data-bind="validationMessage: MobilePhonePrefix" style="display: none;"></span>
+    <span class="error_message" data-bind="validationMessage: MobilePhoneNumber"></span>
+</div>
+
+<div class="form_block-content phone" data-bind="with: MainApplicant().ApplicantBasicData">
+    <label for="basicdata-fax">
+        <span>Fax</span>
+        <span class="optional">(Opcional)</span>
+    </label>
+    <input class="input-tel-prefix numonly" id="basicdata-fax-prefix" name="basicdata-fax-prefix" type="text"
+           data-bind="value:FaxPrefix">
+    <input type="tel" class="inputphone numonly" maxlength="20" name="basicdata-fax" id="basicdata-fax"
+           data-bind="value:Fax" data-private="">
+    <span class="error_message" data-bind="validationMessage: FaxPrefix" style="display: none;"></span>
+    <span class="error_message" data-bind="validationMessage: Fax"></span>
+</div>
+
+
+@if (User.Identity.IsAuthenticated)
+{
+    <div class="form_block-content" data-bind="with: MainApplicant().ApplicantBasicData">
+        <label for="basicdata-email-comercial"><span>Email del comercial</span></label>
+        <input type="text" name="basicdata-email-comercial" id="basicdata-email-comercial" data-bind="value: EmailCrii, enable: EmailCriiEnabled" maxlength="50" data-private="">
+        <span class="error_message" data-bind="validationMessage: EmailCrii" style="display: none;"></span>
+    </div>
+
+    <div class="form_block-content big" data-bind="with: MainApplicant().ApplicantBasicData">
+        <span class="label">Indica el canal por el que está siendo atendido el cliente:</span>
+        <select id="channel-picker" data-bind="optionsCaption: 'Seleccionar canal',
+                               options: $root.SalesChannelList,
+                               optionsValue: 'id',
+                               optionsText: 'valor',
+                               validationElement: SalesChannel,
+                               value: SalesChannel"></select>
+        <span class="error_message" data-bind="validationMessage: SalesChannel"></span>
+    </div>
+
+    <div class="form_block-content big">
+        <input type="checkbox" name="managed-by-commercial" id="managed-by-commercial" data-bind="checked: ManagedByCommercial">
+        <label for="managed-by-commercial">
+            <i class="icon"></i>
+            <div class="text">
+                La documentación se gestionará por el comercial que realiza el alta
+            </div>
+        </label>
+    </div>
+
+    <div class="form_block-content big" data-bind="with: MainApplicant().ApplicantBasicData">
+        <span class="label">Aceptación del cliente de la LOPD:</span>
+        <input type="checkbox" name="basicdata-legal" id="basicdata-legal" data-bind="checked: Legal" onclick="$('#save-basic-data').toggleClass('disabled')">
+        <label for="basicdata-legal">
+            <i class="icon"></i>
+            <div class="text">
+                He leído y acepto la <a href="" data-bind="click:function () { window.launchAjax(routeConfig.GA_Register_PopPup_popup_legal);} ">“Información básica sobre Protección de Datos”</a>
+            </div>
+        </label>
+        <span class="mini_text">Debe marcar esta casilla para poder continuar</span>
+    </div>
+
+    <div class="form_block-content big">
+        <span class="label">
+            "Le informamos que, en cumplimiento de lo establecido de la Ley Orgánica 15/1999, de Protección de Datos Carácter Personal, y demás normativa de desarrollo, los datos personales recabados serán incorporados a un fichero de datos titularidad de Bestinver Gestión, S.A. SGIIC o Bestinver Pensiones EGFP, S.A., según corresponda. La finalidad de dicho fichero es la gestión y mantenimiento de la relación contractual que en el momento de la firma del contrato se entable entre Usted y dicha entidad.
+        </span>
+    </div>
+
+    <div class="form_block-content big">
+        <span class="label">
+            Queda igualmente informado sobre la posibilidad de ejercer los derechos de acceso, rectificación, cancelación y oposición, en los términos establecidos en la legislación vigente, mediante carta acompañada de fotocopia de su DNI dirigida a la calle Juan de Mena, num. 8, 28014 Madrid, siendo responsable de fichero Bestinver Gestión, S.A. SGIIC o Bestinver Pensiones EGFP, S.A., según corresponda, con domicilio ambas en la dirección antes indicada."
+        </span>
+    </div>
+}
+else
+{
+    <div class="form_block-content big" data-bind="with: MainApplicant().ApplicantBasicData">
+        <input type="checkbox" name="basicdata-legal" id="basicdata-legal" data-bind="checked: Legal" onclick="$('#save-basic-data').toggleClass('disabled')">
+        <label for="basicdata-legal">
+            <i class="icon"></i>
+            <div class="text">
+                He leído y acepto la <a href="" data-bind="click:function () { window.launchAjax(routeConfig.GA_Register_PopPup_popup_legal);} ">“Información básica sobre Protección de Datos”</a>
+            </div>
+        </label>
+        <span class="mini_text">Debe marcar esta casilla para poder continuar</span>
+    </div>
+
+}
+
+
+
+<div class="form_block-content buttons big" data-bind="with: MainApplicant().ApplicantBasicData">
+    <div class="button_next">
+        <a href="" title="Continuar" id="save-basic-data" class="button brown toWhite disabled" data-bind="click:function () { CreateBasicData($root); }">
+            <span>Continuar</span>
+        </a>
+    </div>
+</div>
+
+

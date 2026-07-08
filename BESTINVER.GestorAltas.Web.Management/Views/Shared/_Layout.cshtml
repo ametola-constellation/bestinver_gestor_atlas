@@ -1,0 +1,160 @@
+﻿@{
+    var config = AppSettings.Value;
+    int maxPdfUploadSize = config.MaxPdfUploadSize;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="accept-language" content="es-ES">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Middle Office</title>
+    <environment include="Development">
+        <link rel="stylesheet" href="~/lib/fontawesome/dist/css/fontawesome.css" asp-append-version="true" crossorigin="anonymous">
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" asp-append-version="true" />
+        <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+        <link href="~/lib/datatables.net/css/dataTables.css" asp-append-version="true" rel="stylesheet" />
+        <link href="~/lib/toastr/toastr.css" asp-append-version="true" rel="stylesheet" />
+    </environment>
+    <environment exclude="Development">
+        <link rel="stylesheet" href="~/lib/fontawesome/dist/css/fontawesome.css" asp-append-version="true" crossorigin="anonymous">
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" asp-append-version="true" />
+        <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
+        <link href="~/lib/datatables.net/css/dataTables.min.css" asp-append-version="true" rel="stylesheet" />
+        <link href="~/lib/toastr/toastr.min.css" asp-append-version="true" rel="stylesheet" />
+    </environment>
+
+    <script type="text/javascript">
+        var routePrefix = '@Url.Content("~/").TrimEnd('/')';
+        var maxPdfUploadSize = '@maxPdfUploadSize';
+
+        var routealtas = '@config.BestinverWeb';
+    </script>
+
+    @{
+        var requestCulture = Context.Features.Get<Microsoft.AspNetCore.Localization.IRequestCultureFeature>();
+        var langName = requestCulture.RequestCulture.UICulture.EnglishName.Split('(').First().TrimEnd(' ');
+        var dataTableLang = $"//cdn.datatables.net/plug-ins/1.10.19/i18n/{langName}.json";
+    }
+    <script>
+        var dataTableLang = '@dataTableLang';
+    </script>
+    @RenderSection("style", required: false)
+</head>
+<body>
+    <header>
+        @{await Html.RenderPartialAsync("_NavigationMenu");}
+    </header>
+
+    <main role="main" class="container-fluid">
+        @RenderBody()
+        <div id="modal-placeholder"></div>
+    </main>
+    @if (User.Identity.IsAuthenticated)
+    {       
+        <partial name="_SessionDiv" />
+    }
+    <partial name="_Footer" />
+
+    <environment include="Development">
+
+        <script src="~/lib/jquery/dist/jquery.js" asp-append-version="true"></script>
+        <partial name="_ValidationScriptsPartial" />
+        <script src="~/lib/popper.js/dist/umd/popper.js" asp-append-version="true"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.js" asp-append-version="true"></script>
+        <script src="~/js/site.js" asp-append-version="true"></script>
+        <script src="~/js/routeConfig.js" asp-append-version="true"></script>
+        <script src="~/js/master.js" asp-append-version="true"></script>
+        <script src="~/lib/toastr/toastr.js" asp-append-version="true"></script>
+        <script src="~/lib/cleave/cleave.js" asp-append-version="true"></script>
+        <script src="~/lib/moment/moment.js" asp-append-version="true"></script>
+        <script src="~/lib/datatables.net/js/dataTables.js" asp-append-version="true"></script>
+        <script src="~/lib/bootbox/bootbox.js" asp-append-version="true"></script>
+        <script src="~/lib/blockui/blockui.js" asp-append-version="true"></script>       
+        @if (User.Identity.IsAuthenticated)
+        {
+            <script src="~/js/idleTimeout.js" asp-append-version="true"></script>
+        }
+    </environment>
+
+    <environment exclude="Development">
+        <script src="~/lib/jquery/dist/jquery.min.js" asp-append-version="true"></script>
+        <partial name="_ValidationScriptsPartial" />
+        <script src="~/lib/popper.js/dist/umd/popper.min.js" asp-append-version="true"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.min.js" asp-append-version="true"></script>
+        <script src="~/js/site.min.js" asp-append-version="true"></script>
+        <script src="~/js/routeConfig.min.js" asp-append-version="true"></script>
+        <script src="~/js/master.min.js" asp-append-version="true"></script>
+        <script src="~/lib/toastr/toastr.min.js" asp-append-version="true"></script>
+        <script src="~/lib/cleave/cleave.min.js" asp-append-version="true"></script>
+        <script src="~/lib/moment/moment.min.js" asp-append-version="true"></script>
+        <script src="~/lib/datatables.net/js/dataTables.min.js" asp-append-version="true"></script>
+        <script src="~/lib/bootbox/bootbox.min.js" asp-append-version="true"></script>
+        <script src="~/lib/blockui/blockui.min.js" asp-append-version="true"></script>       
+        @if (User.Identity.IsAuthenticated)
+        {
+            <script src="~/js/idleTimeout.min.js" asp-append-version="true"></script>
+        }
+    </environment>
+    <script>
+        (function () {
+            jQuery.extend(true, jQuery.fn.dataTable.defaults, {
+                language: {
+                    url: dataTableLang
+                }
+            });
+        }());
+        $.blockUI.defaults.css.cursor = "dafault";
+        $.blockUI.defaults.css.backgroundColor = "#fff";
+        $.blockUI.defaults.overlayCSS.cursor = "default";
+        $.blockUI.defaults.overlayCSS.backgroundColor = "#fff";
+    </script>
+    @RenderSection("scripts", required: false)
+    @if (!string.IsNullOrWhiteSpace(TempData["error"]?.ToString()))
+    {
+        <script>
+            $(document).ready(function () {
+                toastr.error('@Html.Raw($"{TempData["error"]?.ToString()}")');
+            });
+        </script>
+
+    }
+    @if (!string.IsNullOrWhiteSpace(TempData["success"]?.ToString()))
+    {
+        <script>
+            $(document).ready(function () {
+                toastr.success('@Html.Raw($"{TempData["success"]?.ToString()}")');
+            });
+        </script>
+    }   
+    <script>
+        $(document).ready(function () {
+            initIdleTimeout2();
+        });
+
+        var TIMEOUT = null;
+
+        function initIdleTimeout2() {
+            $('*').bind('mousemove click mouseup mousedown mousewheel keydown keypress keyup submit change mouseenter scroll resize dblclick', function () {
+                triggerTimeout();
+            });
+        }
+
+        function loadTimeOut() {
+            TIMEOUT = setTimeout(function () {
+                TIMEOUT = null
+            }, 60000)
+        }
+
+        function triggerTimeout() {
+            if (!TIMEOUT) {
+                refresh();
+                loadTimeOut();
+            }
+        }
+
+        function refresh() {
+            $("#refreshSessionDiv").load("@Url.Action("Refresh", "shared")");
+        }
+    </script>
+    </body>
+</html>

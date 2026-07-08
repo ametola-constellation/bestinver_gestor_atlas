@@ -1,0 +1,35 @@
+trigger:
+- 'none'
+
+parameters:
+- name: Environment
+  displayName: Environment
+  type: string
+  default: uat
+  values:
+  - uat
+
+resources:
+  repositories:
+  - repository: CI_CD
+    type: git
+    name: CI_CD
+    ref: develop 
+
+variables:
+  - template: variables/${{parameters.Environment}}.yml
+
+stages:
+  - stage: Test
+    pool:
+      name: $(PoolName)
+    displayName: "Test"
+    jobs:
+        - template: jobs/job-test-dotnet.yml@CI_CD
+          parameters:                        
+              Project: '*UnitTests'              
+
+
+                                
+                
+            

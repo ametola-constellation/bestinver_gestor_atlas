@@ -1,0 +1,11 @@
+﻿@model BESTINVER.GestorAltas.Web.Management.Models.DocumentGroupData
+@using BestInver.WebPrivada.Shared.Models.Microservices.Tests.Enums
+
+<div class="form-group col-md-4">
+    <label for="IdSendingWay">Tipo de envío</label>
+    <select class="form-control sendingway" data-val="true" data-val-required="La forma de envío de la documentación es obligatoria" id="IdSendingWay" name="IdSendingWay">
+        <option selected='@Html.SelectOptionActive(()=>Model.IdSendingWay == SendingWayType.Adjuntar_Doc)' value="1">Enviar por mail</option>
+        <option selected='@Html.SelectOptionActive(()=>Model.IdSendingWay == SendingWayType.EnviarCorreoPostal)' value="2">Enviar CorreoPostal</option>
+        <option selected='@Html.SelectOptionActive(()=>Model.IdSendingWay == SendingWayType.Mensajero)' value="3">Mensajero</option>
+    </select>
+</div>

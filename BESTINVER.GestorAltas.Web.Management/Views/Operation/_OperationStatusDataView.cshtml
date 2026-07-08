@@ -1,0 +1,78 @@
+﻿@model RequestStatusModel
+
+@using (Html.BeginForm("CreateOrUpdateStatusOperation", "Operation", FormMethod.Post, new { @class = "container", id = "OperationStatusForm" }))
+{
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Modificar operación</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    @Html.HiddenFor(m => m.Id)
+                    @Html.HiddenFor(m => m.IDRequest)
+                    @Html.HiddenFor(m => m.StartDate)
+                    @Html.HiddenFor(m => m.Responsible)
+
+                    @{
+                        int[] notBloqueableStatus = new int[] { 12, 15, 16 };
+
+                        var attributes = new Dictionary<string, object>();
+                        attributes.Add("class", "form-control");
+
+                        if (User.IsInRole(DefaultRoles.Operaciones))
+                        {
+                            if (!notBloqueableStatus.Contains(Model.IDStatus))
+                            {
+                                attributes.Add("disabled", "disabled");
+                            }
+                        }
+
+                        else if (User.IsInRole(DefaultRoles.Juridico))
+                        {
+                            if (Model.IDStatus != 14)
+                            {
+                                attributes.Add("disabled", "disabled");
+                            }
+                        }
+
+                        else if (!User.IsInRole(DefaultRoles.Admin))
+                        {
+                            attributes.Add("disabled", "disabled");
+                        }
+                    }
+
+                    <div class="input-group m-2">
+                        @Html.LabelFor(m => m.IDStatus, new { @class = "input-group-text" })
+                        @Html.DropDownListFor(m => m.IDStatus, new List<SelectListItem>()
+                             {
+                                 new SelectListItem() { Text= "Pendiente de firma", Value="20"},
+                                 new SelectListItem() { Text= "Pendiente de firma mancomunada", Value="2"},
+                                 new SelectListItem() {Text = "Pendiente blanqueo de capitales", Value="14" },
+                                 new SelectListItem() {Text = "Rechazado", Value="17" },
+                                 new SelectListItem() {Text = "Anulado", Value="18" },
+                                 new SelectListItem() {Text = "Caducado", Value="8" },
+                                 new SelectListItem() {Text = "Ejecutado", Value="19" },
+                                 new SelectListItem() {Text = "Ejecutado traspaso salida", Value="28" },
+                                 new SelectListItem() {Text = "Bloqueado", Value="9" },
+                                 new SelectListItem() {Text = "Envío a operaciones", Value="30" },
+                                 new SelectListItem() {Text = "Error envio a operaciones", Value="31" }
+
+                             }, attributes)
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-group m-2">
+                        @Html.LabelFor(m => m.Comments, new { @class = "input-group-text" })
+                        @Html.TextAreaFor(m => m.Comments, new { @class = "form-control" })
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-save="modal" onclick="CreateStatusOperation(this)">Guardar</button>
+                <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+}   

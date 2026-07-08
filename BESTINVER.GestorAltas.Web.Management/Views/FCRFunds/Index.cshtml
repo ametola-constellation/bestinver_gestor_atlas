@@ -1,0 +1,133 @@
+﻿@using BESTINVER.GestorAltas.Web.Management.ViewModels
+
+@model RequestDashboardViewModel
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<div class="card-group" id="accordion" role="tablist" aria-multiselectable="true">
+    <div class="card">
+        <div class="card-header" role="tab" id="headingOne">
+            <h4 class="card-title">
+                <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    <span class="mr-2 fas fa-search"></span>
+                    Filtros de búsqueda
+                </a>
+            </h4>
+        </div>
+        <div id="collapseOne" class="collapse in show" role="tabpanel" aria-labelledby="headingOne">
+            <div class="card-body">
+                @using (Html.BeginForm("Index", "FCRFunds", FormMethod.Post, new { @id = "filterForm" }))
+                {
+                    <div class="row">
+
+                        @Html.HiddenFor(m => m.SalesChannel)
+
+                        <div class="form-group col-md-3">
+                            @Html.LabelFor(m => m.StartDate, new { @class = "" })
+                            @Html.TextBoxFor(m => m.StartDate, new { @class = "form-control", @type = "date" })
+                        </div>
+
+                        <div class="form-group col-md-3">
+                            @Html.LabelFor(m => m.EndDate, new { @class = "" })
+                            @Html.TextBoxFor(m => m.EndDate, new { @class = "form-control", @type = "date" })
+                        </div>
+
+                        <div class="form-group col-md-3">
+                            @Html.LabelFor(m => m.Status, new { @class = "" })
+                            @Html.DropDownListFor(m => m.Status, new List<SelectListItem>()
+                        {                        
+                        new SelectListItem() { Text= "Pendiente de firma", Value="20"},
+                        new SelectListItem() { Text= "Cancelada", Value="10"},
+                        new SelectListItem() { Text= "Enviado a Operaciones", Value="30"},
+                        new SelectListItem() { Text= "Error en el envío a Operaciones", Value="31"}
+                        }, "Elegir...", new { @class = "form-control" })
+                        </div>
+
+                        <div class="form-group col-md-3">
+                            @Html.LabelFor(m => m.DNI, new { @class = "" })
+                            @Html.TextBoxFor(m => m.DNI, new { @class = "form-control" })
+                        </div>
+                        <div class="form-group col-md-3">
+                            @Html.LabelFor(m => m.Name, new { @class = "" })
+                            @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+                        </div>
+
+                        <div class="form-group col-md-3">
+                            @Html.LabelFor(m => m.FirstSurname, new { @class = "" })
+                            @Html.TextBoxFor(m => m.FirstSurname, new { @class = "form-control" })
+                        </div>
+                        <div class="form-group col-md-3">
+                            @Html.LabelFor(m => m.SecondSurname, new { @class = "" })
+                            @Html.TextBoxFor(m => m.SecondSurname, new { @class = "form-control" })
+                        </div>
+                        <div class="form-group col-md-3">
+                            @Html.LabelFor(m => m.RDCode, new { @class = "" })
+                            @Html.TextBoxFor(m => m.RDCode, new { @class = "form-control" })
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col">
+                            <div class="btn-group m-2" role="group">
+                                <button class="btn btn-primary" onclick="loadSearchResultsTable(event)"><span class="mr-2 fas fa-sync"></span>Cargar datos</button>
+                                <button id="btnClearFilter" type="button" class="btn btn-outline-secondary"><span class="mr-2 fas fa-trash-alt"></span>Quitar filtros</button>
+                                <button id="btnClearFunds" type="button" class="btn btn-warning" style="display:none">
+                                    <span class="mr-2 fas fa-recycle"></span>
+                                    Limpiar selección <span id="fund-count" class="badge badge-light"></span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="progress" id="searchLoader" style="display:none">
+            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+                cargando
+            </div>
+        </div>
+    </div>
+</div>
+
+<button id="btnSendPreviousDocumentation" type="button" class="btn btn-primary margin15" data-url='@Url.Action("ShowSendPreviousDocumentation", "FCRFunds")'>
+    <span class="fas fa-plus"></span> Generar operación
+</button>
+
+<div class="row" id="searchResult">
+    <div class="col-md-12">
+        <table id="request-list" class="datatable table striped hovered cell-hovered border bordered" style="width:100%">
+            <thead>
+                <tr>
+                    <th><input name="select_all" value="1" type="checkbox"></th>
+                    <th>Fecha</th>
+                    <th>Cuenta</th>
+                    <th>Titulares</th>
+                    <th>Importe</th>
+                    <th>Estado</th>
+                    <th>Fecha firma</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+
+<div id='SendPreviousDocumentationModal' class='modal fade' role="dialog" aria-labelledby="SendPreviousDocumentationLabel"></div>
+<div id='fcrFundModal' class='modal fade' role="dialog" aria-labelledby="CreateFCRFundModalLabel"></div>
+<div id='TitularesModal' class='modal fade' role="dialog" aria-labelledby="TitularesLabel" data-url='@Url.Action("OperationDetail", "FCRFunds")'></div>
+
+@section Scripts {
+
+    <environment include="Development">
+        <script src="~/js/operation.js" asp-append-version="true"></script>
+        <script src="~/js/fcrFunds.js" asp-append-version="true"></script>
+    </environment>
+
+    <environment exclude="Development">
+        <script src="~/js/operation.min.js" asp-append-version="true"></script>
+        <script src="~/js/fcrFunds.min.js" asp-append-version="true"></script>
+    </environment>
+}

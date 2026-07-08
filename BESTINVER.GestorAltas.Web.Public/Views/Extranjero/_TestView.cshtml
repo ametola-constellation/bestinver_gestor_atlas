@@ -1,0 +1,90 @@
+﻿<!-- ko if: $root.CurrentTypeTest() == 1 -->
+<h2 class="form_title">3. Test de cliente - Conocimiento</h2>
+<p class="form_inlet">Para cumplir la normativa vigente, a continuación  te solicitamos que rellenes el test de conocimiento.</p>
+<!-- /ko -->
+<!-- ko if: $root.CurrentTypeTest() > 1 -->
+<h2 class="form_title" id="convenience-form-title">3. Test de cliente - Conveniencia</h2>
+<p class="form_inlet">En cumplimiento de la normativa relativa a los mercados de instrumentos financieros, más conocida como MiFID II, Bestinver Gestión, S.A., SGIIC, como comercializador de instituciones de inversión colectiva, está obligada a evaluar sus conocimientos y experiencia sobre los productos que comercializa y que pueden ser de interés para usted.</p>
+<p class="form_inlet">Es importante, por su propio interés, que sus respuestas reflejen sean claras y completas y que estén actualizadas para que Bestinver pueda evaluar sus conocimientos y experiencia lo más rigurosamente posible.</p>
+<p class="form_inlet">Le informamos, además, de que, si no quiere contestar a las preguntas del test adjunto, Bestinver no podrá realizar una evaluación de la conveniencia de ese producto para usted.</p>
+<p class="form_inlet">También le informamos de que, si se produce alguna circunstancia que pueda cambiar su situación, debe actualizar sus respuestas para poder evaluar sus conocimientos y experiencia.</p>
+<!-- /ko -->
+
+<div class="form_block" data-bind="with:vm">
+    <div class="form_block-content big" id="applicant-test-head">
+        @{ await Html.RenderPartialAsync("Test/_ApplicantListView"); }
+    </div>
+    <span class="form_text-title" data-private data-bind="customtext: TestHeader" id="header-applicant-test"></span>
+
+    <!-- ko if: $root.CurrentTypeTest() == 1  -->
+    <!-- ko if: $root.CurrentApplicant().ApplicantBasicData().RequestApplicantType() == 1 -->
+    @{ await Html.RenderPartialAsync("Test/TestTypes/_knowledgeTest"); }
+    <!-- /ko -->
+    <!-- ko if: $root.CurrentApplicant().ApplicantBasicData().RequestApplicantType() == 2 -->
+    @{ await Html.RenderPartialAsync("Test/TestTypes/_knowledgeTest"); }
+    <!-- /ko -->
+    <!-- ko if: $root.CurrentApplicant().ApplicantBasicData().RequestApplicantType() == 3 -->
+    @{ await Html.RenderPartialAsync("Test/TestTypes/_knowledgeTestRepresentative"); }
+    <!-- /ko -->
+    <!-- ko if: $root.CurrentApplicant().ApplicantBasicData().RequestApplicantType() == 4 -->
+    @{ await Html.RenderPartialAsync("Test/TestTypes/_knowledgeTestRepresentative"); }
+    <!-- /ko -->
+    <!-- ko if: $root.CurrentApplicant().ApplicantBasicData().RequestApplicantType() == 5 -->
+    @{ await Html.RenderPartialAsync("Test/TestTypes/_knowledgeTestTutor"); }
+    <!-- /ko -->
+    <!-- ko if: $root.CurrentApplicant().ApplicantBasicData().RequestApplicantType() == 13 -->
+    @{ await Html.RenderPartialAsync("Test/TestTypes/_knowledgeTest"); }
+    <!-- /ko -->
+    <!-- ko if: $root.CurrentApplicant().ApplicantBasicData().RequestApplicantType() == 14 -->
+    @{ await Html.RenderPartialAsync("Test/TestTypes/_knowledgeTest"); }
+    <!-- /ko -->
+    <!-- ko if: $root.CurrentApplicant().ApplicantBasicData().RequestApplicantType() == 8 -->
+    @{ await Html.RenderPartialAsync("Test/TestTypes/_knowledgeTest"); }
+    <!-- /ko -->
+    <!-- ko if: $root.CurrentApplicant().ApplicantBasicData().RequestApplicantType() == 9 -->
+    @{ await Html.RenderPartialAsync("Test/TestTypes/_knowledgeTest"); }
+    <!-- /ko -->
+    <!-- ko if: $root.CurrentApplicant().ApplicantBasicData().RequestApplicantType() == 10 -->
+    @{ await Html.RenderPartialAsync("Test/TestTypes/_knowledgeTest"); }
+    <!-- /ko -->
+    <!-- ko if: $root.CurrentApplicant().ApplicantBasicData().RequestApplicantType() == 22 -->
+    @{ await Html.RenderPartialAsync("Test/TestTypes/_knowledgeTest"); }
+    <!-- /ko -->
+    <!-- ko if: $root.CurrentApplicant().ApplicantBasicData().RequestApplicantType() == 24 -->
+    @{ await Html.RenderPartialAsync("Test/TestTypes/_knowledgeTestTutor"); }
+    <!-- /ko -->
+    <!-- ko if: $root.CurrentApplicant().ApplicantBasicData().RequestApplicantType() == 25 -->
+    @{ await Html.RenderPartialAsync("Test/TestTypes/_knowledgeTest"); }
+    <!-- /ko -->
+    <!-- ko if: $root.CurrentApplicant().ApplicantBasicData().RequestApplicantType() == 26 -->
+    @{ await Html.RenderPartialAsync("Test/TestTypes/_knowledgeTest"); }
+    <!-- /ko -->
+    <!-- /ko -->
+    <!-- ko if: $root.CurrentTypeTest() > 1 -->
+    @{ await Html.RenderPartialAsync("Test/TestTypes/_ConvenienceTest"); }
+    <!-- /ko -->
+    <!--IMPORTANTE MANTENER PARA VER TOOLTIPS*************************-->
+    <div class="tl-tooltip-cont" style="display: none; top: 5332px;"><p></p></div>
+    <!--IMPORTANTE MANTENER PARA VER TOOLTIPS*************************-->
+
+</div>
+
+<div id="personaldata-address-buttons-content" class="form_block-content buttons big">
+    <div class="form_block-content buttons big">
+        <!-- ko if: $root.CurrentTypeTest() == 1  -->
+        <div class="button_back">
+            <a href="" title="Datos personales" class="link brown darken back" data-bind="click: $root.goToPrevioustStep">
+                <i class="arrow">
+                    <svg width="5" height="8" viewBox="0 0 5 8" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M1.143 0L0 1.25 2.514 4 0 6.75 1.143 8 4.8 4z" fill="#B59971" fill-rule="evenodd" />
+                    </svg>
+                </i><span>Atrás</span>
+            </a>
+        </div>
+        <!-- /ko -->
+
+        <div class="button_next">
+            <a href="" title="Continuar" class="button brown toWhite" id="save-request-data" data-bind="click: $root.goToNextStep "><span>Continuar</span></a>
+        </div>
+    </div>
+</div>

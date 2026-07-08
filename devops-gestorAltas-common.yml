@@ -1,0 +1,476 @@
+# ASP.NET
+# Build and test ASP.NET projects.
+# Add steps that publish symbols, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/apps/aspnet/build-aspnet-4
+
+trigger: none
+schedules:
+- cron: "15 4 * * *"
+  displayName: Weekly Monday & Wednesday build
+  branches:
+    include:
+    - develop
+
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+- group: sonar
+- name: 'solution'
+  value: '**/*.sln'
+- name: 'buildPlatform'
+  value: 'Any CPU'
+- name: 'buildConfiguration'
+  value: 'Release'
+
+
+steps:
+- task: Bash@3
+  inputs:
+    targetType: 'inline'
+    script: |
+      # SCRIPT PARA USAR LAST TAG GIT como buildnumber
+      # este script actualiza la variable de azure repos buildnumber por lo tanto solo es util
+      # para lanzarlo desde los pipes de azure devops
+      # se tiene que crear la invocacion al script y seleccionar el script 
+      IFS="-"
+      version=$(git log -n1000 --pretty='format:%d' | sed 's/, /\n/g' | grep 'tag:' | sed -E 's/^[ \t\(]*tag: //g' | sed -E 's/\)[ \t]*$//g' | grep -i '^[0-9\.]\+\(-KO\|-RT\|-RST\)\( \)*$' | head -n 1)
+      set $version
+      newbuildnumber=$1
+      echo $newbuildnumber
+      echo "##vso[build.updatebuildnumber]$newbuildnumber"
+  displayName: 'Bash Script'
+- task: NuGetToolInstaller@1
+  displayName: 'Install NuGet >=6.3.0-0'
+  inputs:
+    versionSpec: '>=6.3.0-0'
+    checkLatest: true
+
+- task: ArtifactoryNuGet@2
+  inputs:
+    command: 'restore'
+    artifactoryService: 'ARTIFACTORY - BESTINVER-bes_GestorAltas'
+    targetResolveRepo: 'bestinver-nuget'
+    solutionPath: '**/*.sln'
+    noNuGetCache: true
+    nugetProtocolVersion: 'v3'
+# - task: JFrogNuGet@1
+#   displayName: NuGet dependencies
+#   inputs:
+#     command: 'restore'
+#     artifactoryConnection: 'JFROG - BESTINVER-bes_GestorAltas'
+#     targetResolveRepo: 'bestinver-nuget'
+#     solutionPath: '**/*.sln'
+#     noNuGetCache: true
+
+- task: UseDotNet@2
+  displayName: 'Install .NET Core 6 SDK'
+  inputs:
+    version: 6.x
+    performMultiLevelLookup: true
+
+- task: YarnInstaller@3
+  inputs:
+    versionSpec: '1.x'
+
+- task: CmdLine@2
+  inputs:
+    script: 'npm install -g node@10.19.0'
+
+- task: Yarn@3
+  displayName: 'Yarn install Public'
+  inputs:
+    projectDirectory: '$(System.DefaultWorkingDirectory)/BESTINVER.GestorAltas.Web.Public'
+
+- task: Yarn@3
+  displayName: 'Yarn install Management'
+  inputs:
+    projectDirectory: '$(System.DefaultWorkingDirectory)/BESTINVER.GestorAltas.Web.Management'
+
+
+# - task: DotNetCoreCLI@2
+#   inputs:
+#     command: 'restore'
+#     projects: '**/*.csproj'
+#     feedsToUse: 'select'
+#     vstsFeed: '39298fd1-2803-4eda-bd67-c1537b6db1dc/32f4b40d-794c-4488-ac18-29e1870d67d2'
+- task: JFrogDotnetCore@1
+  inputs:
+    command: 'restore'
+    artifactoryConnection: 'JFROG - BESTINVER-bes_GestorAltas'
+    targetResolveRepo: 'bestinver-nuget'
+    rootPath: '**/*.csproj'
+    verbosityRestore: 'Detailed'
+
+- task: gulp@1
+  displayName: 'Gulp Management .sass'
+  inputs:
+    gulpFile: 'BESTINVER.GestorAltas.Web.Management/gulpfile.js'
+    targets: 'sass'
+    enableCodeCoverage: false
+
+- task: gulp@1
+  displayName: 'Gulp Public .sass'
+  inputs:
+    gulpFile: 'BESTINVER.GestorAltas.Web.Public/gulpfile.js'
+    targets: 'sass'
+    enableCodeCoverage: false
+
+- task: gulp@1
+  displayName: 'Gulp Management .min'
+  inputs:
+    gulpFile: 'BESTINVER.GestorAltas.Web.Management/gulpfile.js'
+    targets: 'min'
+    enableCodeCoverage: false
+
+- task: gulp@1
+  displayName: 'Gulp Public .min'
+  inputs:
+    gulpFile: 'BESTINVER.GestorAltas.Web.Public/gulpfile.js'
+    targets: 'min'
+    enableCodeCoverage: false
+
+- task: SonarQubePrepare@6
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))
+  inputs:
+    SonarQube: 'SONAR'
+    scannerMode: 'MSBuild'
+    projectKey: '$(System.TeamProject)__$(Build.Repository.Name)'
+    projectName: '$(System.TeamProject)__$(Build.Repository.Name)'
+    projectVersion: '$(Build.BuildNumber)'
+
+- task: DotNetCoreCLI@2
+  displayName: dotnet restore
+  inputs:
+    command: restore
+    projects: '**/*.csproj'
+
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet build'
+  inputs:
+    command: 'build'
+    projects: '**/BESTINVER.Wordpress.WS.csproj'
+    arguments: '--no-restore --configuration "$(BuildConfiguration)" --output "$(build.artifactstagingdirectory)" /p:DeployOnBuild=true /p:WebPublishMethod=Package /p:platform="$(BuildPlatform)" /p:PublishProfile="$(BuildConfiguration)" /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactstagingdirectory)\$(BuildConfiguration)"'
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'build'
+    projects: '**/BESTINVER.GestorAltas.Web.Management.csproj'
+    arguments: '--no-restore --configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory) /p:DeployOnBuild=true /p:WebPublishMethod=Package /p:platform="$(BuildPlatform)" /p:PublishProfile="$(BuildConfiguration)" /p:DebugType=None /p:DebugSymbols=false'
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'build'
+    projects: '**/BESTINVER.GestorAltas.Web.Public.csproj'
+    arguments: '--no-restore --configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory) /p:DeployOnBuild=true /p:WebPublishMethod=Package /p:platform="$(BuildPlatform)" /p:PublishProfile="$(BuildConfiguration)" /p:DebugType=None /p:DebugSymbols=false'
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'build'
+    projects: '**/BESTINVER.GestorAltas.Web.Public.csproj'
+    arguments: '--no-restore --configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory) /p:DeployOnBuild=true /p:WebPublishMethod=Package /p:platform="$(BuildPlatform)" /p:PublishProfile="$(BuildConfiguration)" /p:DebugType=None /p:DebugSymbols=false'
+
+- task: DotNetCoreCLI@2
+  displayName: dotnet build
+  inputs:
+    projects: >-
+      **/*Tests.csproj
+    arguments: '--no-restore  /p:PublishProfile="$(BuildConfiguration)" /p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactstagingdirectory)\$(BuildConfiguration)"'
+
+- task: CopyFiles@2
+  displayName: 'copy postman files'
+  inputs:
+    SourceFolder: '$(Build.SourcesDirectory)/BESTINVER.Wordpress.WS/Postman'
+    Contents: '**/*.json'
+    TargetFolder: '$(build.artifactstagingdirectory)'
+
+- task: PublishSymbols@2
+  inputs:
+    SearchPattern: '**/bin/**/*.pdb'
+    PublishSymbols: false
+
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet test'
+  inputs:
+     command: 'test'
+     projects: '$(System.DefaultWorkingDirectory)/BESTINVER.GestorAltas.Web.Management.xUnit.Tests\BESTINVER.GestorAltas.Web.Management.xUnit.Tests.csproj'
+     arguments: '-v:detailed --filter "DisplayName~CarterasControllerTests" --no-restore --no-build --collect:"Code Coverage"'
+     workingDirectory: '$(System.DefaultWorkingDirectory)/BESTINVER.GestorAltas.Web.Management.xUnit.Tests\Controllers'
+
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet test'
+  inputs:
+    command: test
+    projects: |
+      $(System.DefaultWorkingDirectory)\BESTINVER.GestorAltas.Web.Management.xUnit.Tests\BESTINVER.GestorAltas.Web.Management.xUnit.Tests.csproj
+    arguments: '-v:detailed --filter "DisplayName~CommunicationsControllerTests" --no-restore --no-build --collect:"Code Coverage"'
+    workingDirectory: '$(System.DefaultWorkingDirectory)/BESTINVER.GestorAltas.Web.Management.xUnit.Tests\Controllers'
+
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet test'
+  inputs:
+      command: test
+      projects: |
+        $(System.DefaultWorkingDirectory)\BESTINVER.GestorAltas.Web.Management.xUnit.Tests\BESTINVER.GestorAltas.Web.Management.xUnit.Tests.csproj
+      arguments: '-v:detailed --filter "DisplayName~DashboardControllerTests" --no-restore --no-build --collect:"Code Coverage"'
+      workingDirectory: '$(System.DefaultWorkingDirectory)/BESTINVER.GestorAltas.Web.Management.xUnit.Tests\Controllers'
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet test'
+  inputs:
+      command: test
+      projects: |
+        $(System.DefaultWorkingDirectory)\BESTINVER.GestorAltas.Web.Management.xUnit.Tests\BESTINVER.GestorAltas.Web.Management.xUnit.Tests.csproj
+      arguments: '-v:detailed --filter "DisplayName~DetailsControllerTests" --no-restore --no-build --collect:"Code Coverage"'
+      workingDirectory: '$(System.DefaultWorkingDirectory)/BESTINVER.GestorAltas.Web.Management.xUnit.Tests\Controllers'
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet test'
+  inputs:
+      command: test
+      projects: |
+        $(System.DefaultWorkingDirectory)\BESTINVER.GestorAltas.Web.Management.xUnit.Tests\BESTINVER.GestorAltas.Web.Management.xUnit.Tests.csproj
+      arguments: '-v:detailed --filter "DisplayName~FCRFundsControllerTests" --no-restore --no-build --collect:"Code Coverage"'
+      workingDirectory: '$(System.DefaultWorkingDirectory)/BESTINVER.GestorAltas.Web.Management.xUnit.Tests\Controllers'
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet test'
+  inputs:
+      command: test
+      projects: |
+        $(System.DefaultWorkingDirectory)\BESTINVER.GestorAltas.Web.Management.xUnit.Tests\BESTINVER.GestorAltas.Web.Management.xUnit.Tests.csproj
+      arguments: '-v:detailed --filter "DisplayName~HomeControllerTests" --no-restore --no-build --collect:"Code Coverage"'
+      workingDirectory: '$(System.DefaultWorkingDirectory)/BESTINVER.GestorAltas.Web.Management.xUnit.Tests\Controllers'
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet test'
+  inputs:
+      command: test
+      projects: |
+        $(System.DefaultWorkingDirectory)\BESTINVER.GestorAltas.Web.Management.xUnit.Tests\BESTINVER.GestorAltas.Web.Management.xUnit.Tests.csproj
+      arguments: '-v:detailed --filter "DisplayName~MovementsControllerTests" --no-restore --no-build --collect:"Code Coverage"'
+      workingDirectory: '$(System.DefaultWorkingDirectory)/BESTINVER.GestorAltas.Web.Management.xUnit.Tests\Controllers'
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet test'
+  inputs:
+      command: test
+      projects: |
+        $(System.DefaultWorkingDirectory)\BESTINVER.GestorAltas.Web.Management.xUnit.Tests\BESTINVER.GestorAltas.Web.Management.xUnit.Tests.csproj
+      arguments: '-v:detailed --filter "DisplayName~OperationControllerTests" --no-restore --no-build --collect:"Code Coverage"'
+      workingDirectory: '$(System.DefaultWorkingDirectory)/BESTINVER.GestorAltas.Web.Management.xUnit.Tests\Controllers'
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet test'
+  inputs:
+      command: test
+      projects: |
+        $(System.DefaultWorkingDirectory)\BESTINVER.GestorAltas.Web.Management.xUnit.Tests\BESTINVER.GestorAltas.Web.Management.xUnit.Tests.csproj
+      arguments: '-v:detailed --filter "DisplayName~PeriodicsOperationsControllerTests" --no-restore --no-build --collect:"Code Coverage"'
+      workingDirectory: '$(System.DefaultWorkingDirectory)/BESTINVER.GestorAltas.Web.Management.xUnit.Tests\Controllers'
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet test'
+  inputs:
+      command: test
+      projects: |
+        $(System.DefaultWorkingDirectory)\BESTINVER.GestorAltas.Web.Management.xUnit.Tests\BESTINVER.GestorAltas.Web.Management.xUnit.Tests.csproj
+      arguments: '-v:detailed --filter "DisplayName~RemediacionControllerTests" --no-restore --no-build --collect:"Code Coverage"'
+      workingDirectory: '$(System.DefaultWorkingDirectory)/BESTINVER.GestorAltas.Web.Management.xUnit.Tests\Controllers'
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet test'
+  inputs:
+      command: test
+      projects: |
+        $(System.DefaultWorkingDirectory)\BESTINVER.GestorAltas.Web.Management.xUnit.Tests\BESTINVER.GestorAltas.Web.Management.xUnit.Tests.csproj
+      arguments: '-v:detailed --filter "DisplayName~RepresentativesControllerTests" --no-restore --no-build --collect:"Code Coverage"'
+      workingDirectory: '$(System.DefaultWorkingDirectory)/BESTINVER.GestorAltas.Web.Management.xUnit.Tests\Controllers'
+# - task: DotNetCoreCLI@2
+#   displayName: 'dotnet test'
+#   inputs:
+#       command: test
+#       projects: |
+#         $(System.DefaultWorkingDirectory)\BESTINVER.GestorAltas.Web.Management.xUnit.Tests\BESTINVER.GestorAltas.Web.Management.xUnit.Tests.csproj
+#       arguments: '-v:detailed --filter "DisplayName~SearchControllerTests" --no-restore --no-build --collect:"Code Coverage"'
+#       workingDirectory: '$(System.DefaultWorkingDirectory)/BESTINVER.GestorAltas.Web.Management.xUnit.Tests\Controllers'
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet test'
+  inputs:
+      command: test
+      projects: |
+        $(System.DefaultWorkingDirectory)\BESTINVER.GestorAltas.Web.Management.xUnit.Tests\BESTINVER.GestorAltas.Web.Management.xUnit.Tests.csproj
+      arguments: '-v:detailed --filter "DisplayName~SecurityControllerTests" --no-restore --no-build --collect:"Code Coverage"'
+      workingDirectory: '$(System.DefaultWorkingDirectory)/BESTINVER.GestorAltas.Web.Management.xUnit.Tests\Controllers'
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet test'
+  inputs:
+      command: test
+      projects: |
+        $(System.DefaultWorkingDirectory)\BESTINVER.GestorAltas.Web.Management.xUnit.Tests\BESTINVER.GestorAltas.Web.Management.xUnit.Tests.csproj
+      arguments: '-v:detailed --filter "DisplayName~TemplateMaintenanceCommunicationsControllerTests" --no-restore --no-build --collect:"Code Coverage"'
+      workingDirectory: '$(System.DefaultWorkingDirectory)/BESTINVER.GestorAltas.Web.Management.xUnit.Tests\Controllers'
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet test'
+  inputs:
+      command: test
+      projects: |
+        $(System.DefaultWorkingDirectory)\BESTINVER.GestorAltas.Web.Management.xUnit.Tests\BESTINVER.GestorAltas.Web.Management.xUnit.Tests.csproj
+      arguments: '-v:detailed --filter "DisplayName~TemplateMaintenanceControllerTests" --no-restore --no-build --collect:"Code Coverage"'
+      workingDirectory: '$(System.DefaultWorkingDirectory)/BESTINVER.GestorAltas.Web.Management.xUnit.Tests\Controllers'
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet test'
+  inputs:
+     command: test
+     projects: |
+       $(System.DefaultWorkingDirectory)\BESTINVER.GestorAltas.Web.Management.xUnit.Tests\BESTINVER.GestorAltas.Web.Management.xUnit.Tests.csproj
+     arguments: '-v:detailed --filter "DisplayName~ErrorControllerTests" --no-restore --no-build --collect:"Code Coverage"'
+     workingDirectory: '$(System.DefaultWorkingDirectory)/BESTINVER.GestorAltas.Web.Management.xUnit.Tests\Controllers'
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet test'
+  inputs:
+     command: test
+     projects: |
+       $(System.DefaultWorkingDirectory)\BESTINVER.GestorAltas.Web.Management.xUnit.Tests\BESTINVER.GestorAltas.Web.Management.xUnit.Tests.csproj
+     arguments: '-v:detailed --filter "DisplayName~ExtranjeroControllerTests" --no-restore --no-build --collect:"Code Coverage"'
+     workingDirectory: '$(System.DefaultWorkingDirectory)/BESTINVER.GestorAltas.Web.Management.xUnit.Tests\Controllers'
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet test'
+  inputs:
+     command: test
+     projects: |
+       $(System.DefaultWorkingDirectory)\BESTINVER.GestorAltas.Web.Management.xUnit.Tests\BESTINVER.GestorAltas.Web.Management.xUnit.Tests.csproj
+     arguments: '-v:detailed --filter "DisplayName~HomeControllerTests" --no-restore --no-build --collect:"Code Coverage"'
+     workingDirectory: '$(System.DefaultWorkingDirectory)/BESTINVER.GestorAltas.Web.Management.xUnit.Tests\Controllers'
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet test'
+  inputs:
+     command: test
+     projects: |
+       $(System.DefaultWorkingDirectory)\BESTINVER.GestorAltas.Web.Management.xUnit.Tests\BESTINVER.GestorAltas.Web.Management.xUnit.Tests.csproj
+     arguments: '-v:detailed --filter "DisplayName~JuridicaControllerTests" --no-restore --no-build --collect:"Code Coverage"'
+     workingDirectory: '$(System.DefaultWorkingDirectory)/BESTINVER.GestorAltas.Web.Management.xUnit.Tests\Controllers'
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet test'
+  inputs:
+     command: test
+     projects: |
+       $(System.DefaultWorkingDirectory)\BESTINVER.GestorAltas.Web.Management.xUnit.Tests\BESTINVER.GestorAltas.Web.Management.xUnit.Tests.csproj
+     arguments: '-v:detailed --filter "DisplayName~LandingControllerTests" --no-restore --no-build --collect:"Code Coverage"'
+     workingDirectory: '$(System.DefaultWorkingDirectory)/BESTINVER.GestorAltas.Web.Management.xUnit.Tests\Controllers'
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet test'
+  inputs:
+     command: test
+     projects: |
+       $(System.DefaultWorkingDirectory)\BESTINVER.GestorAltas.Web.Management.xUnit.Tests\BESTINVER.GestorAltas.Web.Management.xUnit.Tests.csproj
+     arguments: '-v:detailed --filter "DisplayName~MasterControllerTests" --no-restore --no-build --collect:"Code Coverage"'
+     workingDirectory: '$(System.DefaultWorkingDirectory)/BESTINVER.GestorAltas.Web.Management.xUnit.Tests\Controllers'
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet test'
+  inputs:
+     command: test
+     projects: |
+       $(System.DefaultWorkingDirectory)\BESTINVER.GestorAltas.Web.Management.xUnit.Tests\BESTINVER.GestorAltas.Web.Management.xUnit.Tests.csproj
+     arguments: '-v:detailed --filter "DisplayName~RegisterControllerTests" --no-restore --no-build --collect:"Code Coverage"'
+     workingDirectory: '$(System.DefaultWorkingDirectory)/BESTINVER.GestorAltas.Web.Management.xUnit.Tests\Controllers'
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet test'
+  inputs:
+     command: test
+     projects: |
+       $(System.DefaultWorkingDirectory)\BESTINVER.GestorAltas.Web.Management.xUnit.Tests\BESTINVER.GestorAltas.Web.Management.xUnit.Tests.csproj
+     arguments: '-v:detailed --filter "DisplayName~RemediacionControllerTests" --no-restore --no-build --collect:"Code Coverage"'
+     workingDirectory: '$(System.DefaultWorkingDirectory)/BESTINVER.GestorAltas.Web.Management.xUnit.Tests\Controllers'
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet test'
+  inputs:
+     command: test
+     projects: |
+       $(System.DefaultWorkingDirectory)\BESTINVER.GestorAltas.Web.Management.xUnit.Tests\BESTINVER.GestorAltas.Web.Management.xUnit.Tests.csproj
+     arguments: '-v:detailed --filter "DisplayName~SharedControllerTests" --no-restore --no-build --collect:"Code Coverage"'
+     workingDirectory: '$(System.DefaultWorkingDirectory)/BESTINVER.GestorAltas.Web.Management.xUnit.Tests\Controllers'
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet test'
+  inputs:
+     command: test
+     projects: |
+       $(System.DefaultWorkingDirectory)\BESTINVER.GestorAltas.Web.Remediacion.Tests\BESTINVER.GestorAltas.Web.Remediacion.Tests.csproj
+     arguments: '-v:detailed --no-restore --no-build --collect:"Code Coverage"'
+     workingDirectory: '$(System.DefaultWorkingDirectory)/BESTINVER.GestorAltas.Web.Remediacion.Tests/Controllers'
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet test'
+  inputs:
+    command: test
+    projects: |
+      $(System.DefaultWorkingDirectory)\BESTINVER.Wordpress.WS.Tests\BESTINVER.Wordpress.WS.Tests.csproj
+    arguments: '-v:detailed --filter "DisplayName~CarterasControllerTest" --no-restore --no-build --collect:"Code Coverage"'
+    workingDirectory: '$(System.DefaultWorkingDirectory)/BESTINVER.Wordpress.WS.Tests/Controllers'
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet test'
+  inputs:
+    command: test
+    projects: |
+      $(System.DefaultWorkingDirectory)\BESTINVER.Wordpress.WS.Tests\BESTINVER.Wordpress.WS.Tests.csproj
+    arguments: '-v:detailed --filter "DisplayName~ProfitabilityControllerTest" --no-restore --no-build --collect:"Code Coverage"'
+    workingDirectory: '$(System.DefaultWorkingDirectory)/BESTINVER.Wordpress.WS.Tests/Controllers'
+
+- task: SonarQubeAnalyze@6
+  displayName: Run Code Analysis
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))
+- task: SonarQubePublish@6
+  displayName: Publish Quality Gate Result
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))
+- task: PowerShell@2
+  displayName: Validar sonar
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))
+  inputs:
+    targetType: inline
+    script: >-
+      Write-Host "Token Sonar: $env:SonarToken"
+      Write-Host "Proyecto: $(System.TeamProject)__$(Build.Repository.Name)"
+      $token = [System.Text.Encoding]::UTF8.GetBytes("$(SonarToken)" + ":")
+      $base64 = [System.Convert]::ToBase64String($token)
+      $basicAuth = [string]::Format("Basic {0}", $base64)
+      $headers = @{ Authorization = $basicAuth }
+      $result = Invoke-RestMethod -Method Get -Uri "$(urlsonar)/sonar/api/qualitygates/project_status?projectKey=$(System.TeamProject)__$(Build.Repository.Name)" -Headers $headers
+      $result | ConvertTo-Json | Write-Host
+      if ($result.projectStatus.status -eq "OK") {
+          Write-Host "Quality Gate Succeeded"
+      }else{
+          throw "Quality gate failed"
+      }
+
+- task: CopyFiles@2
+  displayName: 'copy postman files'
+  inputs:
+    SourceFolder: '$(Build.SourcesDirectory)/BESTINVER.Wordpress.WS/Postman'
+    Contents: '**/*.json'
+    TargetFolder: '$(build.artifactstagingdirectory)'
+
+- task: PublishSymbols@2
+  inputs:
+    SearchPattern: '**/bin/**/*.pdb'
+    PublishSymbols: false
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
+
+# Disabled Artifactory upload
+
+# - task: ArchiveFiles@2
+#   displayName: Archive $(build.artifactstagingdirectory) Common
+#   enabled: False
+#   inputs:
+#     rootFolderOrFile: $(build.artifactstagingdirectory)
+#     includeRootFolder: false
+#     sevenZipCompression: 5
+#     archiveFile: $(Build.ArtifactStagingDirectory)/gestorAltas_common.zip
+
+# - task: ArtifactoryGenericUpload@2
+#   enabled: False
+#   inputs:
+#     artifactoryService: 'ARTIFACTORY - BESTINVER-bes_GestorAltas'
+#     specSource: 'taskConfiguration'
+#     fileSpec: |
+#       {
+#         "files": [
+#           {
+#             "pattern": "$(Build.ArtifactStagingDirectory)/*_common.zip",
+#             "target": "bestinver-deploy/$(System.TeamProject)/$(Build.Repository.Name)/$(Build.BuildNumber)/common.zip"
+#           }
+#         ]
+#       }
+#     failNoOp: true

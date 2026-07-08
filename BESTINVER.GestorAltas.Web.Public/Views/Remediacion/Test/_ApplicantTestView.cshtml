@@ -1,0 +1,39 @@
+﻿<ul id="applicant-test-questions" class="form_text-questions_list" data-bind="foreach: { data: knowledgeTestModel().test() }">
+    <!-- ko if:QuestionVisible -->
+    <li class="form_text-questions_list_element" data-bind="attr: { 'id': 'question-'+ IdQuestion()}">
+        <h4 class="form_text-questions_title" data-bind="text:Question"></h4>
+
+        <div class="form_block-content big" data-bind="visible: TypeSelect">
+            <label><span data-bind="html:QuestionLabel"></span></label>
+            <select id="Answer" name="Answer" class="form-control"
+                    data-bind="options: Answers,  optionsText: 'Answer' , value: SelectedAnswer ,
+                    optionsCaption: 'Seleccionar una respuesta' , visible: !NoAnswers()"></select>
+            <input name="ExtendedAnswer" type="text" class="form-control"
+                   data-bind="value: AnswerText , visible: NoAnswers()"
+                   maxlength="255" />
+        </div>
+
+        <div class="form_block-content big" data-bind="visible: SelectedAnswer() && SelectedAnswer().ExtendedAnswer()">
+            <label class="ExtendedAnswerLabel">Introduce una respuesta: </label>
+            <input name="ExtendedAnswer" type="text" class="form-control"
+                   data-bind="value: AnswerText" maxlength="255" />
+        </div>
+
+        <!-- /ko -->
+        <!-- ko if:TypeCheck -->
+        <div class="form_block-content big checkRadio_size" data-bind="foreach: { data: Answers() }">
+            <input type="checkbox" data-bind="attr:{id: 'answer' + IdAnswer() + '-' + IdQuestion() , name: 'answer' + IdAnswer() + '-' + IdQuestion() } ,
+                   checked: Checked , click: $parent.CheckAnswer" />
+            <label data-bind="attr: {for: 'answer' + IdAnswer() + '-' + IdQuestion()}">
+                <i class="icon"></i>
+                <span class="text" data-bind="text: Answer"></span>
+            </label>
+            <input name="ExtendedAnswer" type="text" class="form-control"
+                   data-bind="value: TextExtendedAnswer , visible: VisibleExtendedAnswer" maxlength="255" />
+        </div>
+        <!-- /ko -->
+        <div class="form_block-content big">
+            <span class="error_message" data-bind="validationMessage: QuestionOK"></span>
+        </div>
+    </li>
+</ul>

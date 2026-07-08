@@ -1,0 +1,56 @@
+﻿<div id="personaldata-address-content" class="form_block" data-bind="with: MainApplicant().ApplicantContactData().FiscalAddress"
+     style="padding-top: 0px;">
+    @{ await Html.RenderPartialAsync("_AddressView"); }
+</div>
+
+<div class="form_block-content big" data-bind="with: MainApplicant().ApplicantContactData">
+    <input type="checkbox" name="personaldata-postaldirection-check" id="personaldata-postaldirection-check"
+           data-bind="checked: ShowPostalAddress" onchange="return false;" onblur="bindAutocomplete(); initAutocomplete();">
+    <label for="personaldata-postaldirection-check">
+        <i class="icon"></i>
+        <div class="text">Mi dirección postal es distinta a mi dirección fiscal</div>
+    </label><span class="error_message"></span>
+</div>
+
+<!-- ko if: MainApplicant().ApplicantContactData().ShowPostalAddress -->
+<div id="postaldirection" class="form_block" data-bind="with: MainApplicant().ApplicantContactData().PostalAddress" style="padding-top: 20px;">
+    @{ await Html.RenderPartialAsync("_AddressView"); }
+</div>
+<!-- /ko -->
+<!-- ko if: Product().ProductTypeId() == 1 -->
+<div class="form_block-content big" data-bind="with: MainApplicant().ApplicantBasicData">
+    <div class="form_block-content big">
+        <span class="label">Si deseas recibir información detallada de todas las inversiones del plan de pensiones y el informe trimestral al email que has añadido durante el proceso puedes marcar Si, en caso contrario marca No</span>
+        <input type="radio" name="information-right-radio" id="information-right-radio-true" value="true"
+               data-bind="checked: InformationRight , validationMessage: InformationRight">
+        <label for="information-right-radio-true">
+            <i class="icon"></i>
+            <div class="text">Si</div>
+        </label>
+        <input type="radio" name="information-right-radio" id="information-right-radio-false" value="false"
+               data-bind="checked: InformationRight, validationMessage: InformationRight">
+        <label for="information-right-radio-false">
+            <i class="icon"></i>
+            <div class="text">No</div>
+        </label>
+        <span class="error_message" data-bind="validationMessage: InformationRight"></span>
+    </div>
+</div>
+<!-- /ko -->
+
+<div id="personaldata-address-buttons-content" class="form_block-content buttons big">
+    <div class="form_block-content buttons big">
+        <div class="button_back">
+            <a href="" title="Datos personales" class="link brown darken back" data-bind="click: $root.goToPrevioustStep">
+                <i class="arrow">
+                    <svg width="5" height="8" viewBox="0 0 5 8" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M1.143 0L0 1.25 2.514 4 0 6.75 1.143 8 4.8 4z" fill="#B59971" fill-rule="evenodd" />
+                    </svg>
+                </i><span>Atrás</span>
+            </a>
+        </div>
+        <div class="button_next">
+            <a href="" title="Continuar" class="button brown toWhite" data-bind="click:function () { MainApplicant().ApplicantContactData().CreateContactData($root); }"><span>Continuar</span></a>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,34 @@
+﻿<span span class="label" data-bind="text: MainApplicant().ApplicantType() == 'Heredero' ? 'Heredero o Nudo Propietario' : 'Titular'"></span>
+<div class="infor" data-bind="with:MainApplicant">
+    <table>
+        <tbody>
+            <tr>
+                <td data-bind="customtext: ApplicantBasicData().FullName" data-private></td>
+                <td data-bind="customtext: ApplicantBasicData().DNI" data-private></td>
+                <td data-bind="customtext: ApplicantBasicData().Email" data-private></td>
+                <td>
+                    <button data-relative="titular-knowledgetest-content titular-knowledgetest-buttons" class="link brown darken"><span data-bind="click:$root.EditTest , visible: AllowTestEdit()">Editar</span></button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div data-bind="foreach: $root.RequestApplicantTypeEnum , visible: listaOtherApplicants().length > 0">
+    <span class="label" data-bind="text: $data == 'Coheredero' ? 'Cotitular' : $data, visible: $root.listaOtherApplicants.index.ApplicantType()[$data] != null"></span>
+    <div class="infor" data-bind="foreach: $root.listaOtherApplicants.index.ApplicantType()[$data] ,
+         visible: $root.listaOtherApplicants.index.ApplicantType()[$data] != null">
+        <table>
+            <tbody>
+                <tr>
+                    <td data-bind="text: ApplicantBasicData().FullName" data-private></td>
+                    <td data-bind="customtext: ApplicantBasicData().DNI" data-private></td>
+                    <td data-bind="customtext: ApplicantBasicData().Email" data-private></td>
+                    <td>
+                        <button data-relative="titular-knowledgetest-content titular-knowledgetest-buttons" class="link brown darken"><span data-bind="click:$root.EditTest , visible: AllowTestEdit()">Editar</span></button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

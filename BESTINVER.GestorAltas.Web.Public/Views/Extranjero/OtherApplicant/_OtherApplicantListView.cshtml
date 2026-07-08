@@ -1,0 +1,24 @@
+﻿<!-- ko if: ApplicantListVisible -->
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Tipo</th>
+            <th>Nombre</th>
+            <th>DNI / NIE</th>
+            <th>Email</th>
+            <th>Editar</th>
+            <th>Eliminar</th>
+        </tr>
+    </thead>
+    <tbody data-bind="foreach:GetApplicantsByType">
+        <tr>
+            <td data-bind="text:RequestApplicantType"></td>
+            <td data-bind="text:ApplicantBasicData().FullName"></td>
+            <td data-bind="customtext:ApplicantBasicData().DNI" data-hj-masked></td>
+            <td data-bind="customtext:ApplicantBasicData().Email" data-hj-masked></td>
+            <td><a href="#"><span data-bind="click:$root.BeginUpdateApplicant">Editar</span> </a></td>
+            <td><a href="#"><span data-bind="click:$root.DeleteApplicant">Eliminar</span> </a></td>
+        </tr>
+    </tbody>
+</table>
+<!-- /ko -->

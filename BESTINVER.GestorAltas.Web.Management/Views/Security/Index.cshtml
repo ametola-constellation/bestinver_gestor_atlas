@@ -1,0 +1,274 @@
+﻿@{
+
+    ViewBag.Title = "Index";
+
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-group">
+            <div class="row">
+                <div class="col-md-10">
+                    <h3><i class="mr-2 fas fa-users"></i>Usuarios de la herramienta</h3>
+                </div>
+                <div class="col-md-2">
+
+                    <button type="button" class="btn btn-primary" id="syncUsers">
+                        <span class="mr-2 fas fa-sync"></span>
+                        Sincronizar
+                    </button>
+                </div>
+
+            </div>
+            
+        </div>
+        <table id="users-list" class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Email</th>
+                    <th>Rol</th>
+                    <th></th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-group">
+            <h3><span class="mr-2 fas fa-users-cog"></span>Gestión de Roles de usuario</h3>
+        </div>
+        <div class="form-group form-inline">
+            <label class="col-form-label">Selección de rol:</label>
+            <select id="Roles" class=" form-control"></select>
+            <button type="button" id="btnCreateRole" class="btn btn-primary"><i class="mr-2 fas fa-plus-circle"></i> Crear Rol</button>
+            <button type="button" id="btnDeleteRole" class="btn btn-danger"><i class="mr-2 fas fa-trash-alt"></i> Eliminar Rol</button>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="form-group form-inline col-md-12">
+        <table id="table-permissions" class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Permiso</th>
+                    <th class="text-center">Consulta</th>
+                    <th class="text-center">Modificación</th>
+                    <th class="text-center">Baja</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Datos solicitud</td>
+
+                    <partial name="_CheckBox" model="MiddleOfficeClaimNames.SolicitudConsulta" />
+                    <partial name="_CheckBox" model="MiddleOfficeClaimNames.SolicitudModificacion" />
+                    <partial name="_CheckBox" model="MiddleOfficeClaimNames.SolicitudBaja" />
+                </tr>
+                <tr>
+                    <td>Estados solicitud</td>
+                    <td></td>
+                    <partial name="_CheckBox" model="MiddleOfficeClaimNames.EstadosModificacion" />
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Modificar estados solicitud sin bloquearla</td>
+                    <td></td>
+                    <partial name="_CheckBox" model="MiddleOfficeClaimNames.EstadosModificacionSinBloqueo" />
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Informes</td>
+                    <partial name="_CheckBox" model="MiddleOfficeClaimNames.InformesConsulta" />
+                    <partial name="_CheckBox" model="MiddleOfficeClaimNames.InformesModificacion" />
+                    <partial name="_CheckBox" model="MiddleOfficeClaimNames.InformesBaja" />
+                </tr>
+                <tr>
+                    <td>Búsquedas</td>
+                    <partial name="_CheckBox" model="MiddleOfficeClaimNames.BusquedaConsulta" />
+                    <partial name="_CheckBox" model="MiddleOfficeClaimNames.BusquedaModificacion" />
+                    <partial name="_CheckBox" model="MiddleOfficeClaimNames.BusquedaBaja" />
+                </tr>
+                <tr>
+                    <td>Gestión firma asíncrona</td>
+                    <partial name="_CheckBox" model="MiddleOfficeClaimNames.FirmaAsincronaConsulta" />
+                    <partial name="_CheckBox" model="MiddleOfficeClaimNames.FirmaAsincronaModificacion" />
+                    <partial name="_CheckBox" model="MiddleOfficeClaimNames.FirmaAsincronaBaja" />
+                </tr>
+                <tr>
+                    <td>Gestión de documentación</td>
+                    <partial name="_CheckBox" model="MiddleOfficeClaimNames.DocumentacionConsulta" />
+                    <partial name="_CheckBox" model="MiddleOfficeClaimNames.DocumentacionModificacion" />
+                    <partial name="_CheckBox" model="MiddleOfficeClaimNames.DocumentacionBaja" />
+                </tr>
+                <tr>
+                    <td>Revisión estado Transferencias / Cheques</td>
+                    <partial name="_CheckBox" model="MiddleOfficeClaimNames.RevisionChequesConsulta" />
+                    <partial name="_CheckBox" model="MiddleOfficeClaimNames.RevisionChequesModificacion" />
+                    <partial name="_CheckBox" model="MiddleOfficeClaimNames.RevisionChequesBaja" />
+                </tr>
+                <tr>
+                    <td>Gestión de Alertas</td>
+                    <td class="text-center"></td>
+                    <partial name="_CheckBox" model="MiddleOfficeClaimNames.GestionAlertasModificacion" />
+                    <td class="text-center"></td>
+                </tr>
+                <tr>
+                    <td>Exportar Informes</td>
+                    <partial name="_CheckBox" model="MiddleOfficeClaimNames.ExportarInformesConsulta" />
+                    <partial name="_CheckBox" model="MiddleOfficeClaimNames.ExportarInformesModificacion" />
+                    <partial name="_CheckBox" model="MiddleOfficeClaimNames.ExportarInformesBaja" />
+                </tr>
+                <tr>
+                    <td>Editar datos remediación</td>
+                    <partial name="_CheckBox" model="MiddleOfficeClaimNames.RemediacionEstadosConsulta" />
+                    <partial name="_CheckBox" model="MiddleOfficeClaimNames.RemediacionEstadosModificacion" />
+                    <td class="text-center"></td>
+                </tr>
+                <tr>
+                    <td>Editar tipo de remediación</td>
+                    <td class="text-center"></td>
+                    <partial name="_CheckBox" model="MiddleOfficeClaimNames.RemediacionTipoModificacion" />
+                    <td class="text-center"></td>
+                </tr>
+                <tr>
+                    <td>Visualizar cotitulares remediados en remediaciones</td>
+                    <partial name="_CheckBox" model="MiddleOfficeClaimNames.RemediacionVisualizarEstadoCotitulares" />
+                    <td class="text-center"></td>
+                    <td class="text-center"></td>
+                </tr>
+                <tr>
+                    <td>Editar datos de cotitulares/apoderados</td>
+                    <td class="text-center"></td>
+                    <partial name="_CheckBox" model="MiddleOfficeClaimNames.ModificacionApoderados" />
+                    <td class="text-center"></td>
+                </tr>
+                <tr>
+                    <td>Generar proceso de firma / regenerar documentación</td>
+                    <td class="text-center"></td>
+                    <partial name="_CheckBox" model="MiddleOfficeClaimNames.GenerarFirmaDesdeMiddle" />
+                    <td class="text-center"></td>
+                </tr>
+                <tr>
+                    <td>Dashboard PBC</td>
+                    <partial name="_CheckBox" model="MiddleOfficeClaimNames.DashboardPBCConsulta" />
+                    <td class="text-center"></td>
+                    <td class="text-center"></td>
+                </tr>
+                <tr>
+                    <td>Dashboard de firma manuscrita</td>
+                    <partial name="_CheckBox" model="MiddleOfficeClaimNames.DashboardFirmaManuscritaConsulta" />
+                    <td class="text-center"></td>
+                    <td class="text-center"></td>
+                </tr>
+                <tr>
+                    <td>Dashboard con incidencia</td>
+                    <partial name="_CheckBox" model="MiddleOfficeClaimNames.DashboardIncidenciaConsulta" />
+                    <td class="text-center"></td>
+                    <td class="text-center"></td>
+                </tr>
+                <tr>
+                    <td>Dashboard Pendientes de atención</td>
+                    <partial name="_CheckBox" model="MiddleOfficeClaimNames.DashboardPendientesAtendidasConsulta" />
+                    <td class="text-center"></td>
+                    <td class="text-center"></td>
+                </tr>
+                <tr>
+                    <td>Dashboard Pendiente de DNI con DNI subido</td>
+                    <partial name="_CheckBox" model="MiddleOfficeClaimNames.DashboardPendientesDNIConDNISubidoConsulta" />
+                    <td class="text-center"></td>
+                    <td class="text-center"></td>
+                </tr>
+                <tr>
+                    <td>Dashboard de envíos postales</td>
+                    <partial name="_CheckBox" model="MiddleOfficeClaimNames.DashboardEnvioPostalConsulta" />
+                    <td class="text-center"></td>
+                    <td class="text-center"></td>
+                </tr>
+                <tr>
+                    <td>Avanzar estado de alta sin restricciones</td>
+                    <td class="text-center"></td>
+                    <partial name="_CheckBox" model="MiddleOfficeClaimNames.AvanzarEstadosAdministrador" />
+                    <td class="text-center"></td>
+                </tr>
+                <tr>
+                    <td>Validar partícipes altas jurídicas</td>
+                    <td class="text-center"></td>
+                    <partial name="_CheckBox" model="MiddleOfficeClaimNames.CotitularesValidar" />
+                    <td class="text-center"></td>
+                </tr>
+
+
+                <tr>
+                    <td>Ver comentarios y descripción alertas PBC</td>
+                    <partial name="_CheckBox" model="MiddleOfficeClaimNames.ComentariosAlerta" />
+                    <td class="text-center"></td>
+                    <td class="text-center"></td>
+                </tr>
+
+                <tr>
+                    <td>Desbloqueo alerta productos</td>
+                    <partial name="_CheckBox" model="MiddleOfficeClaimNames.DesbloqueoAlertaProducto" />
+                    <td class="text-center"></td>
+                    <td class="text-center"></td>
+                </tr>
+
+                <tr>
+                    <td>Desbloqueo alerta datos personales</td>
+                    <partial name="_CheckBox" model="MiddleOfficeClaimNames.DesbloqueoAlertaDatosPersonales" />
+                    <td class="text-center"></td>
+                    <td class="text-center"></td>
+                </tr>
+
+                <tr>
+                    <td>Desbloqueo alerta mantenimiento</td>
+                    <partial name="_CheckBox" model="MiddleOfficeClaimNames.DesbloqueoAlertaMantenimiento" />
+                    <td class="text-center"></td>
+                    <td class="text-center"></td>
+                </tr>
+
+                <tr>
+                    <td>Gestión de plantillas</td>
+                    <partial name="_CheckBox" model="MiddleOfficeClaimNames.GestionPlantillas" />
+                    <td class="text-center"></td>
+                    <td class="text-center"></td>
+                </tr>
+
+                <tr>
+                    <td>Mantenimiento plantillas comunicaciones</td>
+                    <partial name="_CheckBox" model="MiddleOfficeClaimNames.MantenimientoPlantillasComunicaciones" />
+                    <td class="text-center"></td>
+                    <td class="text-center"></td>
+                </tr>
+
+            </tbody>
+        </table>
+    </div>
+    <div class="form-group form-inline col-md-12">
+        <div id="infoZone">
+        </div>
+    </div>
+</div>
+
+@section Style {
+    <environment include="Development">
+        <link href="~/css/security.css" asp-append-version="true" rel="stylesheet" />
+    </environment>
+
+    <environment exclude="Development">
+        <link href="~/css/security.min.css" asp-append-version="true" rel="stylesheet" />
+    </environment>
+}
+
+@section Scripts {
+    <environment include="Development">
+        <script src="~/js/security.js" asp-append-version="true"></script>
+    </environment>
+
+    <environment exclude="Development">
+        <script src="~/js/security.min.js" asp-append-version="true"></script>
+    </environment>
+}

@@ -1,0 +1,88 @@
+﻿@{
+    string ProviceReadOnly = Model;
+}
+
+<div class="form_block-content big">
+    <label for="fulladdress">
+        <span>
+            <button class='tooltip_button'
+                    data-bind="attr: {'data-eventname': AddressTypeName()}">
+                <span data-bind="text: AddressTypeName"></span>
+                <span class='tooltip_content eyeable-skipContrast' data-bind="text: ToolTipText"></span>
+            </button>
+        </span>
+    </label>
+    <input type="text" name="fulladdress" id="fulladdress" class="autocomplete" placeholder="Escriba su dirección" maxlength="255" data-bind="value: FullAddress">
+    <div class="form_block-content big help"><span class="mini_text">Escribe la dirección con: Tipo de vía, calle y número (Ej. Calle Juan de Mena 8).</span></div>
+</div>
+
+<div class="form_block-content">
+    <label for="country"><span>Tipo de vía</span></label>
+    <select class="autocompleteVia"
+            data-bind="optionsCaption: 'Seleccionar tipo de vía',
+                               options: MasterData.ViaTypeList,
+                               optionsValue: 'id',
+                               optionsText: 'valor',validationElement: ViaType,value: ViaType"></select>
+    <span class="error_message" data-bind="validationMessage: ViaType"></span>
+</div>
+
+<div class="form_block-content">
+    <label for="street"><span>Nombre</span></label>
+    <input type="text" name="street" id="street" class="autocompleteStreet" data-bind="value: Street, validationElement: Street" maxlength="40" data-hj-masked>
+    <span class="error_message" data-bind="validationMessage: Street"></span>
+</div>
+
+<div class="form_block-content">
+    <label for="street-number"><span>Número</span></label>
+    <input type="text" name="street-number" id="street-number" class="autocompleteNumber" data-bind="value: StreetNumber, validationElement: StreetNumber" maxlength="5">
+    <span class="mini_text">Si no tiene número indica: S/N.</span>
+    <span class="error_message" data-bind="validationMessage: StreetNumber"></span>
+</div>
+
+<div class="form_block-content">
+    <label for="stairs"><span>Escalera</span></label>
+    <input type="text" name="stairs" id="stairs" data-bind="value: Stairs" maxlength="3">
+</div>
+
+<div class="form_block-content">
+    <label for="floor"><span>Piso</span></label>
+    <input type="text" name="floor" id="floor" data-bind="value: Floor" maxlength="3">
+</div>
+
+<div class="form_block-content">
+    <label for="door"><span>Puerta</span></label>
+    <input type="text" name="door" id="door" data-bind="value: Door" maxlength="3">
+</div>
+
+<div class="form_block-content big">
+    <label for="additionaldata"><span>Datos adicionales (Opcional)</span></label>
+    <input type="text" name="additionaldata" id="additionaldata" data-bind="value: AddressExtension, validationElement: AddressExtension" maxlength="40">
+    <span class="error_message" data-bind="validationMessage: AddressExtension"></span>
+</div>
+
+<div class="form_block-content">
+    <label for="postalcode"><span>Código postal</span></label>
+    <input type="text" name="postalcode" id="postalcode" maxlength="30" class="autocompletePostalCode" data-bind="value: PostalCode">
+    <span class="error_message" data-bind="validationMessage: PostalCode"></span>
+</div>
+
+<div class="form_block-content">
+    <label for="city"><span>Ciudad</span></label>
+    <input type="text" name="city" id="city" class="autocompleteCity" data-bind="value: City, validationElement: City" maxlength="40">
+    <span class="error_message" data-bind="validationMessage: City"></span>
+</div>
+
+<div class="form_block-content">
+    <label for="province"><span>Provincia</span></label>
+    <input type="text" name="province" id="province" class="autocompleteProvince" data-bind="value: Province, validationElement: Province" maxlength="40" @ProviceReadOnly data-hj-masked>
+    <span class="error_message" data-bind="validationMessage: Province"></span>
+</div>
+
+<div class="form_block-content">
+    <label for="country"><span>País</span></label>
+    <select id="country" class="autocompleteCountry"
+            data-bind="options: MasterData.CountryList, optionsValue: 'id',
+            optionsText: 'valor', value: CountryId,
+            validationElement: CountryId, optionsCaption: 'Seleccionar país'"></select>
+    <span class="error_message" data-bind="validationMessage: CountryId"></span>
+</div>

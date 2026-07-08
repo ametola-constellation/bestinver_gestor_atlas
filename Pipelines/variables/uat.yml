@@ -1,0 +1,12 @@
+variables:
+  azSubscription: "Bestinver_Azure01"
+  azResourceGroup: "rg-wpcloud-uat-neu-02"
+  buildConfiguration: "Release"
+  buildPlatform: "Any CPU"
+  ContainerRegistry: bestinver-docker-deploy
+  PoolName: "DEV-BE-AZR-MWAB-MDOP-01"
+  acr: 'articloudpro-bestinver-docker-deploy.jfrog.io'
+  containerAppMiddleOffice: 'aca-wpcloud-uat-neu-middleoffice'
+  containerAppAltas: 'aca-wpcloud-uat-neu-altas'
+  containerAppRemediacion: 'aca-wpcloud-uat-neu-remediacion'
+  containerAppWordPressApi: 'aca-wpcloud-uat-neu-wordpress'

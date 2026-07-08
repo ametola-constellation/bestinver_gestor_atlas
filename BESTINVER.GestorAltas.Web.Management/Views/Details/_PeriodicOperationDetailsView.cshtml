@@ -1,0 +1,212 @@
+﻿@using BestInver.WebPrivada.Shared.Models.Microservices.Requests;
+@using BestInver.WebPrivada.Shared.Models.Microservices.Operations.Enums;
+
+@model UpdateRequestPeriodicOperationModel;
+
+@{
+    var initialDate = new DateTime(Model.InitialYear.Value, Model.InitialMonth.Value, Model.InitialDay.Value);
+    var customers = ViewBag.Customers;
+    var products = ViewBag.Products;
+    var selectedProduct = ViewBag.SelectedProduct != null ? ViewBag.SelectedProduct : 0;
+    var selectedPeriodicity = ViewBag.SelectedPeriodicity != null ? ViewBag.SelectedPeriodicity : 0;
+    var sendPSD2 = ViewBag.SendPSD2 != null && ViewBag.SendPSD2 ? true : false;
+    var createOperation = ViewBag.CreateOperation != null && ViewBag.CreateOperation ? true : false;
+    var isPSD2 = Model.IdOperationType == (int)OperationTypeMOEnum.PeriodicSuscriptionPsd2 ? 1 : 0;
+}
+
+<div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            @if (createOperation)
+            {
+                <h4 class="modal-title">Crear operación periódica - 2 de 2</h4>
+            }
+            else
+            {
+                <h4 class="modal-title">Modificar operación periódica</h4>
+            }
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+        <form method="post" id="updateoperation">
+            <div class="modal-body">
+
+                <input asp-for="Id" hidden />
+                <input asp-for="RequestId" hidden />
+
+                <div class="row">
+                    <div class="form-group col-xs-12 col-md-6">
+                        <label>Cuenta</label><br />
+                        <label>@Model.AccountId</label>
+                        <input asp-for="AccountId" hidden />
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group col-xs-12 col-md-6">
+                        <label asp-for="IBAN"></label>
+                        <input id="iban" asp-for="IBAN" class="form-control" onchange="fn_ValidateIBAN(this)" maxlength="36" />
+                        <div id="ibanError" class="margin15" hidden></div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group col-xs-12 col-md-8">
+                        <label>Fecha de inicio</label>
+                        <input asp-for="@initialDate" id="initialDate" class="form-control" type="date" onchange="fn_ValidateDate(this)" />
+                        <div id="dateError" class="margin15" hidden></div>
+                    </div>
+                </div>
+                <input asp-for="InitialDay" id="initialDay" hidden />
+                <input asp-for="InitialMonth" id="initialMonth" hidden />
+                <input asp-for="InitialYear" id="initialYear" hidden />
+
+                <div class="row">
+                    <div class="form-group col-xs-12 col-md-6">
+                        <label asp-for="MonthlyAmount">Cantidad</label>
+                        <input asp-for="MonthlyAmount" class="form-control" onchange="fn_ValidateAmount(this, $('#productSelect option:selected').data('aditionalmin'))" />
+                        <div id="monthlyAmountError" class="margin15" hidden></div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group col-xs-12 col-md-12">
+                        <label>Firmante</label>
+                        <table class="table table-striped table-bordered dt-responsive wrap dataTable no-footer dtr-inline">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Name</th>
+                                    <th>Role</th>
+                                    <th>Phone</th>
+                                    <th>Email</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var c in customers)
+                                {
+                                    <tr>
+                                        <td>
+                                            <input type="radio" name="signerInput" id="signerInput" value="@c.Applicant.DNI"
+                                                   @(c.SendPSD2 != null && c.SendPSD2 ? "checked" : "")
+                                                   @(isPSD2 == 1 && (string.IsNullOrWhiteSpace(c.Applicant.MobilePhoneNumber) || string.IsNullOrWhiteSpace(c.Applicant.Email)) ? "disabled" : "") />
+                                        </td>
+                                        <td>@c.Applicant.CompleteName</td>
+                                        <td>@c.ApplicantRoleType.Description</td>
+                                        <td>@c.Applicant.MobilePhoneNumber</td>
+                                        <td>@c.Applicant.Email</td>
+                                    </tr>
+                                }
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <input asp-for="Signer" id="signerDNI" hidden />
+                <div id="signerError" class="margin15" hidden></div>
+
+                <div class="row">
+                    <div class="form-group  col-xs-12 col-md-6">
+                        <label>Producto</label>
+                        <select id="productSelect" class="form-control" required>
+                            @foreach (var p in products)
+                            {
+                                <option name="productOption-@p.MoProductId" value="@p.MoProductId" data-aditionalmin="@p.AdultAditionalMin">@p.Name</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <input asp-for="ProductId" id="productId" hidden />
+
+                <div class="row">
+                    <div class="form-group  col-xs-12 col-md-6">
+                        <label>Periodicidad</label>
+                        <select id="periodicitySelect" class="form-control" required>
+                            <option name="periodicityOption" value="@((int)PeriodicityTypeEnum.Mensual)">@PeriodicityTypeEnum.Mensual.ToString()</option>
+                            <option name="periodicityOption" value="@((int)PeriodicityTypeEnum.Trimestral)">@PeriodicityTypeEnum.Trimestral.ToString()</option>
+                            <option name="periodicityOption" value="@((int)PeriodicityTypeEnum.Semestral)">@PeriodicityTypeEnum.Semestral.ToString()</option>
+                            <option name="periodicityOption" value="@((int)PeriodicityTypeEnum.Anual)">@PeriodicityTypeEnum.Anual.ToString()</option>
+                        </select>
+                    </div>
+                </div>
+                <input asp-for="IdPeriodicity" id="periodicityId" hidden />
+                
+            </div>
+            <div class="modal-footer" id="modalButton">
+                @if (sendPSD2)
+                {
+                    <button type="submit" class="btn btn-success" data-save="modal" asp-controller="Details" asp-action="SendPSD2AndSave"
+                            loadingText="Enviando...">Enviar</button>
+                }
+                else if (createOperation)
+                {
+                    <button type="submit" class="btn btn-primary" data-save="modal" asp-controller="Details" asp-action="InsertPeriodicOperation"
+                            loadingText="Creando...">Crear</button>
+                }
+                else
+                {
+                    <button id="btnSave" type="submit" class="btn btn-primary" data-save="modal" asp-controller="Details" asp-action="UpdatePeriodicOperation"
+                            loadingText="Guardando...">Guardar</button>
+                }
+
+                <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cerrar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        
+        if (@selectedProduct != 0) {
+            $('#productSelect').val(@selectedProduct)
+        }
+
+        if (@selectedPeriodicity != 0) {
+            $('#periodicitySelect').val(@selectedPeriodicity)
+        }
+
+        if (@isPSD2 == 1) {
+            $('#isPSD2').prop('checked', true);
+            $('#isPSD2').val(true);
+            $("#periodicitySelect option[value='@((int)PeriodicityTypeEnum.Semestral)']").remove();
+        }
+    })
+
+    $("#updateoperation").submit(function () {
+        var amount = $('#MonthlyAmount')[0];
+        var aditionalMin = $('#productSelect option:selected').data('aditionalmin');
+        var initialDate = $('#initialDate')[0];
+        var iban = $('#iban')[0];
+        if (fn_ValidateAmount(amount, aditionalMin) && fn_ValidateDate(initialDate) && fn_ValidateIBAN(iban) && fn_ValidateSigner()) {
+            document.getElementById('signerDNI').value = $('input[name=signerInput]:checked', '#updateoperation').val();
+            document.getElementById('productId').value = $('#productSelect option:selected').val();
+            document.getElementById('periodicityId').value = $('#periodicitySelect option:selected').val();
+            var date = new Date($('#initialDate').val());
+            document.getElementById('initialDay').value = date.getDate();
+            document.getElementById('initialMonth').value = date.getMonth() + 1;
+            document.getElementById('initialYear').value = date.getFullYear();
+        } else {
+            return false;
+        }
+
+        var loadText = $("#modalButton button:first-child").attr('loadingText');
+        loadButton(loadText);
+    })
+
+    $('#isPSD2').change(function () {
+        if ($('#isPSD2').prop('checked')) {
+            document.getElementById('isPSD2').value = true;
+            $("#periodicitySelect option[value='@((int)PeriodicityTypeEnum.Semestral)']").remove();
+        }
+        else {
+            document.getElementById('isPSD2').value = false;
+            var option = $('<option>', {
+                value: @((int)PeriodicityTypeEnum.Semestral),
+                text: '@PeriodicityTypeEnum.Semestral.ToString()',
+                name: 'periodicityOption',
+            });
+
+            $(option).insertBefore('#periodicitySelect option:last-child');
+        }
+    })
+</script>

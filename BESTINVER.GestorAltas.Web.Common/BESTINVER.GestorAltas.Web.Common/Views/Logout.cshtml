@@ -1,0 +1,57 @@
+﻿@model BESTINVER.GestorAltas.Web.Common.Models.LoginViewModel
+
+    <style>
+        #login_main {
+            text-align: center;
+            padding: 15%;
+            background-color: #f7f7f7;
+        }
+
+            #login_main h1 {
+                font-size: xx-large;
+                font-weight: bolder;
+                margin: 3%;
+            }
+
+            #login_main input {
+                width: 40%;
+                border: 1px solid #CCC;
+                height: 50px;
+                box-sizing: border-box;
+                padding: 15px 20px;
+            }
+
+            #login_main .error {
+                color: red;
+            }
+
+            #login_main button {
+                width: 40%;
+                height: 50px;
+                margin-top: 5%;
+                background-color: #b59971;
+                border: 1px solid #b59971;
+                font-size: large;
+                padding: 0 3% 0 3%;
+            }
+    </style>
+
+@if (Model.Redirect)
+{
+    <script>
+        @Html.Raw($"document.location = '{Model.ReturnUrl}'")
+    </script>
+}
+
+<div id="login_main">
+    <img src="https://www.bestinver.es/wp-content/themes/bstnvr/images/logo-bestinver.svg">
+
+    @*<h1>Por favor inicie sesión</h1>*@
+    <form method="post">
+        <input type="hidden" name="Url" value="@Model.ReturnUrl" />
+        
+        <div>
+            <button>Cerrar sesión</button>
+        </div>
+    </form>
+</div>

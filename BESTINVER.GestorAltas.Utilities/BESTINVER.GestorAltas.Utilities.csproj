@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>$(NetVersion)</TargetFrameworks>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<Configurations>Debug;Release;Development</Configurations>
+		<CodeAnalysisRuleSet>..\.sonarlint\bes_gestoraltas__bes_gestoraltascsharp.ruleset</CodeAnalysisRuleSet>
+	</PropertyGroup>
+
+
+	<ItemGroup>
+		<AdditionalFiles Include="..\.sonarlint\bes_gestoraltas__bes_gestoraltas\CSharp\SonarLint.xml" Link="SonarLint.xml" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Azure.Identity" />
+		<PackageReference Include="Microsoft.ApplicationInsights"/>
+		<PackageReference Include="Microsoft.Azure.AppConfiguration.AspNetCore" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Binder"/>
+		<PackageReference Include="Newtonsoft.Json"/>
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\BESTINVER.GestorAltas.Domain.Interfaces\BESTINVER.GestorAltas.Domain.Interfaces.csproj" />
+	</ItemGroup>
+
+</Project>

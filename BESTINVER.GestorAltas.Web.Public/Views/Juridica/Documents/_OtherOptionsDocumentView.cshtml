@@ -1,0 +1,42 @@
+﻿<label for="documentationdelivery-others">
+    <span>Elige una opción para enviar la documentación</span>
+</label>
+
+<select data-bind="options: MasterData.DocumentSendingWayList, optionsText: 'valor', optionsValue: 'id',
+            value: IdSendingWay, optionsCaption: 'Selecciona una opción'"></select>
+<div class="form_block-content general_error" data-bind="validationElement: ScanDni">
+    <span class="error_message" data-bind="validationMessage: ScanDni"></span>
+</div>
+
+<div id="documentationdelivery-id" class="form_block-content documentation_info big" data-bind="visible: IdSendingWay() == '1'">
+    <span class="title">Adjuntar DNI / NIE</span>
+    <p class="text" data-bind="text: $root.CurrentApplicantSendingDocumentTitle"> </p>
+    <input type="file" name="documentationdelivery-idfiles" data-relative="documentationdelivery-idfiles-data" accept="image/*" id="documentationdelivery-idfiles" class="empty">
+    <div id="documentationdelivery-idfiles-data" class="upload_data hidden">
+        <ul class="upload_list"></ul>
+        <button data-upload="documentationdelivery-idfiles" class="remove_upload link brown darken"><i class="icon"></i><span>Eliminar documentos</span></button>
+    </div>
+    <label for="documentationdelivery-idfiles" class="upload_label link brown darken">
+        <i class="icon">
+            <svg width="14" height="16" viewBox="0 0 14 16" xmlns="http://www.w3.org/2000/svg">
+                <g stroke="#B59971" fill="#B59971" fill-rule="evenodd" opacity=".8">
+                    <path stroke-width=".5" d="M1 14.821h12v-.884H1z"></path>
+                    <path stroke-width=".3" d="M11.11 4.753l-.645.634-3.03-3.035V11h-.9V2.337l-3.09 3.05-.645-.634L7 .643z"></path>
+                </g>
+            </svg>
+        </i><span>Adjuntar documentos</span>
+    </label>
+    @*<span class="error_message" data-bind="validationMessage: DNIAnversoBase64"></span>*@
+</div>
+<div id="documentationdelivery-email" class="form_block-content documentation_info big" data-bind="visible: IdSendingWay() == '4'">
+    <span class="title">Enviar por email</span>
+    <p class="text">Envía los documentos solicitados en un archivo adjunto al email <a href="mailto:bestinver@bestinver.es" class="link brown darken">bestinver@bestinver.es</a> indicando en el el asunto tu DNI/NIE.</p>
+</div>
+<div id="documentationdelivery-postal" class="form_block-content documentation_info big" data-bind="visible: IdSendingWay() == '2'">
+    <span class="title">Enviar por correo postal</span>
+    <p class="text">Envía los documentos solicitados por correo postal a la siguiente dirección de Bestinver: Calle Juan de Mena, 8, 1º Dcha., 28014 Madrid</p>
+</div>
+<div id="documentationdelivery-messenger" class="form_block-content documentation_info big" data-bind="visible: IdSendingWay() == '3'">
+    <span class="title">Solicitar mensajero gratuito</span>
+    <p class="text">Ponte en contacto con el Centro de Relación con el Inversor a través del 915 959 100 para con</p>
+</div>

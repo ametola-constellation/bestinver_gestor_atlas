@@ -1,0 +1,134 @@
+﻿@using Microsoft.Extensions.Hosting;
+@inject Microsoft.ApplicationInsights.AspNetCore.JavaScriptSnippet JavaScriptSnippet
+@{
+    var urlBase = Url.Content("~/").TrimEnd('/');
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="format-detection" value="telephone=no">
+    <link rel="shortcut icon" href="~/icon/favicon.ico">
+    <link rel="apple-touch-icon" href="~/icon/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="57x57" href="~/icon/apple-touch-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="~/icon/apple-touch-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="~/icon/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="~/icon/apple-touch-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="~/icon/apple-touch-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="~/icon/apple-touch-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="~/icon/apple-touch-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="~/icon/apple-touch-icon-152x152.png">
+    <title>Bestinver</title>
+
+    @RenderSection("HMetaTags", false)
+
+<script type="text/javascript">
+        var validatedomain = true;
+        var sitePreffix = '@urlBase';
+        var MaxPdfUploadSize = '@AppSettings.Value.MaxLargeFileUploadSize';
+        var urlWebPrivada = '@AppSettings.Value.WebPrivadaBaseAddress';
+        var urlSignatureIssuerApi = '@urlBase@AppSettings.Value.SignatureIssuerApi';
+</script>
+
+    <link href="//fonts.googleapis.com/css?family=Playfair+Display:400,400i,700,900" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,700,900" rel="stylesheet" type="text/css">
+    <link href="~/css/grid.min.css" rel="stylesheet" asp-append-version="true">
+    <link href="~/css/style.min.css" rel="stylesheet" asp-append-version="true">
+    <link href="~/css/easy-autocomplete.min.css" rel="stylesheet" asp-append-version="true">
+    <link href="~/css/easy-autocomplete.themes.min.css" rel="stylesheet" asp-append-version="true">
+    <link href="~/css/scancontrol.min.css" rel="stylesheet" asp-append-version="true" />
+    <link href="~/css/custom.bestinver.min.css" rel="stylesheet" asp-append-version="true" />
+
+    @RenderSection("styles", false)
+
+    @if (hostingEnv.IsDevelopment())
+    {
+        <script src="~/js/bundles/bundle-jquery.js" crossorigin="anonymous" asp-append-version="true"></script>
+        <script src="~/js/bundles/bundle-external-libraries.js" crossorigin="anonymous" asp-append-version="true"></script>
+        <script src="~/js/bundles/bundle-knockoutjs.js" crossorigin="anonymous" asp-append-version="true"></script>
+        <script src="~/js/bundles/bundle-redbility.js" crossorigin="anonymous" asp-append-version="true"></script>
+        <script src="~/js/bundles/bundle-bestinver.js" crossorigin="anonymous" asp-append-version="true"></script>
+        <script src="~/js/bundles/bundle-bestinver-remediacion.js" crossorigin="anonymous" asp-append-version="true"></script>
+
+        <script type="text/javascript">
+            validatedomain = false;
+        </script>
+    }
+    else
+    {
+        <script src="~/js/bundles/bundle-jquery.min.js" crossorigin="anonymous" asp-append-version="true"></script>
+        <script src="~/js/bundles/bundle-external-libraries.min.js" crossorigin="anonymous" asp-append-version="true"></script>
+        <script src="~/js/bundles/bundle-knockoutjs.min.js" crossorigin="anonymous" asp-append-version="true"></script>
+        <script src="~/js/bundles/bundle-redbility.min.js" crossorigin="anonymous" asp-append-version="true"></script>
+        <script src="~/js/bundles/bundle-bestinver.min.js" crossorigin="anonymous" asp-append-version="true"></script>
+        <script src="~/js/bundles/bundle-bestinver-remediacion.js" crossorigin="anonymous" asp-append-version="true"></script>
+    }
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=@AppSettings.Value.GoogleMapsApiKey&libraries=places&callback=initAutocomplete&language=es-ES" async defer></script>
+    <script src="https://cdn.logrocket.com/LogRocket.min.js"></script>
+    <script src="@AppSettings.Value.UrlRubricaeSignComponent/config/config.js"></script>
+    <script type='module' src="@AppSettings.Value.UrlRubricaeSignComponent/latest/rotpsecure.esm.js"></script>
+    <script nomodule src="@AppSettings.Value.UrlRubricaeSignComponent/latest/rotpsecure.js"></script>
+
+    <script type='module' src="@urlBase@AppSettings.Value.CdnBestinverWebComponents/bestinver-web-components.esm.js"></script>
+    <script nomodule src="@urlBase@AppSettings.Value.CdnBestinverWebComponents/bestinver-web-components.js"></script>
+
+    @Html.Raw(JavaScriptSnippet.FullScript)
+
+    @{       
+    if (AppSettings.Value.EyeAble?.Enabled == true)
+        {
+            <!-- EyeAble -->
+            <script async id="EyeAbleConfig"
+                    src="@AppSettings.Value.EyeAble.ConfigUrl" >            
+            </script>
+            <script async id="EyeAbleComponent"
+                    src="@AppSettings.Value.EyeAble.ScriptUrl" >                       
+            </script>
+            <!-- EyeAble -->
+        }
+    }
+
+    <!-- appInsights -->
+    <script type='text/javascript'>
+        window.appInsights.queue.push(function () {
+            window.appInsights.context.addTelemetryInitializer(function (envelope) {
+                try {
+                    var telemetryItem = envelope.data.baseData;
+                    // To set custom properties:
+                    telemetryItem.properties = telemetryItem.properties || {};
+                    telemetryItem.properties["RequestID"] = Utils.GetRemediacionId();
+                } catch (e) { };
+            });
+        });
+        appInsights.trackPageView();
+    </script>
+    <!-- appInsights -->
+</head>
+<body>
+    @if (User.Identity.IsAuthenticated)
+    {
+        <partial name="_Header_Remediacion_Login" />
+    }
+    else
+    {
+        <partial name="_Header_Remediacion" />
+    }
+
+    <div id="general">
+        <partial name="_MainButtons_Remediacion" />
+        <div class="content">
+            @RenderBody()
+        </div>
+    </div>
+    <partial name="_Footer" />
+
+    <div class="hide"> 
+        @RenderSection("scripts", required: false)
+        
+        <div class="ro-button loading fixed-hidden"></div><!-- preload loader icon gif -->
+    </div>
+</body>
+</html>

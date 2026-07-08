@@ -1,0 +1,12 @@
+{
+  "ServerUri": "https://sonar.acciona.com/sonar/",
+  "Organization": null,
+  "ProjectKey": "bes_GestorAltas__bes_GestorAltas",
+  "ProjectName": "bes_GestorAltas__bes_GestorAltas",
+  "Profiles": {
+    "CSharp": {
+      "ProfileKey": "AXXahrNAPbMh9fOf1ILs",
+      "ProfileTimestamp": "2022-03-11T10:57:09Z"
+    }
+  }
+}

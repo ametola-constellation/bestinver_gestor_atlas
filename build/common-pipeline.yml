@@ -1,0 +1,133 @@
+# ASP.NET
+# Build and test ASP.NET projects.
+# Add steps that publish symbols, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/apps/aspnet/build-aspnet-4
+
+trigger: none
+
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+  solution: '**/*.sln'
+  buildPlatform: 'Any CPU'
+  buildConfiguration: 'Release'
+
+steps:
+- task: NuGetToolInstaller@1
+  displayName: 'Use NuGet 4.4.1'
+  inputs:
+    versionSpec: 4.4.1
+
+- task: YarnInstaller@3
+  inputs:
+    versionSpec: '1.x'
+
+- task: CmdLine@2
+  inputs:
+    script: 'npm install -g node@8.12.0'
+
+- task: Yarn@3
+  displayName: 'Yarn install Public'
+  inputs:
+    projectDirectory: '$(System.DefaultWorkingDirectory)/BESTINVER.GestorAltas.Web.Public'
+
+- task: Yarn@3
+  displayName: 'Yarn install Management'
+  inputs:
+    projectDirectory: '$(System.DefaultWorkingDirectory)/BESTINVER.GestorAltas.Web.Management'
+
+
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'restore'
+    projects: '**/*.csproj'
+    feedsToUse: 'select'
+    vstsFeed: '39298fd1-2803-4eda-bd67-c1537b6db1dc/32f4b40d-794c-4488-ac18-29e1870d67d2'
+
+- task: gulp@1
+  displayName: 'Gulp Management .sass'
+  inputs:
+    gulpFile: 'BESTINVER.GestorAltas.Web.Management/gulpfile.js'
+    targets: 'sass'
+    enableCodeCoverage: false
+
+- task: gulp@1
+  displayName: 'Gulp Public .sass'
+  inputs:
+    gulpFile: 'BESTINVER.GestorAltas.Web.Public/gulpfile.js'
+    targets: 'sass'
+    enableCodeCoverage: false
+
+- task: gulp@1
+  displayName: 'Gulp Management .min'
+  inputs:
+    gulpFile: 'BESTINVER.GestorAltas.Web.Management/gulpfile.js'
+    targets: 'min'
+    enableCodeCoverage: false
+
+- task: gulp@1
+  displayName: 'Gulp Public .min'
+  inputs:
+    gulpFile: 'BESTINVER.GestorAltas.Web.Public/gulpfile.js'
+    targets: 'min'
+    enableCodeCoverage: false
+
+- task: SonarQubePrepare@5
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))
+  inputs:
+    SonarQube: 'SONAR'
+    scannerMode: 'MSBuild'
+    projectKey: '$(System.TeamProject)__$(Build.Repository.Name)'
+    projectName: '$(System.TeamProject)__$(Build.Repository.Name)'
+    projectVersion: '$(Build.BuildNumber)'
+
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'build'
+    projects: '**/*.csproj'
+    arguments: '--no-restore  /p:platform="$(BuildPlatform)" /p:PublishProfile="$(BuildConfiguration)" /p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactstagingdirectory)\$(BuildConfiguration)"'
+
+- task: SonarQubeAnalyze@5
+  displayName: Run Code Analysis
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))
+- task: SonarQubePublish@5
+  displayName: Publish Quality Gate Result
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))
+- task: PowerShell@2
+  displayName: Validar sonar
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))
+  inputs:
+    targetType: inline
+    script: >-
+      Write-Host "Token Sonar: $env:SonarToken"
+      Write-Host "Proyecto: $(System.TeamProject)__$(Build.Repository.Name)"
+      $token = [System.Text.Encoding]::UTF8.GetBytes("$(SonarToken)" + ":")
+      $base64 = [System.Convert]::ToBase64String($token)
+      $basicAuth = [string]::Format("Basic {0}", $base64)
+      $headers = @{ Authorization = $basicAuth }
+      $result = Invoke-RestMethod -Method Get -Uri "$(urlsonar)/sonar/api/qualitygates/project_status?projectKey=$(System.TeamProject)__$(Build.Repository.Name)" -Headers $headers
+      $result | ConvertTo-Json | Write-Host
+      if ($result.projectStatus.status -eq "OK") {
+          Write-Host "Quality Gate Succeeded"
+      }else{
+          throw "Quality gate failed"
+      }
+
+- task: CopyFiles@2
+  displayName: 'copy postman files'
+  inputs:
+    SourceFolder: '$(Build.SourcesDirectory)/BESTINVER.Wordpress.WS/Postman'
+    Contents: '**/*.json'
+    TargetFolder: '$(build.artifactstagingdirectory)'
+
+- task: PublishSymbols@2
+  inputs:
+    SearchPattern: '**/bin/**/*.pdb'
+    PublishSymbols: false
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'

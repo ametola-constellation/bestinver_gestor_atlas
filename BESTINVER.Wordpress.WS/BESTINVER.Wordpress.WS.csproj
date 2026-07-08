@@ -1,0 +1,60 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<TargetFramework>$(NetVersion)</TargetFramework>
+		<Configurations>Debug;Release;Development</Configurations>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+	</PropertyGroup>
+	
+	<PropertyGroup>
+		<DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+		<DockerDefaultTargetOS>Windows</DockerDefaultTargetOS>
+		<DockerComposeProjectPath>..\docker-compose.web.public.dcproj</DockerComposeProjectPath>
+		<CodeAnalysisRuleSet>..\.sonarlint\bes_gestoraltas__bes_gestoraltascsharp.ruleset</CodeAnalysisRuleSet>
+		<UserSecretsId>a1175015-3272-4a40-84cd-0c730788af02</UserSecretsId>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+		<GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Development|AnyCPU'">
+		<GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Compile Remove="Controllers\BaseController.cs" />
+		<Compile Remove="Controllers\ChartTimeItem.cs" />
+		<Compile Remove="Controllers\IMasterService.cs" />
+		<Compile Remove="Controllers\IProfitabilityService.cs" />
+		<Compile Remove="Controllers\ISchedulerService.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<AdditionalFiles Include="..\.sonarlint\bes_gestoraltas__bes_gestoraltas\CSharp\SonarLint.xml" Link="SonarLint.xml" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="AutoMapper" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" />
+		<PackageReference Include="Microsoft.CodeAnalysis.Analyzers">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" />
+		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" />
+		<PackageReference Include="Serilog.AspNetCore" />
+		<PackageReference Include="Serilog.Sinks.ApplicationInsights" />
+		<PackageReference Include="Swashbuckle.AspNetCore" />
+		<PackageReference Include="BestInver.Core.Http" VersionOverride="8.1.*" />
+		<PackageReference Include="BestInver.Core.Otel" VersionOverride="8.1.*" />
+		<PackageReference Include="BestInver.Core.Cache" VersionOverride="8.1.*" />
+		<PackageReference Include="AspNetCore.HealthChecks.Redis" />
+
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\BESTINVER.GestorAltas.MicroservicesProxy\BESTINVER.GestorAltas.MicroservicesProxy.csproj" />
+	</ItemGroup>
+
+</Project>

@@ -1,0 +1,201 @@
+﻿<ul id="applicant-test-questions" class="form_text-questions_list" data-bind="with: $root.CurrentKnowledgeTest">
+
+    <li class="form_text-questions_list_element" data-bind="with: fiscalQuestion">
+        <h4 class="form_text-questions_title" data-bind="text: questionText"></h4>
+        <div class="form_block-content big">
+            <label for="fiscal-residence"><span data-bind="html: questionLabel"></span></label>
+            <input type="text" name="fiscal-residence-name" id="fiscal-residence-name" data-bind="value: countryName" readonly="readonly">
+            <span class="error_message" data-bind="validationMessage: questionOK"></span>
+        </div>
+
+        <!-- ko if: selected()  -->
+
+        <div class="form_block-content big" data-bind="with: DocumentType">
+            <h4 class="form_text-questions_title" data-bind="text: questionText"></h4>
+            <label for="fiscal-residence-type"><span data-bind="html: questionLabel"></span></label>
+            <select id="fiscal-residence-type"
+                    data-bind="options: answers,  optionsText: 'label', value: value,
+            optionsCaption: 'Seleccionar tipo'" onchange="window.SetCleaveClass()"></select>
+            <span class="error_message" data-bind="validationMessage: questionOK"></span>
+        </div>
+
+        <div class="form_block-content big" data-bind="with: DocumentNnumber">
+            <h4 class="form_text-questions_title" data-bind="text: questionText"></h4>
+            <label for="fiscal-residence-number"><span data-bind="html: questionLabel"></span></label>
+            <input type="text" name="fiscal-residence-number" id="fiscal-residence-number" data-bind="value: value" maxlength="15" data-private>
+            <span class="error_message" data-bind="validationMessage: questionOK"></span>
+        </div>
+
+        <div class="form_block-content date" data-bind="with: DocumentExpirationDate">
+            <h4 class="form_text-questions_title" data-bind="text: questionText"></h4>
+            <label>
+                <span data-bind="html: questionLabel">
+                </span>
+            </label>
+            <input type="text" class="input-integer-2 numonly" placeholder="dd" max="31" min="1" name="fiscal-residence-expiration-day" id="fiscal-residence-expiration-day"
+                   data-bind="value: value().Day">
+            <input type="text" class="input-integer-2 numonly" placeholder="mm" max="12" min="1" name="fiscal-residence-expiration-month" id="fiscal-residence-expiration-month"
+                   data-bind="value: value().Month">
+            <input type="text" class="input-integer-4 numonly" placeholder="aaaa" max="9999" min="1900" name="fiscal-residence-expiration-year" id="fiscal-residence-expiration-year"
+                   data-bind="value: value().Year">
+            <span class="error_message" data-bind="validationMessage: questionOK"></span>
+        </div>
+
+        <div class="form_block-content big" data-bind="with: DocumentIdentification">
+            <h4 class="form_text-questions_title" data-bind="text: questionText"></h4>
+            <label for="fiscal-residence-identification"><span data-bind="html: questionLabel"></span></label>
+            <input type="text" name="fiscal-residence-identification" id="fiscal-residence-identification" data-bind="value: value" maxlength="15" data-private>
+            <span class="error_message" data-bind="validationMessage: questionOK"></span>
+        </div>
+
+        <!-- /ko -->
+    </li>
+
+    <li class="form_text-questions_list_element" data-bind="with: secondResidenceQuestion">
+        <h4 class="form_text-questions_title" data-bind="text: questionText"></h4>
+        <div class="form_block-content big">
+            <label for="second-residence-country"><span data-bind="html: questionLabel"></span></label>
+            <!-- ko if: enabled()  -->
+            <select id="second-residence-country"
+                    data-bind="options: MasterData.ForeignCountryList,  optionsText: 'valor', value: value, optionsCaption: 'Seleccionar país'"></select>
+            <!-- /ko -->
+            <!-- ko if: !enabled()  -->
+            <input type="text" name="second-residence-name" id="second-residence-name" value="Seleccionar país" readonly="readonly">
+            <!-- /ko -->
+            <span class="error_message" data-bind="validationMessage: questionOK"></span>
+        </div>
+
+        <!-- ko if: selected()  -->
+
+        <div class="form_block-content big" data-bind="with: SecondDocumentType">
+            <h4 class="form_text-questions_title" data-bind="text: questionText"></h4>
+            <label for="second-residence-type"><span data-bind="html: questionLabel"></span></label>
+            <select id="second-residence-type"
+                    data-bind="options: answers,  optionsText: 'label', value: value,
+            optionsCaption: 'Seleccionar tipo'" onchange="window.SetCleaveClass()"></select>
+            <span class="error_message" data-bind="validationMessage: questionOK"></span>
+        </div>
+
+        <div class="form_block-content big" data-bind="with: SecondDocumentNumber">
+            <h4 class="form_text-questions_title" data-bind="text: questionText"></h4>
+            <label for="second-residence-number"><span data-bind="html: questionLabel"></span></label>
+            <input type="text" name="second-residence-number" id="second-residence-number" data-bind="value: value" maxlength="15" data-private>
+            <span class="error_message" data-bind="validationMessage: questionOK"></span>
+        </div>
+
+        <div class="form_block-content date" data-bind="with: SecondDocumentExpirationDate">
+            <h4 class="form_text-questions_title" data-bind="text: questionText"></h4>
+            <label>
+                <span data-bind="html: questionLabel"></span>
+            </label>
+            <input type="text" class="input-integer-2 numonly" placeholder="dd" max="31" min="1" name="second-residence-expiration-day" id="second-residence-expiration-day"
+                   data-bind="value: value().Day">
+            <input type="text" class="input-integer-2 numonly" placeholder="mm" max="12" min="1" name="second-residence-expiration-month" id="second-residence-expiration-month"
+                   data-bind="value: value().Month">
+            <input type="text" class="input-integer-4 numonly" placeholder="aaaa" max="9999" min="1900" name="second-residence-expiration-year" id="second-residence-expiration-year"
+                   data-bind="value: value().Year">
+            <span class="error_message" data-bind="validationMessage: questionOK"></span>
+        </div>
+
+        <div class="form_block-content big" data-bind="with: SecondDocumentIdentification">
+            <h4 class="form_text-questions_title" data-bind="text: questionText"></h4>
+            <label for="second-residence-identification"><span data-bind="html: questionLabel"></span></label>
+            <input type="text" name="second-residence-identification" id="second-residence-identification" data-bind="value: value" maxlength="15" data-private>
+            <span class="error_message" data-bind="validationMessage: questionOK"></span>
+        </div>
+        <!-- /ko -->
+    </li>
+
+    <li class="form_text-questions_list_element" data-bind="with: usaSecurityNumberQuestion">
+        <h4 class="form_text-questions_title" data-bind="text: questionText"></h4>
+        <div class="form_block-content big">
+            <label><span data-bind="html: questionLabel"></span></label>
+            <input type="text" name="ssn-number" id="ssn-number" data-bind="value: value" maxlength="9" data-private>
+        </div>
+    </li>
+
+    <li class="form_text-questions_list_element" data-bind="with: publicQuestion">
+        <h4 class="form_text-questions_title" data-bind="text: questionText"></h4>
+        <div class="form_block-content big">
+            <label>
+                <span data-tltooltip="Persona de responsabilidad pública (PRP): Personas físicas que desempeñen o hayan desempeñado funciones públicas a escala comunitaria, nacional e internacional contempladas en la “Auto declaración”. No se incluyen en esta categoría de Responsabilidad Pública a los empleados públicos de niveles intermedios o inferiores.">
+                    Persona con Responsabilidad Pública (cargo vigente o cesado en los dos últimos dos años)<sup>1</sup>
+                </span>
+            </label>
+            <select id="is-public-person" data-bind="options: answers,  optionsText: 'label', value: value, optionsCaption: 'Seleccionar una respuesta'"></select>
+        </div>
+
+        <!-- ko if:showextended() -->
+        <div class="form_block-content big">
+            <label for="public-position-entity"><span>Entidad</span></label>
+            <input type="text" name="public-position-entity" id="public-position-entity" data-bind="value: entity().value" maxlength="40">
+
+            <label for="public-position-department"><span>Departamento</span></label>
+            <input type="text" name="public-position-department" id="public-position-department" data-bind="value: department().value" maxlength="40">
+
+            <label for="public-position-pos"><span>Cargo</span></label>
+            <input type="text" name="public-position-pos" id="public-position-pos" data-bind="value: position().value" maxlength="40">
+        </div>
+        <!-- /ko -->
+
+        <div class="form_block-content big">
+            <span class="error_message" data-bind="validationMessage: questionOK"></span>
+        </div>
+    </li>
+
+    <!-- ko if: visiblePrp()  -->
+
+    <li class="form_text-questions_list_element" data-bind="with: prpQuestion">
+        <h4 class="form_text-questions_title" data-bind="text: questionText"></h4>
+        <div class="form_block-content big">
+            <label><span data-bind="html: questionLabel"></span></label>
+        </div>
+        <!-- ko foreach: answers -->
+        <div class="form_block-content big">
+            <input type="checkbox" data-bind="attr:{id: 'prp-answer' + id()  , name: 'prp-answer' + id() } ,
+                       checked: checked , click: $parent.manageCheck" />
+            <label data-bind="attr: {for: 'prp-answer' + id() }">
+                <i class="icon"></i>
+                <span class="text" data-bind="text: label"></span>
+            </label>
+            <!-- ko if: checked()  -->
+            <div class="form_block-content big tl-prp-detalle" data-bind="attr:{id: 'prp-extended' + id()}" style="display: block;">
+                <label data-bind="attr:{for: 'prp-extended' + id()}"><span>Detallar</span></label>
+                <input type="text" class="form-control" data-bind="value: extendedtext, attr:{id: 'prp-extended' + id(), name: 'prp-extended' + id()}" maxlength="40" />
+            </div>
+            <!-- /ko -->
+        </div>
+
+        <!-- /ko -->
+        <div class="form_block-content big">
+            <span class="error_message" data-bind="validationMessage: questionOK"></span>
+        </div>
+    </li>
+
+    <!-- /ko -->
+
+    <li class="form_text-questions_list_element" data-bind="with: ongQuestion">
+        <h4 class="form_text-questions_title" data-bind="text: questionText"></h4>
+
+        <div class="form_block-content big">
+            <label data-bind="html: questionLabel"></label>
+            <select id="is-ong-person" data-bind="options: answers,  optionsText: 'label', value: value, optionsCaption: 'Seleccionar una respuesta'"></select>
+        </div>
+
+        <!-- ko if:showextended() -->
+        <div class="form_block-content big">
+            <label for="ong-entity"><span>Entidad</span></label>
+            <input type="text" name="ong-entity" id="ong-entity" data-bind="value: entity().value" maxlength="40">
+
+            <label for="ong-pos"><span>Cargo</span></label>
+            <input type="text" name="ong-pos" id="ong-pos" data-bind="value: position().value" maxlength="40">
+        </div>
+        <!-- /ko -->
+
+
+        <div class="form_block-content big">
+            <span class="error_message" data-bind="validationMessage: questionOK"></span>
+        </div>
+    </li>
+
+</ul>

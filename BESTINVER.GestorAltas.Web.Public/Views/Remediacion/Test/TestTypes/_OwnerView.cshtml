@@ -1,0 +1,121 @@
+﻿@{
+    string ApplicantRequestName = Model.ApplicantRequestName;
+}
+
+<div class="form_block-content big title"><span class="form_block-title"></span></div>
+<div class="form_block-content big subtitle"><span class="form_block-subtitle">Datos personales titular real</span></div>
+
+<div class="form_block-content">
+    <label for="personaldata-coowner-document-type-real-owner"><span>Tipo de documento de identidad</span></label>
+    <select id="personaldata-coowner-document-type-real-owner"
+            data-bind="options: $root.ApplicantDocumentTypes(),  optionsText: 'valor', value: DocumentType"></select>
+    <span class="error_message" data-bind="validationMessage: DocumentType"></span>
+</div>
+
+<div class="form_block-content">
+    <label for="personaldata-coowner-nif-real-owner"><span>NIF</span></label>
+    <input type="text" name="personaldata-coowner-nif-real-owner" id="personaldata-coowner-nif-real-owner" data-bind="value:DNI, valueUpdate: 'afterkeydown', event:{focusout:CheckDNI}" data-private required>
+    <span class="error_message" data-bind="validationMessage: DNI"></span>
+</div>
+
+<div class="form_block-content">
+    <label for="personaldata-coowner-name-real-owner"><span>Nombre</span></label>
+    <input type="text" name="personaldata-coowner-name-real-owner" id="personaldata-coowner-name-real-owner" data-bind="value:Name, valueUpdate: 'afterkeydown'" maxlength="20" data-private>
+    <span class="error_message" data-bind="validationMessage: Name"></span>
+</div>
+
+<div class="form_block-content">
+    <label for="personaldata-coowner-first-surname-real-owner"><span>Primer Apellido</span></label>
+    <input type="text" name="personaldata-coowner-first-surname-real-owner" id="personaldata-coowner-first-surname-real-owner" data-bind="value:FirstSurname, valueUpdate: 'afterkeydown'" maxlength="30" data-private>
+    <span class="error_message" data-bind="validationMessage: FirstSurname"></span>
+</div>
+
+<div class="form_block-content">
+    <label for="personaldata-coowner-second-surname-real-owner"><span>Segundo Apellido</span></label>
+    <input type="text" name="personaldata-coowner-second-surname-real-owner" id="personaldata-coowner-second-surname-real-owner" data-bind="value:SecondSurname, valueUpdate: 'afterkeydown'" maxlength="30" data-private>
+    <span class="error_message" data-bind="validationMessage: SecondSurname"></span>
+</div>
+
+
+<div class="form_block-content date">
+    <label for="personaldata-coowner-birthday-day"><span>Fecha de nacimiento</span><span class="optional">(dd/mm/aaaa)</span></label>
+    <input type="text" class="input-integer-2 numonly" placeholder="dd" max="31" min="1" name="personaldata-coowner-birthday-day-real-owner" id="personaldata-coowner-birthday-day-real-owner" data-bind="value: Birthday().Day">
+    <input type="text" class="input-integer-2 numonly" placeholder="mm" max="12" min="1" name="personaldata-coowner-birthday-month-real-owner" id="personaldata-coowner-birthday-month-real-owner" data-bind="value: Birthday().Month">
+    <input type="text" class="input-integer-4 numonly birthyear" placeholder="aaaa" max="9999" min="1900" name="personaldata-coowner-birthday-year-real-owner" id="personaldata-coowner-birthday-year-real-owner" data-bind="value: Birthday().Year">
+    <span class="error_message" data-bind="validationMessage: Birthday"></span>
+</div>
+
+<div class="form_block-content date" data-bind="visible: ShowDocumentExpirationDate">
+    <label for="personaldata-coownner-expiration-day"><span>Fecha caducidad NIF / NIE</span></label>
+    <input type="text" class="input-integer-2 numonly" placeholder="dd" max="31" min="1" name="personaldata-coownner-expiration-day-real-owner" id="personaldata-coownner-expiration-day-real-owner" data-bind="value: IDDocumentExpirationDate().Day">
+    <input type="text" class="input-integer-2 numonly" placeholder="mm" max="12" min="1" name="personaldata-coownner-expiration-month-real-owner" id="personaldata-coownner-expiration-month-real-owner" data-bind="value: IDDocumentExpirationDate().Month">
+    <input type="text" class="input-integer-4 numonly" placeholder="aaaa" max="9999" min="1" name="personaldata-coownner-expiration-year-real-owner" id="personaldata-coownner-expiration-year-real-owner" data-bind="value: IDDocumentExpirationDate().Year">
+    <span class="error_message" data-bind="validationMessage: IDDocumentExpirationDate"></span>
+</div>
+
+<div class="form_block-content big" data-bind="visible: ShowPermanentValidity">
+    <input type="checkbox" id="personaldata-permanent-expiration-real-owner" data-bind="checked: IDDocumentIsPermanent">
+    <label for="personaldata-permanent-expiration-real-owner">
+        <i class="icon"></i>
+        <div class="text">Validez permanente del DNI / NIE</div>
+    </label>
+</div>
+
+<div class="form_block-content">
+    <label for="personaldata-nationality-real-owner"><span>Nacionalidad</span></label>
+    <select id="personaldata-nationality-real-owner"
+            data-bind="options: $root.nacionalityCollection(),  optionsText: 'valor', value: Nationality,
+                            optionsCaption: 'Seleccionar nacionalidad'"></select>
+    <span class="error_message" data-bind="validationMessage: Nationality"></span>
+</div>
+
+<div class="form_block-content">
+    <label for="personaldata-country-real-owner"><span>País de nacimiento</span></label>
+    <select id="personaldata-country-real-owner"
+            data-bind="options: $root.countryCollection(), optionsText: 'valor' , value: Country,
+                            optionsCaption: 'Seleccionar país'"></select>
+    <span class="error_message" data-bind="validationMessage: Country"></span>
+</div>
+
+<div class="form_block-content">
+    <label for="personaldata-birthday-place-real-owner"><span>Lugar de nacimiento</span></label>
+    <input type="text" name="personaldata-birthday-place-real-owner" id="personaldata-birthday-place-real-owner" data-bind="value:BornPlace" maxlength="40">
+    <span class="error_message" data-bind="validationMessage: BornPlace"></span>
+</div>
+
+
+<!-- ko if:  IsPercentageRequired()  -->
+<div class="form_block-content">
+    <label for="personaldata-coowner-percentage-real-owner"><span>Porcentaje</span></label>
+    <input name="personaldata-coowner-percentage-real-owner" id="personaldata-coowner-percentage-real-owner" maxlength="5" min="25" max="100" required=""
+           data-bind="value:Percentage, valueUpdate: 'afterkeydown'"
+           type="text" class="input-decimal-2">
+    <span class="error_message" data-bind="validationMessage: Percentage"></span>
+</div>
+<!-- /ko -->
+
+
+<div class="form_block-content">
+    <label for="personaldata-coowner-usa-fiscalnumber-real-owner"><span>Número de identificación fiscal atribuido, en su caso, por EEUU</span></label>
+    <input type="text" name="personaldata-coowner-usa-fiscalnumber-real-owner" id="personaldata-coowner-usa-fiscalnumber-real-owner" data-bind="value:UsaFiscalNumber" maxlength="9" data-private required>
+</div>
+
+<!-- ko if:  ShowAddressInfo()  -->
+
+<div class="form_block-content big">
+    <input type="checkbox"
+           data-bind="attr: {id: 'same-address-check-' + '@ApplicantRequestName', name:'same-address-check-' + '@ApplicantRequestName'},
+           checked: SameTitularAddress" onchange="return false;">
+    <label data-bind="attr: {for: 'same-address-check-' + '@ApplicantRequestName'}">
+        <i class="icon"></i>
+        <div class="text">Misma dirección fiscal que el titular</div>
+    </label>
+</div>
+
+<div class="form_block" style="margin-top: 30px"
+     data-bind="attr: {id: 'owner-address-' + '@ApplicantRequestName'},
+     with:FiscalAddress, visible:  !SameTitularAddress()">
+    @{ await Html.RenderPartialAsync("_AddressView"); }
+</div>
+
+<!-- /ko -->

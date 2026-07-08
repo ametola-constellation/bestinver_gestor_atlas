@@ -1,0 +1,20 @@
+﻿<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Tipo de Contratación</th>
+            <th>Forma de Pago</th>
+            <th>Importe</th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody data-bind="foreach:OperationsByProduct">
+        <tr>
+            <td data-bind="text:OperationTypeName"></td>
+            <td data-bind="text:TransferTypeName"></td>
+            <td data-bind="customtext:Amount" data-private></td>
+            <td><a href="#"><span data-bind="click:$root.BeginUpdateOperation">Editar</span> </a></td>
+            <td><a href="#"><span data-bind="click:$root.DeleteOperation">Eliminar</span> </a></td>
+        </tr>
+    </tbody>
+</table>

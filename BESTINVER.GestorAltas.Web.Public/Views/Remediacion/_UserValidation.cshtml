@@ -1,0 +1,15 @@
+﻿<div class="form_block-content">
+    <label for="personaldata-birthday-place"><span data-bind="text: userValidationModel().inputTitle"></span></label>
+    <input type="text" name="user-validation-codigo" id="user-validation-codigo" maxlength="20"
+           data-bind="value: userValidationModel().userValidationInputValue, placeholder: userValidationModel().inputPlaceHolder()">
+
+    <span class="error_message" data-bind="text: userValidationModel().errorMessage"></span>
+</div>
+
+<div class="form_block-content buttons big">
+    <div class="button_next">
+        <a id="user_validation" href="" title="Continuar" class="button brown toWhite" data-bind="click:function () { userValidationModel().userValidation(); }">
+            <span>Continuar</span>
+        </a>
+    </div>
+</div>

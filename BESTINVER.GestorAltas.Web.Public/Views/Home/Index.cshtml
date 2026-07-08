@@ -1,0 +1,77 @@
+﻿@Html.AntiForgeryToken();
+
+<script language="javascript" type="text/javascript">
+
+    var localStorageEnabled = true;
+    try {
+        // Test webstorage existence.
+        if (!window.localStorage || !window.sessionStorage) throw "exception";
+        // Test webstorage accessibility - Needed for Safari private browsing.
+        localStorage.setItem('storage_test', 1);
+        localStorage.removeItem('storage_test');
+    } catch (e) {
+        localStorageEnabled = false;
+    }
+
+    if (!localStorageEnabled) {
+        $('#errorStorage .error_message').text('Tu navegador no es compatible en modo privado con el proceso de alta. Por favor, inicia el navegador en modo normal.');
+        $('.registration_inner').addClass('hidden');
+        $('#errorStorage').removeClass('hidden');
+    }
+
+    $(document).ready(function () {
+        $.blockUI.defaults.css.cursor = "dafault";
+        $.blockUI.defaults.css.backgroundColor = "#fff";
+        $.blockUI.defaults.overlayCSS.cursor = "default";
+        $.blockUI.defaults.overlayCSS.backgroundColor = "#fff";
+
+        var fisicaLink = '@(Url.Action("Index", "Register", null)+(Context.Request.QueryString.ToString() != ""? "?"+Context.Request.QueryString.ToString():""))'.replace("&amp;", "&");
+        var juridicaLink = '@(Url.Action("Index", "Juridica", null)+ (Context.Request.QueryString.ToString() != ""? "?" + Context.Request.QueryString.ToString() : ""))'.replace("&amp;", "&");
+        var extranjeroLink = '@(Url.Action("Index", "Extranjero", null)+ (Context.Request.QueryString.ToString() != ""? "?" + Context.Request.QueryString.ToString() : ""))'.replace("&amp;", "&");
+
+        $('#input_type').click(function () {
+            $('#btn-select-person').attr("href", fisicaLink);
+            $('#btn-select-person').removeClass("disabled");
+        });
+        $('#externaltransfer_type').click(function () {
+            $('#btn-select-person').attr("href", juridicaLink);
+            $('#btn-select-person').removeClass("disabled");
+        });
+        $('#foreign_type').click(function () {
+            $('#btn-select-person').attr("href", extranjeroLink);
+            $('#btn-select-person').removeClass("disabled");
+        });
+        $('#btn-select-person').click(function () {
+            $(this).addClass('loading');
+        });
+
+        var IsAuthenticated = '@User.Identity.IsAuthenticated.ToString().ToLower()' === 'true';
+        if (IsAuthenticated) {
+            window.DigitalData.push({
+                "event": "event",
+                "eventCategory": 'interno',
+                "eventAction": '@User.Identity.Name'
+            });
+        }
+    });
+</script>
+
+<div>
+    <div id="select-person-content" class="registration_form">
+        <div class="registration_inner">
+            <partial name="_SelectPersonView" />
+            <div class="form_block buttons">
+                <div class="form_block-content buttons big">
+                    <div class="button_next">
+                        <a id="btn-select-person" href="" title="Continuar" class="button brown toWhite disabled"><span>Continuar</span></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="registration_inner hidden" id="errorStorage">
+            <div class="form_block-content general_error error">
+                <span class="error_message"></span>
+            </div>
+        </div>
+    </div>
+</div>

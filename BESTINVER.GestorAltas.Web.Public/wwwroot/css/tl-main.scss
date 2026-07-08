@@ -1,0 +1,95 @@
+﻿/*** Form conveniencia********/
+
+
+.form_text-tl-p {
+    display: block;
+    font-family: "Acciona-ExtraLight";
+    font-size: 1rem;
+    line-height: 28px;
+    color: #808080;
+    font-weight: 400;
+    margin-bottom: 25px;
+}
+
+
+.form_text-tl-h5 {
+    font-family: "Acciona-Bold";
+    font-size: 0.625rem;
+    line-height: 1.8em;
+    letter-spacing: 0.12em;
+    font-weight: 400;
+    text-transform: uppercase;
+    font-style: normal;
+    color: #000000;
+    display: block;
+    margin-top: 25px;
+    margin-bottom: 15px;
+}
+
+.form_text-questions_tl_list {
+    margin-bottom: 45px;
+}
+
+.tl-hidden {
+    display: none;
+}
+
+.registration_form .form_text-questions_title ~ .form_block-content select.tl-big {
+    max-width: 100%;
+}
+
+.select2-container {
+    width: 100% !important;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    font-size: 1rem;
+}
+
+.select2-container--default .select2-selection--single {
+    width: 100%;
+    display: inline-block;
+    vertical-align: top;
+    font-family: "Acciona-ExtraLight";
+    font-size: 1rem;
+    line-height: 1.75em;
+    letter-spacing: 0em;
+    font-weight: 400;
+    text-transform: none;
+    font-style: normal;
+    border: 1px solid #cccccc;
+    padding: 15px 45px 15px 12px;
+    box-sizing: border-box;
+    background-image: url(../svg/arrow-down.svg);
+    background-repeat: no-repeat;
+    background-position: top 25px right 15px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.43, 0.39, 0.23, 1.01);
+    border-radius: 0px;
+    height: 60px;
+}
+
+.select2-container--default .select2-selection--single:hover {
+    background-position: top 30px right 15px;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    display: none;
+}
+
+
+/*** Form conveniencia********/
+
+/*Fix call buttom*/
+
+#phone-button {
+    transform: translate(0px);
+}
+
+@media only screen and (max-width : 680px) {
+    #phone-button {
+        transform: translate(50px,-50px);
+    }
+}
+
+/*Fix call buttom*/

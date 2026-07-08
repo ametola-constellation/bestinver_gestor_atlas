@@ -1,0 +1,76 @@
+﻿<div data-bind="with: MainApplicant().ApplicantBasicData">
+    <div class="row" has-error>
+        <div class="form-group col-md-6">
+            <label for="Name" class="control-label">Razón social</label>
+            <input id="Name" name="Name" type="text" class="form-control"
+                   data-bind="value:Name, validationElement: Name" maxlength="50" />
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="form-group col-md-6">
+            <label for="Email" class="control-label">Email</label>
+            <input id="Email" name="Email" type="email" class="form-control"
+                   data-bind="value:Email, validationElement: Email" maxlength="50" />
+        </div>
+        <div class="form-group col-md-6">
+            <label for="MobilePhoneNumber" class="control-label">Teléfono móvil</label>
+            <input id="MobilePhoneNumber" name="MobilePhoneNumber" type="number" class="form-control" 
+                   data-bind="value:MobilePhoneNumber, validationElement: MobilePhoneNumber" />
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="form-group col-md-6">
+            <label for="DNI" class="control-label">CIF (Con letra)</label>
+            <input id="DNI" name="DNI" type="text" class="form-control"
+                   data-bind="value:DNI, validationElement: DNI" maxlength="9" />
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="form-group col-md-12">
+            <label>
+                <p><input type="checkbox" data-bind="checked: Legal" /> He leído y acepto las <a href="#" data-bind="click:ShowConditions">condiciones legales y la política de privacidad</a></p>
+            </label>
+        </div>
+    </div>
+
+    <div id="legal-conditions" class="" style="display:none">
+        <p>
+            Este Sitio Web ha sido creado por BESTINVER S.A. – en adelante BESTINVER- con CIF: A78581881, domicilio social en calle
+            Juan de Mena numero 8 de Madrid. Inscrita el Rº Mercantil de Madrid al folio 56, tomo 6431 General, Hoja M-104755
+        </p>
+        <p>
+            1. TÉRMINOS Y CONDICIONES
+            Las presentes Condiciones Generales regulan el uso del Sitio Web de Internet "www.bestinver.es" (el "Sitio Web") que se pone
+            a su disposición como usuario (el "Usuario"). La utilización del Sitio Web supone la aceptación plena por el Usuario de todas
+            las Condiciones Generales de Uso del Sitio Web vigentes en cada momento en que el Usuario acceda al mismo. BESTINVER
+            se reserva el derecho de actualizar, modificar o eliminar en cualquier momento las presentes Condiciones Generales de Uso
+            del Sitio Web así como cualesquiera otras condiciones generales o particulares, reglamentos de uso, instrucciones o avisos
+            que resulten de aplicación. Asimismo, BESTINVER se reserva el derecho de suspender, interrumpir o dejar de operar el Sitio
+            Web en cualquier momento. Los servicios ofrecidos por BESTINVER se dirigen a inversores residentes en España. Todas
+            aquellas personas físicas o jurídicas residentes o domiciliadas en otros países de la Unión Europea o fuera de la Unión Europea
+            deberán asegurarse de que el acceso y uso del mismo y/o de su contenido las está permitido de conformidad con su propia
+            legislación. El envío o solicitud de información de cualquiera de los servicios ofrecidos por BESTINVER en el presente Sitio
+            Web por parte de un Usuario que no cumpla con el requisito de residencia en España, y que no solicite información conforme
+            al procedimiento señalado anteriormente se entenderá realizado bajo su exclusiva responsabilidad, exonerando a BESTINVER
+            de cualquier responsabilidad al respecto.
+        </p>
+        <p>
+            2. OBJETO
+            A través del Sitio Web, BESTINVER facilita y pone a disposición de los Usuarios y/o sus Clientes el acceso a diversos
+            contenidos, información y datos (los Contenidos) del GRUPO BESTINVER o de terceros proveedores de servicios y
+            contenidos. BESTINVER se reserva la facultad de actualizar e introducir cuantas modificaciones y cambios estime
+            convenientes en cualquier momento y sin previo aviso en relación a: la presentación (incluyendo el look-and-feel), la
+            configuración, la localización del Sitio Web, así como a los Contenidos y a las condiciones requeridas para utilizar los mismos.
+        </p>
+    </div>
+
+    <div class="form-group text-right">
+        <button type="button" class="btn btn-default" id="btncontinuar" data-loading-text="<img src='../../Content/img/ajax-loader.gif'/> Guardando"
+                data-bind="click:function () { CreateBasicData($root); }, enable:Legal">
+            Continuar
+        </button>
+    </div>
+</div>

@@ -1,0 +1,174 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger: none
+
+pool:
+  vmImage: ubuntu-latest
+  
+variables:
+- group: Connections
+
+jobs:
+- job: Build_push_onboarding
+  condition: true
+  displayName: Build & push bes_GestorAltas onboarding
+  steps:
+  - checkout: self
+    submodules: true
+  - task: Bash@3
+    displayName: Version
+    inputs:
+      targetType: 'inline'
+      script: |
+        # SCRIPT PARA USAR LAST TAG GIT como buildnumber
+        # este script actualiza la variable de azure repos buildnumber por lo tanto solo es util
+        # para lanzarlo desde los pipes de azure devops
+        # se tiene que crear la invocacion al script y seleccionar el script 
+        IFS="-"
+        version=$(git log -n1000 --pretty='format:%d' | sed 's/, /\n/g' | grep 'tag:' | sed -E 's/^[ \t\(]*tag: //g' | sed -E 's/\)[ \t]*$//g' | grep -i '^[0-9\.]\+\(-KO\|-RT\|-RST\)\( \)*$' | head -n 1)
+        set $version
+        newbuildnumber=$1
+        echo $newbuildnumber
+        echo "##vso[build.updatebuildnumber]$newbuildnumber"
+
+  - task: Docker@2
+    displayName: Compilacion docker bes_GestorAltas onboarding
+    inputs:
+      containerRegistry: 'bestinver-docker-deploy-acciona-devops-bes_WebPrivadaCloud'
+      repository: 'bes_WebPrivadaCloud/Bestinver.gestoraltas.onboarding'
+      command: 'build'
+      Dockerfile: '$(System.DefaultWorkingDirectory)/BESTINVER.GestorAltas.Web.Public/Dockerfile'
+      buildContext: '$(System.DefaultWorkingDirectory)'
+      tags: '$(Build.BuildNumber)'
+      arguments: '--build-arg NUGET_USER=$(JFROG_USER) --build-arg NUGET_PASSWORD=$(JFROG_PASS)'
+  - task: JFrogDocker@1
+    displayName: Subida docker bes_GestorAltas onboarding 
+    inputs:
+      command: 'Push'
+      artifactoryConnection: 'JFROG - BESTINVER-bes_WebPrivadaCloud'
+      imageName: 'articloudpro-bestinver-docker-deploy.jfrog.io/bes_webprivadacloud/bestinver.gestoraltas.onboarding:$(Build.BuildNumber)'
+      threads: '3'
+      skipLogin: false
+
+- job: Build_push_remediation
+  condition: true
+  displayName: Build & push bes_GestorAltas remediation
+  steps:
+  - checkout: self
+    submodules: true
+  - task: Bash@3
+    displayName: Version
+    inputs:
+      targetType: 'inline'
+      script: |
+        # SCRIPT PARA USAR LAST TAG GIT como buildnumber
+        # este script actualiza la variable de azure repos buildnumber por lo tanto solo es util
+        # para lanzarlo desde los pipes de azure devops
+        # se tiene que crear la invocacion al script y seleccionar el script 
+        IFS="-"
+        version=$(git log -n1000 --pretty='format:%d' | sed 's/, /\n/g' | grep 'tag:' | sed -E 's/^[ \t\(]*tag: //g' | sed -E 's/\)[ \t]*$//g' | grep -i '^[0-9\.]\+\(-KO\|-RT\|-RST\)\( \)*$' | head -n 1)
+        set $version
+        newbuildnumber=$1
+        echo $newbuildnumber
+        echo "##vso[build.updatebuildnumber]$newbuildnumber"
+  - task: Docker@2
+    displayName: Compilacion docker bes_GestorAltas remediation
+    inputs:
+      containerRegistry: 'bestinver-docker-deploy-acciona-devops-bes_WebPrivadaCloud'
+      repository: 'bes_WebPrivadaCloud/Bestinver.gestoraltas.remediation'
+      command: 'build'
+      Dockerfile: '$(System.DefaultWorkingDirectory)/BESTINVER.GestorAltas.Web.Public/Dockerfile'
+      buildContext: '$(System.DefaultWorkingDirectory)'
+      tags: '$(Build.BuildNumber)'
+      arguments: '--build-arg NUGET_USER=$(JFROG_USER) --build-arg NUGET_PASSWORD=$(JFROG_PASS)'
+  - task: JFrogDocker@1
+    displayName: Subida docker bes_GestorAltas remediation  
+    inputs:
+      command: 'Push'
+      artifactoryConnection: 'JFROG - BESTINVER-bes_WebPrivadaCloud'
+      imageName: 'articloudpro-bestinver-docker-deploy.jfrog.io/bes_webprivadacloud/bestinver.gestoraltas.remediation:$(Build.BuildNumber)'
+      threads: '3'
+      skipLogin: false
+
+- job: Build_push_middleoffice
+  condition: true
+  displayName: Build & push bes_GestorAltas middleoffice
+  steps:
+  - checkout: self
+    submodules: true
+  - task: Bash@3
+    displayName: Version
+    inputs:
+      targetType: 'inline'
+      script: |
+        # SCRIPT PARA USAR LAST TAG GIT como buildnumber
+        # este script actualiza la variable de azure repos buildnumber por lo tanto solo es util
+        # para lanzarlo desde los pipes de azure devops
+        # se tiene que crear la invocacion al script y seleccionar el script 
+        IFS="-"
+        version=$(git log -n1000 --pretty='format:%d' | sed 's/, /\n/g' | grep 'tag:' | sed -E 's/^[ \t\(]*tag: //g' | sed -E 's/\)[ \t]*$//g' | grep -i '^[0-9\.]\+\(-KO\|-RT\|-RST\)\( \)*$' | head -n 1)
+        set $version
+        newbuildnumber=$1
+        echo $newbuildnumber
+        echo "##vso[build.updatebuildnumber]$newbuildnumber"
+  - task: Docker@2
+    displayName: Compilacion docker bes_GestorAltas middleoffice
+    inputs:
+      containerRegistry: 'bestinver-docker-deploy-acciona-devops-bes_WebPrivadaCloud'
+      repository: 'bes_WebPrivadaCloud/Bestinver.gestoraltas.middleoffice'
+      command: 'build'
+      Dockerfile: '$(System.DefaultWorkingDirectory)/BESTINVER.GestorAltas.Web.Management/Dockerfile'
+      buildContext: '$(System.DefaultWorkingDirectory)'
+      tags: '$(Build.BuildNumber)'
+      arguments: '--build-arg NUGET_USER=$(JFROG_USER) --build-arg NUGET_PASSWORD=$(JFROG_PASS)'
+  - task: JFrogDocker@1
+    displayName: Subida docker bes_GestorAltas middleoffice
+    inputs:
+      command: 'Push'
+      artifactoryConnection: 'JFROG - BESTINVER-bes_WebPrivadaCloud'
+      imageName: 'articloudpro-bestinver-docker-deploy.jfrog.io/bes_webprivadacloud/bestinver.gestoraltas.middleoffice:$(Build.BuildNumber)'
+      threads: '3'
+      skipLogin: false
+
+- job: Build_push_ws
+  condition: true
+  displayName: Build & push bes_GestorAltas ws
+  steps:
+  - checkout: self
+    submodules: true
+  - task: Bash@3
+    displayName: Version
+    inputs:
+      targetType: 'inline'
+      script: |
+        # SCRIPT PARA USAR LAST TAG GIT como buildnumber
+        # este script actualiza la variable de azure repos buildnumber por lo tanto solo es util
+        # para lanzarlo desde los pipes de azure devops
+        # se tiene que crear la invocacion al script y seleccionar el script 
+        IFS="-"
+        version=$(git log -n1000 --pretty='format:%d' | sed 's/, /\n/g' | grep 'tag:' | sed -E 's/^[ \t\(]*tag: //g' | sed -E 's/\)[ \t]*$//g' | grep -i '^[0-9\.]\+\(-KO\|-RT\|-RST\)\( \)*$' | head -n 1)
+        set $version
+        newbuildnumber=$1
+        echo $newbuildnumber
+        echo "##vso[build.updatebuildnumber]$newbuildnumber"
+  - task: Docker@2
+    displayName: Compilacion docker bes_GestorAltas ws
+    inputs:
+      containerRegistry: 'bestinver-docker-deploy-acciona-devops-bes_WebPrivadaCloud'
+      repository: 'bes_WebPrivadaCloud/Bestinver.gestoraltas.ws'
+      command: 'build'
+      Dockerfile: '$(System.DefaultWorkingDirectory)/BESTINVER.Wordpress.WS/Dockerfile'
+      buildContext: '$(System.DefaultWorkingDirectory)'
+      tags: '$(Build.BuildNumber)'
+      arguments: '--build-arg NUGET_USER=$(JFROG_USER) --build-arg NUGET_PASSWORD=$(JFROG_PASS)'
+  - task: JFrogDocker@1
+    displayName: Subida docker bes_GestorAltas ws 
+    inputs:
+      command: 'Push'
+      artifactoryConnection: 'JFROG - BESTINVER-bes_WebPrivadaCloud'
+      imageName: 'articloudpro-bestinver-docker-deploy.jfrog.io/bes_webprivadacloud/bestinver.gestoraltas.ws:$(Build.BuildNumber)'
+      threads: '3'
+      skipLogin: false

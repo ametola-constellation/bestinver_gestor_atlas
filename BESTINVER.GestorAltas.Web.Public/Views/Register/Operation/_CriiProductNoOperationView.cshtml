@@ -1,0 +1,43 @@
+﻿ <!-- ko if: !ProductIsEditing() -->
+<ul class="form_steps-list" data-bind="foreach: listaOtherProducts">
+    <li>
+        <h3 class="form_steps-title">
+            <span data-bind="text: Name"></span>
+        </h3>
+    </li>
+</ul>
+
+<div class="form_block" ></div>
+
+<div id="operation-buttons-content" class="form_block buttons">
+    <div class="form_block-content buttons big">
+        <div class="button_back">
+            <a href="" title="Datos básicos" class="link brown darken back" data-bind="click: $root.goToPrevioustStep">
+                <i class="arrow">
+                    <svg width="5" height="8" viewBox="0 0 5 8" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M1.143 0L0 1.25 2.514 4 0 6.75 1.143 8 4.8 4z" fill="#B59971" fill-rule="evenodd" />
+                    </svg>
+                </i><span>Atrás</span>
+            </a>
+        </div>
+        <div class="button_next">
+            <a href="" title="Producto" class="button brown toWhite" data-bind="click:BeginCreateProduct"><span>Contratar otro producto</span></a>
+        </div>
+        <div class="button_next">
+            <a href="" title="Continuar" class="button brown toWhite" data-bind="click: CreateListOperationData"><span>Continuar</span></a>
+        </div>
+    </div>
+</div>
+<!-- /ko -->
+
+<!-- ko if: ProductIsEditing -->
+<div class="form_block" data-bind="with: ProductModel , visible: ProductIsEditing">
+    @{ await Html.RenderPartialAsync("Product/_ProductSelectView"); }
+    <div class="form_block buttons">
+        <div class="form_block-content buttons big">
+            <div class="button_back"><a href="" title="Cancelar" class="link brown darken" data-bind="click:$root.CancelProduct"><span>Cancelar</span></a></div>
+            <div id="btn-select-product" class="button_next"><a href="" title="Continuar" class="button brown toWhite" data-bind="click: $root.CreateProduct, css:{disabled:!vm.ProductModel().Product()}"><span>Continuar</span></a></div>
+        </div>
+    </div>
+</div>
+<!-- /ko -->
