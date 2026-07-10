@@ -1,0 +1,756 @@
+{
+  "metadata": {
+    "project_key": "BG",
+    "project_name": "Bestinver-GestorAtlas",
+    "source_url": "https://constellationconsulting.atlassian.net/jira/software/projects/BG/boards/261/backlog",
+    "source_plan": "../Plan_Jira_Migracion_WebPublic.md",
+    "purpose": "Creacion de epics y tareas para migrar BESTINVER.GestorAltas.Web.Public de Knockout a React",
+    "generated_at": "2026-07-08",
+    "generated_items": 75,
+    "default_labels": [
+      "bestinver-gestor-atlas",
+      "knockout-react",
+      "migration"
+    ]
+  },
+  "items": [
+    {
+      "order": 1,
+      "local_id": "EP00",
+      "project_key": "BG",
+      "issue_type": "Epic",
+      "summary_es": "EP00 - Descubrimiento funcional y tecnico",
+      "description_es": "Cerrar alcance, flujos, datos de prueba, dependencias externas, entornos, contratos y riesgos antes de reescribir Knockout en React.",
+      "labels": ["bestinver-gestor-atlas", "knockout-react", "discovery"]
+    },
+    {
+      "order": 2,
+      "local_id": "EP00-T01",
+      "parent_ref": "EP00",
+      "project_key": "BG",
+      "issue_type": "Task",
+      "summary_es": "Levantar mapa funcional de Register, Juridica, Extranjero y Remediacion",
+      "description_es": "Documentar pasos, decisiones, pantallas, estados y salidas de los cuatro flujos principales de Web.Public. Entregable: diagrama de flujos validado con negocio.",
+      "labels": ["bestinver-gestor-atlas", "knockout-react", "discovery"]
+    },
+    {
+      "order": 3,
+      "local_id": "EP00-T02",
+      "parent_ref": "EP00",
+      "project_key": "BG",
+      "issue_type": "Task",
+      "summary_es": "Conseguir datos de prueba por tipo de alta, producto, test, documento y firma",
+      "description_es": "Preparar dataset de QA para alta fisica, juridica, extranjero y remediacion, incluyendo casos de error y firma documental.",
+      "labels": ["bestinver-gestor-atlas", "knockout-react", "qa"]
+    },
+    {
+      "order": 4,
+      "local_id": "EP00-T03",
+      "parent_ref": "EP00",
+      "project_key": "BG",
+      "issue_type": "Task",
+      "summary_es": "Documentar dependencias externas de Web.Public",
+      "description_es": "Inventariar APIs internas, WordPress, proveedor de firma, emails, documentos, sesion, Redis, Azure App Configuration, Key Vault y microservicios Web Privada.",
+      "labels": ["bestinver-gestor-atlas", "knockout-react", "dependencies"]
+    },
+    {
+      "order": 5,
+      "local_id": "EP00-T04",
+      "parent_ref": "EP00",
+      "project_key": "BG",
+      "issue_type": "Task",
+      "summary_es": "Ejecutar baseline funcional y visual de la aplicacion actual",
+      "description_es": "Arrancar entorno local o compartido, capturar pantallas actuales y dejar evidencia para comparar la migracion React contra Knockout.",
+      "labels": ["bestinver-gestor-atlas", "knockout-react", "baseline"]
+    },
+    {
+      "order": 6,
+      "local_id": "EP00-T05",
+      "parent_ref": "EP00",
+      "project_key": "BG",
+      "issue_type": "Task",
+      "summary_es": "Definir estrategia de convivencia Razor y React",
+      "description_es": "Decidir si React entra por pantalla completa, islas dentro de Razor o rutas separadas. Definir feature flags, rollback y criterios de corte.",
+      "labels": ["bestinver-gestor-atlas", "knockout-react", "architecture"]
+    },
+    {
+      "order": 7,
+      "local_id": "EP01",
+      "project_key": "BG",
+      "issue_type": "Epic",
+      "summary_es": "EP01 - Plataforma React en Web.Public",
+      "description_es": "Introducir build React/TypeScript dentro de BESTINVER.GestorAltas.Web.Public e integrarlo con ASP.NET Core MVC y Razor.",
+      "labels": ["bestinver-gestor-atlas", "knockout-react", "frontend-platform"]
+    },
+    {
+      "order": 8,
+      "local_id": "EP01-T01",
+      "parent_ref": "EP01",
+      "project_key": "BG",
+      "issue_type": "Task",
+      "summary_es": "Introducir estructura React/TypeScript en Web.Public",
+      "description_es": "Crear estructura frontend compilable, convenciones de carpetas, tsconfig, entrypoints y empaquetado inicial.",
+      "labels": ["bestinver-gestor-atlas", "knockout-react", "frontend-platform"]
+    },
+    {
+      "order": 9,
+      "local_id": "EP01-T02",
+      "parent_ref": "EP01",
+      "project_key": "BG",
+      "issue_type": "Task",
+      "summary_es": "Integrar build frontend con ASP.NET Core",
+      "description_es": "Generar assets versionados, modo dev local y build de produccion compatible con Docker/pipelines existentes.",
+      "labels": ["bestinver-gestor-atlas", "knockout-react", "build"]
+    },
+    {
+      "order": 10,
+      "local_id": "EP01-T03",
+      "parent_ref": "EP01",
+      "project_key": "BG",
+      "issue_type": "Task",
+      "summary_es": "Crear helper Razor para montar hosts React",
+      "description_es": "Definir helper o partial para montar aplicaciones React desde Razor con datos iniciales serializados de forma segura.",
+      "labels": ["bestinver-gestor-atlas", "knockout-react", "razor"]
+    },
+    {
+      "order": 11,
+      "local_id": "EP01-T04",
+      "parent_ref": "EP01",
+      "project_key": "BG",
+      "issue_type": "Task",
+      "summary_es": "Configurar lint, format y test runner frontend",
+      "description_es": "Añadir lint, formateo, tests unitarios/componentes y comandos reproducibles para CI.",
+      "labels": ["bestinver-gestor-atlas", "knockout-react", "quality"]
+    },
+    {
+      "order": 12,
+      "local_id": "EP01-T05",
+      "parent_ref": "EP01",
+      "project_key": "BG",
+      "issue_type": "Task",
+      "summary_es": "Definir convenciones de estado, rutas y formularios",
+      "description_es": "Acordar store/capa de estado, estrategia de formularios, validaciones, aliases y estructura modular por flujo.",
+      "labels": ["bestinver-gestor-atlas", "knockout-react", "architecture"]
+    },
+    {
+      "order": 13,
+      "local_id": "EP02",
+      "project_key": "BG",
+      "issue_type": "Epic",
+      "summary_es": "EP02 - Sistema UI y accesibilidad",
+      "description_es": "Crear componentes React accesibles para formularios, modales, errores, navegacion por pasos, tests y estados.",
+      "labels": ["bestinver-gestor-atlas", "knockout-react", "accessibility"]
+    },
+    {
+      "order": 14,
+      "local_id": "EP02-T01",
+      "parent_ref": "EP02",
+      "project_key": "BG",
+      "issue_type": "Task",
+      "summary_es": "Inventariar componentes UI actuales",
+      "description_es": "Listar inputs, selects, radios, checkboxes, modales, tooltips, tabs, errores y botones usados en Web.Public.",
+      "labels": ["bestinver-gestor-atlas", "knockout-react", "ui"]
+    },
+    {
+      "order": 15,
+      "local_id": "EP02-T02",
+      "parent_ref": "EP02",
+      "project_key": "BG",
+      "issue_type": "Task",
+      "summary_es": "Crear componentes accesibles de formulario y error",
+      "description_es": "Implementar componentes con labels, ayuda, aria, mensajes de error, estados disabled/loading y soporte teclado.",
+      "labels": ["bestinver-gestor-atlas", "knockout-react", "accessibility"]
+    },
+    {
+      "order": 16,
+      "local_id": "EP02-T03",
+      "parent_ref": "EP02",
+      "project_key": "BG",
+      "issue_type": "Task",
+      "summary_es": "Crear patrones de navegacion por pasos y resumen",
+      "description_es": "Implementar stepper, resumen, edicion de pasos, estados de avance y mensajes de validacion de flujo.",
+      "labels": ["bestinver-gestor-atlas", "knockout-react", "ui"]
+    },
+    {
+      "order": 17,
+      "local_id": "EP02-T04",
+      "parent_ref": "EP02",
+      "project_key": "BG",
+      "issue_type": "Task",
+      "summary_es": "Crear componentes para tests de conocimiento y conveniencia",
+      "description_es": "Diseñar componentes reutilizables para preguntas, respuestas, resultados, titulares, representantes y variantes de infraestructura.",
+      "labels": ["bestinver-gestor-atlas", "knockout-react", "tests"]
+    },
+    {
+      "order": 18,
+      "local_id": "EP02-T05",
+      "parent_ref": "EP02",
+      "project_key": "BG",
+      "issue_type": "Task",
+      "summary_es": "Validar criterios WCAG de componentes base",
+      "description_es": "Validar foco, teclado, contraste, labels, mensajes, modales y lectura de errores antes de migrar masivamente vistas.",
+      "labels": ["bestinver-gestor-atlas", "knockout-react", "accessibility"]
+    },
+    {
+      "order": 19,
+      "local_id": "EP03",
+      "project_key": "BG",
+      "issue_type": "Epic",
+      "summary_es": "EP03 - Capa de dominio frontend",
+      "description_es": "Rehacer modelos Knockout como tipos, estado React, validadores, selectores y cliente API tipado.",
+      "labels": ["bestinver-gestor-atlas", "knockout-react", "domain"]
+    },
+    {
+      "order": 20,
+      "local_id": "EP03-T01",
+      "parent_ref": "EP03",
+      "project_key": "BG",
+      "issue_type": "Task",
+      "summary_es": "Extraer contratos desde modelos Knockout actuales",
+      "description_es": "Analizar wwwroot/js/models.js, models-juridicas.js, model-extranjero.js y remediacion.js para generar tipos TypeScript/DTOs.",
+      "labels": ["bestinver-gestor-atlas", "knockout-react", "domain"]
+    },
+    {
+      "order": 21,
+      "local_id": "EP03-T02",
+      "parent_ref": "EP03",
+      "project_key": "BG",
+      "issue_type": "Task",
+      "summary_es": "Rehacer observables y computed como estado React",
+      "description_es": "Migrar dependencias de ko.observable, ko.observableArray y computed a estado React/selectores testeables.",
+      "labels": ["bestinver-gestor-atlas", "knockout-react", "state"]
+    },
+    {
+      "order": 22,
+      "local_id": "EP03-T03",
+      "parent_ref": "EP03",
+      "project_key": "BG",
+      "issue_type": "Task",
+      "summary_es": "Rehacer validaciones de campos, tests y reglas condicionales",
+      "description_es": "Extraer y probar reglas de campos obligatorios, visibilidad, scoring, documentos requeridos y navegacion condicional.",
+      "labels": ["bestinver-gestor-atlas", "knockout-react", "validation"]
+    },
+    {
+      "order": 23,
+      "local_id": "EP03-T04",
+      "parent_ref": "EP03",
+      "project_key": "BG",
+      "issue_type": "Task",
+      "summary_es": "Rehacer clientes AJAX de Web.Public",
+      "description_es": "Sustituir request.js, request-juridicas.js y request-extranjero.js por cliente API tipado con gestion comun de errores.",
+      "labels": ["bestinver-gestor-atlas", "knockout-react", "api"]
+    },
+    {
+      "order": 24,
+      "local_id": "EP03-T05",
+      "parent_ref": "EP03",
+      "project_key": "BG",
+      "issue_type": "Task",
+      "summary_es": "Normalizar errores de API y mensajes visibles",
+      "description_es": "Unificar mensajes de error, errores de red, errores de validacion backend y errores recuperables en los flujos React.",
+      "labels": ["bestinver-gestor-atlas", "knockout-react", "api"]
+    },
+    {
+      "order": 25,
+      "local_id": "EP04",
+      "project_key": "BG",
+      "issue_type": "Epic",
+      "summary_es": "EP04 - Flujo Register",
+      "description_es": "Migrar el flujo de alta de persona fisica de Knockout a React: producto, datos, operativa, tests, documentos, firma y estados.",
+      "labels": ["bestinver-gestor-atlas", "knockout-react", "register"]
+    },
+    {
+      "order": 26,
+      "local_id": "EP04-T01",
+      "parent_ref": "EP04",
+      "project_key": "BG",
+      "issue_type": "Task",
+      "summary_es": "Migrar selector de producto de Register",
+      "description_es": "Migrar Views/Register/Index.cshtml y Views/Register/Product/* a React, retirando ko.applyBindings del selector.",
+      "labels": ["bestinver-gestor-atlas", "knockout-react", "register"]
+    },
+    {
+      "order": 27,
+      "local_id": "EP04-T02",
+      "parent_ref": "EP04",
+      "project_key": "BG",
+      "issue_type": "Task",
+      "summary_es": "Migrar datos personales, contacto y domicilio de Register",
+      "description_es": "Migrar PersonalDataView, _PersonalDataView, _BasicDataView, _AddressView y _ContactView. Mantener validaciones y serializacion actuales.",
+      "labels": ["bestinver-gestor-atlas", "knockout-react", "register"]
+    },
+    {
+      "order": 28,
+      "local_id": "EP04-T03",
+      "parent_ref": "EP04",
+      "project_key": "BG",
+      "issue_type": "Task",
+      "summary_es": "Migrar operativa, IBAN e inversion CRI de Register",
+      "description_es": "Migrar Views/Register/Operation/*, incluyendo OperationSubView, CriiOperationView, IBAN y listado de operaciones.",
+      "labels": ["bestinver-gestor-atlas", "knockout-react", "register"]
+    },
+    {
+      "order": 29,
+      "local_id": "EP04-T04",
+      "parent_ref": "EP04",
+      "project_key": "BG",
+      "issue_type": "Task",
+      "summary_es": "Migrar tests de conveniencia y conocimiento de Register",
+      "description_es": "Migrar Views/Register/_TestView.cshtml y Views/Register/Test/*, incluyendo knowledgeTest, representative, tutor, special applicant e infra.",
+      "labels": ["bestinver-gestor-atlas", "knockout-react", "register", "tests"]
+    },
+    {
+      "order": 30,
+      "local_id": "EP04-T05",
+      "parent_ref": "EP04",
+      "project_key": "BG",
+      "issue_type": "Task",
+      "summary_es": "Migrar otros solicitantes de Register",
+      "description_es": "Migrar Views/Register/_OtherApplicantView.cshtml y Views/Register/OtherApplicant/* con altas, listado y validaciones de intervinientes.",
+      "labels": ["bestinver-gestor-atlas", "knockout-react", "register"]
+    },
+    {
+      "order": 31,
+      "local_id": "EP04-T06",
+      "parent_ref": "EP04",
+      "project_key": "BG",
+      "issue_type": "Task",
+      "summary_es": "Migrar documentos y firma de Register",
+      "description_es": "Migrar Views/Register/Documents/*, incluyendo subida, descarga, documentos firmados, confirmacion telefonica y pantalla de firma.",
+      "labels": ["bestinver-gestor-atlas", "knockout-react", "register", "signature"]
+    },
+    {
+      "order": 32,
+      "local_id": "EP04-T07",
+      "parent_ref": "EP04",
+      "project_key": "BG",
+      "issue_type": "Task",
+      "summary_es": "Migrar resumen, estados y recuperacion de firma de Register",
+      "description_es": "Migrar _Resume, _SuccessView, _ErrorView, _RecoverySuccessView, RegistrationHeader, RecoverySignature y SendDocument.",
+      "labels": ["bestinver-gestor-atlas", "knockout-react", "register"]
+    },
+    {
+      "order": 33,
+      "local_id": "EP05",
+      "project_key": "BG",
+      "issue_type": "Epic",
+      "summary_es": "EP05 - Flujo Juridica",
+      "description_es": "Migrar alta de persona juridica, sociedad, representantes, titulares reales, tests, operativa, documentos y firma.",
+      "labels": ["bestinver-gestor-atlas", "knockout-react", "juridica"]
+    },
+    {
+      "order": 34,
+      "local_id": "EP05-T01",
+      "parent_ref": "EP05",
+      "project_key": "BG",
+      "issue_type": "Task",
+      "summary_es": "Migrar selector de producto juridico",
+      "description_es": "Migrar Views/Juridica/Index.cshtml y Views/Juridica/Product/* a React.",
+      "labels": ["bestinver-gestor-atlas", "knockout-react", "juridica"]
+    },
+    {
+      "order": 35,
+      "local_id": "EP05-T02",
+      "parent_ref": "EP05",
+      "project_key": "BG",
+      "issue_type": "Task",
+      "summary_es": "Migrar datos de sociedad, contacto y direccion juridica",
+      "description_es": "Migrar PersonalDataView, LegalEntity, _PersonalDataView, _BasicDataView, _AddressView, _ContactView y _CheckAllDataView.",
+      "labels": ["bestinver-gestor-atlas", "knockout-react", "juridica"]
+    },
+    {
+      "order": 36,
+      "local_id": "EP05-T03",
+      "parent_ref": "EP05",
+      "project_key": "BG",
+      "issue_type": "Task",
+      "summary_es": "Migrar titulares reales y representantes juridicos",
+      "description_es": "Migrar _OtherApplicantView, OtherApplicant/* y Test/TestTypes/_OwnerView.cshtml con reglas de titularidad y representante.",
+      "labels": ["bestinver-gestor-atlas", "knockout-react", "juridica"]
+    },
+    {
+      "order": 37,
+      "local_id": "EP05-T04",
+      "parent_ref": "EP05",
+      "project_key": "BG",
+      "issue_type": "Task",
+      "summary_es": "Migrar operativa e inversion juridica",
+      "description_es": "Migrar Views/Juridica/Operation/*, incluyendo OperationSubView, CriiOperationView, IBAN y listado de operaciones.",
+      "labels": ["bestinver-gestor-atlas", "knockout-react", "juridica"]
+    },
+    {
+      "order": 38,
+      "local_id": "EP05-T05",
+      "parent_ref": "EP05",
+      "project_key": "BG",
+      "issue_type": "Task",
+      "summary_es": "Migrar tests juridicos, representante e infraestructura",
+      "description_es": "Migrar Views/Juridica/_TestView.cshtml y Views/Juridica/Test/*, incluyendo knowledgeTest, representative, owner e infra.",
+      "labels": ["bestinver-gestor-atlas", "knockout-react", "juridica", "tests"]
+    },
+    {
+      "order": 39,
+      "local_id": "EP05-T06",
+      "parent_ref": "EP05",
+      "project_key": "BG",
+      "issue_type": "Task",
+      "summary_es": "Migrar documentos y firma juridica",
+      "description_es": "Migrar Views/Juridica/Documents/* y RecoverySignature, incluyendo variantes IE, scan, otras opciones y documentos firmados.",
+      "labels": ["bestinver-gestor-atlas", "knockout-react", "juridica", "signature"]
+    },
+    {
+      "order": 40,
+      "local_id": "EP06",
+      "project_key": "BG",
+      "issue_type": "Epic",
+      "summary_es": "EP06 - Flujo Extranjero",
+      "description_es": "Migrar alta de extranjero y sus variantes de datos, operativa, tests, otros solicitantes, documentos y firma.",
+      "labels": ["bestinver-gestor-atlas", "knockout-react", "extranjero"]
+    },
+    {
+      "order": 41,
+      "local_id": "EP06-T01",
+      "parent_ref": "EP06",
+      "project_key": "BG",
+      "issue_type": "Task",
+      "summary_es": "Migrar selector de producto extranjero",
+      "description_es": "Migrar Views/Extranjero/Index.cshtml y Views/Extranjero/Product/* a React.",
+      "labels": ["bestinver-gestor-atlas", "knockout-react", "extranjero"]
+    },
+    {
+      "order": 42,
+      "local_id": "EP06-T02",
+      "parent_ref": "EP06",
+      "project_key": "BG",
+      "issue_type": "Task",
+      "summary_es": "Migrar datos personales, contacto, domicilio y residencia fiscal de extranjero",
+      "description_es": "Migrar PersonalDataView, _PersonalDataView, _BasicDataView, _AddressView y _ContactView con validaciones actuales.",
+      "labels": ["bestinver-gestor-atlas", "knockout-react", "extranjero"]
+    },
+    {
+      "order": 43,
+      "local_id": "EP06-T03",
+      "parent_ref": "EP06",
+      "project_key": "BG",
+      "issue_type": "Task",
+      "summary_es": "Migrar operativa extranjero y CRI",
+      "description_es": "Migrar Views/Extranjero/Operation/*, incluyendo OperationSubView, CriiOperationView, IBAN y configuracion de inversion.",
+      "labels": ["bestinver-gestor-atlas", "knockout-react", "extranjero"]
+    },
+    {
+      "order": 44,
+      "local_id": "EP06-T04",
+      "parent_ref": "EP06",
+      "project_key": "BG",
+      "issue_type": "Task",
+      "summary_es": "Migrar tests extranjero y variantes especiales",
+      "description_es": "Migrar Views/Extranjero/_TestView.cshtml y Views/Extranjero/Test/*, incluyendo KnowledgeTest, representative, tutor, special applicant e infra.",
+      "labels": ["bestinver-gestor-atlas", "knockout-react", "extranjero", "tests"]
+    },
+    {
+      "order": 45,
+      "local_id": "EP06-T05",
+      "parent_ref": "EP06",
+      "project_key": "BG",
+      "issue_type": "Task",
+      "summary_es": "Migrar otros solicitantes de extranjero",
+      "description_es": "Migrar Views/Extranjero/_OtherApplicantView.cshtml y Views/Extranjero/OtherApplicant/*.",
+      "labels": ["bestinver-gestor-atlas", "knockout-react", "extranjero"]
+    },
+    {
+      "order": 46,
+      "local_id": "EP06-T06",
+      "parent_ref": "EP06",
+      "project_key": "BG",
+      "issue_type": "Task",
+      "summary_es": "Migrar documentos, firma y recuperacion de firma de extranjero",
+      "description_es": "Migrar Views/Extranjero/Documents/* y RecoverySignature. Validar SendDocumentViewModel de extranjero porque no se ha encontrado vista asociada.",
+      "labels": ["bestinver-gestor-atlas", "knockout-react", "extranjero", "signature"]
+    },
+    {
+      "order": 47,
+      "local_id": "EP07",
+      "project_key": "BG",
+      "issue_type": "Epic",
+      "summary_es": "EP07 - Flujo Remediacion",
+      "description_es": "Migrar remediacion fisica y juridica: pantalla principal, datos, tests, titular real, documentos, firma y cierre.",
+      "labels": ["bestinver-gestor-atlas", "knockout-react", "remediacion"]
+    },
+    {
+      "order": 48,
+      "local_id": "EP07-T01",
+      "parent_ref": "EP07",
+      "project_key": "BG",
+      "issue_type": "Task",
+      "summary_es": "Migrar pantalla principal y cabeceras de Remediacion",
+      "description_es": "Migrar RemediacionView, _RemediacionHeader y Shared/_Header, retirando ko.applyBindings del flujo principal.",
+      "labels": ["bestinver-gestor-atlas", "knockout-react", "remediacion"]
+    },
+    {
+      "order": 49,
+      "local_id": "EP07-T02",
+      "parent_ref": "EP07",
+      "project_key": "BG",
+      "issue_type": "Task",
+      "summary_es": "Migrar validacion de usuario, DNI y datos personales de Remediacion",
+      "description_es": "Migrar _UserValidation, _PersonalDataView y _AddressView con validaciones y datos actuales.",
+      "labels": ["bestinver-gestor-atlas", "knockout-react", "remediacion"]
+    },
+    {
+      "order": 50,
+      "local_id": "EP07-T03",
+      "parent_ref": "EP07",
+      "project_key": "BG",
+      "issue_type": "Task",
+      "summary_es": "Migrar tests de remediacion fisica y juridica",
+      "description_es": "Migrar _TestView y Remediacion/Test/*, incluyendo knowledgeTest, knowledgeTestJuridica, representative y tutor.",
+      "labels": ["bestinver-gestor-atlas", "knockout-react", "remediacion", "tests"]
+    },
+    {
+      "order": 51,
+      "local_id": "EP07-T04",
+      "parent_ref": "EP07",
+      "project_key": "BG",
+      "issue_type": "Task",
+      "summary_es": "Migrar titular real y documentacion de Remediacion",
+      "description_es": "Migrar OwnerView, OwnerPercentageView y Remediacion/Documents/* relacionados con documentacion.",
+      "labels": ["bestinver-gestor-atlas", "knockout-react", "remediacion"]
+    },
+    {
+      "order": 52,
+      "local_id": "EP07-T05",
+      "parent_ref": "EP07",
+      "project_key": "BG",
+      "issue_type": "Task",
+      "summary_es": "Migrar firma y cierre de Remediacion",
+      "description_es": "Migrar variantes Signature de Remediacion/Documents y validar endpoints de RemediacionController para cierre de proceso.",
+      "labels": ["bestinver-gestor-atlas", "knockout-react", "remediacion", "signature"]
+    },
+    {
+      "order": 53,
+      "local_id": "EP08",
+      "project_key": "BG",
+      "issue_type": "Epic",
+      "summary_es": "EP08 - Firma y documentos",
+      "description_es": "Migrar componentes y flujos transversales de subida, descarga, validacion documental y firma.",
+      "labels": ["bestinver-gestor-atlas", "knockout-react", "signature"]
+    },
+    {
+      "order": 54,
+      "local_id": "EP08-T01",
+      "parent_ref": "EP08",
+      "project_key": "BG",
+      "issue_type": "Task",
+      "summary_es": "Inventariar estados documentales",
+      "description_es": "Definir matriz de estados: requerido, subido, validado, firmado, pendiente, error, expirado y cancelado.",
+      "labels": ["bestinver-gestor-atlas", "knockout-react", "signature"]
+    },
+    {
+      "order": 55,
+      "local_id": "EP08-T02",
+      "parent_ref": "EP08",
+      "project_key": "BG",
+      "issue_type": "Task",
+      "summary_es": "Migrar componentes de subida, descarga y visualizacion documental",
+      "description_es": "Crear componentes React reutilizables para documentos en Register, Juridica, Extranjero y Remediacion.",
+      "labels": ["bestinver-gestor-atlas", "knockout-react", "signature"]
+    },
+    {
+      "order": 56,
+      "local_id": "EP08-T03",
+      "parent_ref": "EP08",
+      "project_key": "BG",
+      "issue_type": "Task",
+      "summary_es": "Migrar flujos de firma por tipo de alta",
+      "description_es": "Cubrir firma fisica, juridica, extranjero y remediacion, incluyendo confirmaciones por telefono/email cuando apliquen.",
+      "labels": ["bestinver-gestor-atlas", "knockout-react", "signature"]
+    },
+    {
+      "order": 57,
+      "local_id": "EP08-T04",
+      "parent_ref": "EP08",
+      "project_key": "BG",
+      "issue_type": "Task",
+      "summary_es": "Validar integracion extremo a extremo con proveedor de firma",
+      "description_es": "Probar estados de firma, errores, reintentos, documentos firmados y actualizacion de backend.",
+      "labels": ["bestinver-gestor-atlas", "knockout-react", "signature", "qa"]
+    },
+    {
+      "order": 58,
+      "local_id": "EP09",
+      "project_key": "BG",
+      "issue_type": "Epic",
+      "summary_es": "EP09 - Backend y contratos",
+      "description_es": "Adaptar endpoints, DTOs, errores, bootstrap de datos y compatibilidad durante la convivencia Knockout/React.",
+      "labels": ["bestinver-gestor-atlas", "knockout-react", "backend"]
+    },
+    {
+      "order": 59,
+      "local_id": "EP09-T01",
+      "parent_ref": "EP09",
+      "project_key": "BG",
+      "issue_type": "Task",
+      "summary_es": "Documentar endpoints usados por los request*.js actuales",
+      "description_es": "Catalogar endpoints de request.js, request-juridicas.js, request-extranjero.js y remediacion.js con payloads y errores.",
+      "labels": ["bestinver-gestor-atlas", "knockout-react", "backend"]
+    },
+    {
+      "order": 60,
+      "local_id": "EP09-T02",
+      "parent_ref": "EP09",
+      "project_key": "BG",
+      "issue_type": "Task",
+      "summary_es": "Normalizar payloads iniciales inyectados por Razor",
+      "description_es": "Definir DTO bootstrap para pasar datos de servidor a React sin depender de variables globales ad hoc.",
+      "labels": ["bestinver-gestor-atlas", "knockout-react", "backend"]
+    },
+    {
+      "order": 61,
+      "local_id": "EP09-T03",
+      "parent_ref": "EP09",
+      "project_key": "BG",
+      "issue_type": "Task",
+      "summary_es": "Revisar controladores principales de Web.Public",
+      "description_es": "Revisar RegisterController, JuridicaController, ExtranjeroController, RemediacionController y MasterController para estabilizar contratos.",
+      "labels": ["bestinver-gestor-atlas", "knockout-react", "backend"]
+    },
+    {
+      "order": 62,
+      "local_id": "EP09-T04",
+      "parent_ref": "EP09",
+      "project_key": "BG",
+      "issue_type": "Task",
+      "summary_es": "Adaptar errores backend para consumo React",
+      "description_es": "Unificar respuestas de error, codigos, mensajes y validaciones para que el frontend pueda representarlos de forma consistente.",
+      "labels": ["bestinver-gestor-atlas", "knockout-react", "backend"]
+    },
+    {
+      "order": 63,
+      "local_id": "EP09-T05",
+      "parent_ref": "EP09",
+      "project_key": "BG",
+      "issue_type": "Task",
+      "summary_es": "Definir convivencia y rollback entre Knockout y React",
+      "description_es": "Mantener compatibilidad por feature flag, rutas separadas o estrategia equivalente hasta cerrar la migracion.",
+      "labels": ["bestinver-gestor-atlas", "knockout-react", "backend"]
+    },
+    {
+      "order": 64,
+      "local_id": "EP10",
+      "project_key": "BG",
+      "issue_type": "Epic",
+      "summary_es": "EP10 - QA, regresion y accesibilidad",
+      "description_es": "Cubrir pruebas funcionales, regresion, accesibilidad, UAT y evidencias por flujo migrado.",
+      "labels": ["bestinver-gestor-atlas", "knockout-react", "qa"]
+    },
+    {
+      "order": 65,
+      "local_id": "EP10-T01",
+      "parent_ref": "EP10",
+      "project_key": "BG",
+      "issue_type": "Task",
+      "summary_es": "Crear matriz de casos por flujo, producto, perfil y resultado",
+      "description_es": "Preparar plan de pruebas para Register, Juridica, Extranjero y Remediacion con flujos felices y errores relevantes.",
+      "labels": ["bestinver-gestor-atlas", "knockout-react", "qa"]
+    },
+    {
+      "order": 66,
+      "local_id": "EP10-T02",
+      "parent_ref": "EP10",
+      "project_key": "BG",
+      "issue_type": "Task",
+      "summary_es": "Automatizar smoke tests de rutas criticas",
+      "description_es": "Crear suite E2E minima para selector de producto, datos, test, documentos, firma y confirmacion.",
+      "labels": ["bestinver-gestor-atlas", "knockout-react", "qa"]
+    },
+    {
+      "order": 67,
+      "local_id": "EP10-T03",
+      "parent_ref": "EP10",
+      "project_key": "BG",
+      "issue_type": "Task",
+      "summary_es": "Crear pruebas de componentes para formularios y tests",
+      "description_es": "Cubrir reglas no triviales de componentes React, validaciones, tests de conveniencia/conocimiento y estados de documento.",
+      "labels": ["bestinver-gestor-atlas", "knockout-react", "qa"]
+    },
+    {
+      "order": 68,
+      "local_id": "EP10-T04",
+      "parent_ref": "EP10",
+      "project_key": "BG",
+      "issue_type": "Task",
+      "summary_es": "Validar accesibilidad WCAG",
+      "description_es": "Validar navegacion por teclado, foco, contraste, labels, errores, modales y compatibilidad con lector.",
+      "labels": ["bestinver-gestor-atlas", "knockout-react", "accessibility"]
+    },
+    {
+      "order": 69,
+      "local_id": "EP10-T05",
+      "parent_ref": "EP10",
+      "project_key": "BG",
+      "issue_type": "Task",
+      "summary_es": "Ejecutar UAT con negocio por entregas parciales",
+      "description_es": "Planificar validaciones funcionales por flujo y documentar aceptacion o incidencias antes del corte final.",
+      "labels": ["bestinver-gestor-atlas", "knockout-react", "uat"]
+    },
+    {
+      "order": 70,
+      "local_id": "EP11",
+      "project_key": "BG",
+      "issue_type": "Epic",
+      "summary_es": "EP11 - Release, despliegue y retirada Knockout",
+      "description_es": "Preparar despliegue progresivo, pipeline, observabilidad, retirada de scripts Knockout y documentacion final.",
+      "labels": ["bestinver-gestor-atlas", "knockout-react", "release"]
+    },
+    {
+      "order": 71,
+      "local_id": "EP11-T01",
+      "parent_ref": "EP11",
+      "project_key": "BG",
+      "issue_type": "Task",
+      "summary_es": "Definir plan de despliegue progresivo",
+      "description_es": "Definir entornos, orden por flujo, validaciones, rollback y responsables de aprobacion.",
+      "labels": ["bestinver-gestor-atlas", "knockout-react", "release"]
+    },
+    {
+      "order": 72,
+      "local_id": "EP11-T02",
+      "parent_ref": "EP11",
+      "project_key": "BG",
+      "issue_type": "Task",
+      "summary_es": "Actualizar Docker y pipelines para incluir build frontend",
+      "description_es": "Adaptar Dockerfile, compose y pipelines para compilar React/TypeScript y publicar assets de produccion.",
+      "labels": ["bestinver-gestor-atlas", "knockout-react", "devops"]
+    },
+    {
+      "order": 73,
+      "local_id": "EP11-T03",
+      "parent_ref": "EP11",
+      "project_key": "BG",
+      "issue_type": "Task",
+      "summary_es": "Monitorizar errores frontend/backend tras despliegue",
+      "description_es": "Definir dashboard/logs de errores, trazabilidad de usuario, errores de API y seguimiento post-release.",
+      "labels": ["bestinver-gestor-atlas", "knockout-react", "observability"]
+    },
+    {
+      "order": 74,
+      "local_id": "EP11-T04",
+      "parent_ref": "EP11",
+      "project_key": "BG",
+      "issue_type": "Task",
+      "summary_es": "Retirar knockout.js, viewmodels antiguos y scripts no usados",
+      "description_es": "Eliminar data-bind, ko.applyBindings, referencias a knockout.validation, viewmodels antiguos y bundles legacy cuando el corte este completado.",
+      "labels": ["bestinver-gestor-atlas", "knockout-react", "cleanup"]
+    },
+    {
+      "order": 75,
+      "local_id": "EP11-T05",
+      "parent_ref": "EP11",
+      "project_key": "BG",
+      "issue_type": "Task",
+      "summary_es": "Actualizar README y documentacion de operacion",
+      "description_es": "Actualizar README, documentacion de despliegue, comandos locales, arquitectura frontend y notas de mantenimiento.",
+      "labels": ["bestinver-gestor-atlas", "knockout-react", "documentation"]
+    }
+  ]
+}

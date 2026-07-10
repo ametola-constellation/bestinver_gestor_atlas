@@ -89,3 +89,7 @@
 /BESTINVER.GestorAltas.Web.Public/wwwroot/js/bundles/bundle-knockoutjs.min.js
 /BESTINVER.GestorAltas.Web.Public/wwwroot/js/bundles/bundle-redbility.js
 /BESTINVER.GestorAltas.Web.Public/wwwroot/js/bundles/bundle-redbility.min.js
+Jira/.env
+Jira/.venv/
+Jira/**/__pycache__/
+Jira/**/*.pyc

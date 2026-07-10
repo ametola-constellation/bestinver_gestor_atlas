@@ -25,6 +25,49 @@ Este repo contiene varias aplicaciones .NET 8 relacionadas con altas/onboarding,
 | Wordpress WS | `BESTINVER.Wordpress.WS/BESTINVER.Wordpress.WS.csproj` | ASP.NET Core API | API de carteras/rentabilidad para Wordpress u otros consumidores web. |
 | Auth LDAP | `Bestinver.Auth.Ldap/Bestinver.Auth.Ldap.csproj` | Libreria/EF Identity | Integracion LDAP/Azure AD/roles. Es el unico sitio donde aparecen migraciones EF. |
 
+## Desplegables reales
+
+Aunque el repositorio contiene 18 proyectos `.csproj`, solo se han detectado **3 aplicaciones ASP.NET Core desplegables**. Son las que tienen `Microsoft.NET.Sdk.Web`, `Program.cs`, `Startup.cs` y `Dockerfile` propio:
+
+| Desplegable | Proyecto | Dockerfile | Observaciones |
+| --- | --- | --- | --- |
+| Altas / Web Publica | `BESTINVER.GestorAltas.Web.Public` | `BESTINVER.GestorAltas.Web.Public/Dockerfile` | Contiene backend MVC, vistas Razor y frontend Knockout. Es el foco de la migracion Knockout -> React. |
+| Backoffice / MiddleOffice | `BESTINVER.GestorAltas.Web.Management` | `BESTINVER.GestorAltas.Web.Management/Dockerfile` | Aplicacion interna de gestion. No se ha detectado uso relevante de Knockout. |
+| Wordpress API | `BESTINVER.Wordpress.WS` | `BESTINVER.Wordpress.WS/Dockerfile` | API independiente para carteras/rentabilidades consumida por Wordpress u otros canales. |
+
+El resto de proyectos son librerias compartidas o tests. No se despliegan como servicios independientes:
+
+- `BESTINVER.GestorAltas.Domain`, `Domain.Interfaces`, `Exceptions`, `Resource`, `Utilities`, `Web.Models`, `Web.Common`, `MicroservicesProxy`, `Bestinver.Auth.Ldap`.
+- Proyectos `*.UnitTests` y `*.FunctionalTests`.
+
+### Remediacion
+
+En los pipelines modernos, `Remediacion` aparece como despliegue separado, pero **tecnicamente vive dentro de `BESTINVER.GestorAltas.Web.Public`**. El pipeline construye la misma base de codigo de `Web.Public` y la despliega como otra Container App/repositorio de imagen para el flujo de remediacion.
+
+Por tanto:
+
+- Si el objetivo es eliminar Knockout del modulo publico completo, `Remediacion` entra en alcance.
+- Si el objetivo es migrar solo el flujo de alta principal, `Remediacion` podria quedar fuera temporalmente, pero Knockout seguiria existiendo en el repo.
+
+## Dependencias entre aplicaciones
+
+Las tres aplicaciones desplegables se pueden construir y desplegar por separado, porque cada una tiene su propio proyecto web y Dockerfile. No se ha detectado una dependencia runtime directa del tipo "`Web.Public` necesita arrancar `Web.Management`" o "`Web.Public` necesita arrancar `Wordpress.WS`".
+
+Lo que si comparten son librerias internas y dependencias externas:
+
+| Dependencia | Afecta a | Comentario |
+| --- | --- | --- |
+| Librerias internas (`Domain`, `Utilities`, `MicroservicesProxy`, etc.) | Build de las apps | Se compilan dentro de cada publicacion; no son servicios separados. |
+| Artifactory/JFrog NuGet | Build | Requerido por paquetes privados `BestInver.*`; sin `NUGET_USER`/`NUGET_PASSWORD` el restore puede fallar. |
+| Microservicios Web Privada | Runtime | Configurados mediante `AppSettings:ApiWebPrivadaBaseAddress`. Es la dependencia funcional mas importante. |
+| IdentityServer / Azure AD / LDAP | Runtime | Necesario para autenticacion/autorizacion en flujos protegidos o internos. |
+| Redis | Runtime | Se usa si `Cache:Enable` esta activo. |
+| SQL Server | Runtime parcial | El compose incluye SQL Server, pero no aparece dump/migracion completa de la BBDD principal. |
+| Azure App Configuration / Key Vault / Blob Storage | Runtime | Configuracion, secretos y Data Protection en entornos cloud. |
+| Application Insights / Azure Monitor | Observabilidad | Telemetria y trazas. |
+
+Conclusion operativa: se pueden desplegar de forma independiente, pero para probar funcionalmente cualquiera de ellas hace falta resolver sus dependencias externas.
+
 ## Carpetas principales
 
 | Ruta | Que contiene |
@@ -83,6 +126,43 @@ Para arrancar de verdad, ademas hacen falta dependencias externas:
 - IdentityServer/Azure AD/LDAP.
 - Microservicios de Web Privada configurados en `AppSettings:ApiWebPrivadaBaseAddress`.
 
+## Alcance Knockout y React
+
+El uso de Knockout esta concentrado en `BESTINVER.GestorAltas.Web.Public`. Esta aplicacion no es una SPA separada: es ASP.NET Core MVC con vistas Razor que inyectan datos de servidor y JavaScript cliente con Knockout.
+
+Piezas clave:
+
+| Pieza | Ruta | Funcion |
+| --- | --- | --- |
+| Dependencia Knockout | `BESTINVER.GestorAltas.Web.Public/package.json` | Declara `knockout` y librerias frontend clasicas. |
+| Bundle Knockout | `BESTINVER.GestorAltas.Web.Public/bundleconfig.json` | Genera `bundle-knockoutjs.js/min.js` con Knockout y `knockout.validation.js`. |
+| Layouts Razor | `BESTINVER.GestorAltas.Web.Public/Views/Shared/*.cshtml` | Cargan bundles Knockout y bundles propios por flujo. |
+| ViewModel alta fisica/general | `BESTINVER.GestorAltas.Web.Public/wwwroot/js/viewmodel.js` | Orquesta el flujo principal de alta. |
+| Modelos cliente | `BESTINVER.GestorAltas.Web.Public/wwwroot/js/models.js` | Modelos Knockout, validaciones y serializacion a DTOs. |
+| Juridicas | `BESTINVER.GestorAltas.Web.Public/wwwroot/js/juridica/*` | ViewModels/modelos/request del flujo de persona juridica. |
+| Extranjeros | `BESTINVER.GestorAltas.Web.Public/wwwroot/js/extranjero/*` | ViewModels/modelos/request del flujo de extranjeros. |
+| Remediacion | `BESTINVER.GestorAltas.Web.Public/wwwroot/js/remediacion/remediacion.js` | ViewModel y modelos del flujo de remediacion. |
+| Vistas con bindings | `Views/Register`, `Views/Juridica`, `Views/Extranjero`, `Views/Remediacion` | HTML Razor con `data-bind`, `<!-- ko -->` y `ko.applyBindings`. |
+
+Superficie detectada:
+
+| Metrica | Resultado |
+| --- | ---: |
+| Vistas Razor totales en `Web.Public/Views` | 192 |
+| Vistas Razor con Knockout | 168 |
+| Lineas Razor con Knockout/data-bind | 5.381 |
+| Archivos JS con uso directo de `ko.` | 12 |
+| Ocurrencias `ko.` en JS | 3.059 |
+| Lineas aproximadas en JS principales vinculados a Knockout/modelos | 32.784 |
+
+Lectura para migracion:
+
+- Migrar Knockout -> React afecta principalmente a `BESTINVER.GestorAltas.Web.Public`.
+- No basta con cambiar una dependencia npm; hay que reimplementar vistas, formularios, validaciones, navegacion por pasos, llamadas AJAX, serializacion de datos y flujos de firma/documentos.
+- El backend ASP.NET Core puede mantenerse, pero probablemente habra que normalizar endpoints y DTOs para que React no dependa de datos incrustados en Razor.
+- `BESTINVER.GestorAltas.Web.Management` y `BESTINVER.Wordpress.WS` no son necesarios para abordar la migracion Knockout, salvo por integraciones o pruebas end-to-end de negocio.
+- Desglose operativo para timeline/Jira: [`Plan_Jira_Migracion_WebPublic.md`](Plan_Jira_Migracion_WebPublic.md).
+
 ## Comandos locales
 
 Se ha incluido un `Makefile` con comandos de diagnostico y build. Primeros pasos:
@@ -127,13 +207,28 @@ make docker-build-management
 Hay dos modelos mezclados:
 
 - Dockerfiles actuales: usan imagenes Linux `mcr.microsoft.com/dotnet/*:8.0-alpine` para runtime y SDK .NET 8 para build.
-- Compose/scripts legacy: usan `microsoft/mssql-server-windows-developer`, rutas `C:\...`, red Docker `nat` y `.bat` de Windows.
+- `docker-compose.yml`: declara SQL Server y las tres apps desplegables (`Web.Public`, `Web.Management`, `Wordpress.WS`).
+- `docker-compose.override.yml`: mete variables locales, certificados y credenciales. Contiene secretos y debe limpiarse/rotarse antes de compartir.
+- Scripts `.bat` legacy: usan Windows containers, `microsoft/mssql-server-windows-developer`, rutas `C:\...`, red Docker `nat` y comandos pensados para Windows.
 
 Por eso:
 
 - Para reproducir los scripts `.bat` legacy, Windows tiene mas sentido.
 - Para construir las imagenes actuales Linux, WSL/Linux deberia bastar si Docker tiene permisos y hay credenciales NuGet.
 - `docker compose up` no esta listo como entorno local portable: mezcla SQL Server Windows con servicios Linux y contiene secretos en override.
+
+### Despliegue independiente vs despliegue conjunto
+
+El compose local intenta levantar todo junto para desarrollo/integracion. En cambio, los pipelines modernos construyen y despliegan imagenes por separado:
+
+| Pipeline moderno | Imagen/repositorio |
+| --- | --- |
+| MiddleOffice | `bestinver.gestoraltas.web.management` |
+| Altas | `bestinver.gestoraltas.web.public` |
+| Remediacion | `bestinver.gestoraltas.web.public.remediacion` |
+| WordpressApi | `bestinver.wordpress.ws` |
+
+Esto indica que en infraestructura cloud se puede desplegar cada pieza por separado. Para la migracion React, el despliegue relevante es `Web.Public` y, si entra en alcance, su variante de `Remediacion`.
 
 ## CI/CD
 

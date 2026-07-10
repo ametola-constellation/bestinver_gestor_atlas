@@ -1,0 +1,58 @@
+{
+  "metadata": {
+    "project_key": "BG",
+    "project_name": "Bestinver-GestorAtlas",
+    "source_url": "https://constellationconsulting.atlassian.net/jira/software/projects/BG/boards/261/backlog",
+    "purpose": "Payload minimo para validar creacion de epic y tareas con parent_ref",
+    "generated_at": "2026-07-08",
+    "generated_items": 3,
+    "labels": [
+      "bestinver-gestor-atlas",
+      "knockout-react",
+      "jira-test"
+    ]
+  },
+  "items": [
+    {
+      "order": 1,
+      "local_id": "TEST-EPIC",
+      "project_key": "BG",
+      "issue_type": "Epic",
+      "summary_es": "[TEST] Migracion Knockout a React - validacion de carga",
+      "description_es": "Epic de prueba para validar que el importador crea epics en el proyecto BG y que las tareas posteriores quedan asociadas mediante parent_ref. Se debe borrar tras la prueba si no se quiere conservar evidencia.",
+      "labels": [
+        "bestinver-gestor-atlas",
+        "knockout-react",
+        "jira-test"
+      ]
+    },
+    {
+      "order": 2,
+      "local_id": "TEST-T01",
+      "parent_ref": "TEST-EPIC",
+      "project_key": "BG",
+      "issue_type": "Task",
+      "summary_es": "[TEST] Validar creacion de tarea hija desde JSON",
+      "description_es": "Tarea de prueba asociada al epic TEST-EPIC mediante parent_ref. Sirve para confirmar que el importador resuelve la clave real del epic recien creado antes de crear la tarea.",
+      "labels": [
+        "bestinver-gestor-atlas",
+        "knockout-react",
+        "jira-test"
+      ]
+    },
+    {
+      "order": 3,
+      "local_id": "TEST-T02",
+      "parent_ref": "TEST-EPIC",
+      "project_key": "BG",
+      "issue_type": "Task",
+      "summary_es": "[TEST] Validar descripcion y etiquetas",
+      "description_es": "Tarea de prueba para validar descripcion, labels y visibilidad en el backlog del proyecto BG: https://constellationconsulting.atlassian.net/jira/software/projects/BG/boards/261/backlog",
+      "labels": [
+        "bestinver-gestor-atlas",
+        "knockout-react",
+        "jira-test"
+      ]
+    }
+  ]
+}
